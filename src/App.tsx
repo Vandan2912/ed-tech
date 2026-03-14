@@ -7,6 +7,7 @@ import { Toaster } from "./components/ui/sonner";
 import { Toaster as Sonner } from "./components/ui/sonner";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Onboarding from "./pages/OnBoarding";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Home />} />
             <Route path="/Onboarding" element={<Onboarding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
