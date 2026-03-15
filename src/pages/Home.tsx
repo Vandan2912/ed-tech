@@ -1,13 +1,13 @@
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Banner } from "@/components/home/banner";
-import { CognitiveLoad } from "@/components/home/cognitiveLoad";
-import { ConsistencyQuest } from "@/components/home/consistencyQuest";
+import { CognitiveLoad } from "@/components/home/cognitive_load";
+import { ConsistencyQuest } from "@/components/home/consistency_quest";
 import { Features } from "@/components/home/features";
 import { Hero } from "@/components/home/hero";
 import { Progress } from "@/components/home/progress";
 import { Recommended } from "@/components/home/recommended";
-import { ResumeLearning } from "@/components/home/resumeLearning";
+import { ResumeLearning } from "@/components/home/resume_learning";
 
 const Home = () => {
   return (
