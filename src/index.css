@@ -234,3 +234,7 @@ code {
     @apply font-sans;
   }
 }
+
+.home section {
+  margin: 0;
+}

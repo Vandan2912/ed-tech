@@ -1,6 +1,5 @@
-import React from "react";
 import { motion } from "motion/react";
-import { Play, Activity, Beaker } from "lucide-react";
+import { Activity, Beaker, Clock, Play } from "lucide-react";
 
 export function ResumeLearning() {
   const courses = [
@@ -23,27 +22,27 @@ export function ResumeLearning() {
   ];
 
   return (
-    <section className="px-8 py-10 relative">
-      <div className="flex justify-between items-center bg-[#1E3A8A] text-white px-8 py-4 rounded-full mb-10 shadow-lg relative z-10">
+    <section className="p-6 relative">
+      <div className="flex justify-between items-center bg-[#1E3A8A] text-white px-5 py-4 rounded-[16px] mb-10 shadow-lg relative z-10">
         <div className="flex items-center gap-4">
-          <div className="bg-white/10 p-2 rounded-full">
-            <Play size={20} className="text-white fill-white" />
+          <div className="bg-white/10 p-2 rounded-[14px]">
+            <Clock size={20} className="text-white" />
           </div>
           <div>
-            <div className="text-blue-200 text-xs font-semibold uppercase tracking-wider mb-1">
+            <div className="text-[#8EC5FF] text-[9px] not-italic font-black leading-[13.5px] tracking-[1.067px] uppercase">
               PICK UP WHERE YOU LEFT OFF
             </div>
-            <div className="text-lg font-bold">
-              Trigonometry <span className="text-blue-300 font-normal">Maths</span>
+            <div className="text-white text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
+              Trigonometry <span className="text-[#8EC5FF] text-xs not-italic font-bold leading-4">Maths</span>
             </div>
           </div>
         </div>
-        <button className="bg-white text-blue-900 px-6 py-2.5 rounded-full font-bold text-sm shadow flex items-center gap-2 transition-transform hover:-translate-y-0.5">
+        <button className="bg-white px-5 py-2.5 rounded-[14px] shadow flex items-center gap-2 transition-transform hover:-translate-y-0.5 text-[#1C398E] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
           <Play size={16} className="fill-blue-900" /> RESUME
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-0 -mt-16 pt-16">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-8 relative z-0 -mt-16 pt-16">
         {courses.map((course, idx) => (
           <motion.div
             key={idx}
