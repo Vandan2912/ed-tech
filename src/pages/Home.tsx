@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <div className="home min-h-screen bg-white font-sans text-gray-900 overflow-x-hidden">
       <Header />
-      <main className="space-y-12 pb-24">
+      <main className="max-w-6xl mx-auto space-y-12 pb-24">
         <Hero />
         <Banner />
         <ResumeLearning />

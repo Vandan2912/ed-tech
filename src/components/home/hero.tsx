@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Trophy,  ChevronRight } from "lucide-react";
+import { Trophy, ChevronRight } from "lucide-react";
 import user from "@/assets/user.svg";
 
 export function Hero() {
@@ -15,7 +15,7 @@ export function Hero() {
           <div className="absolute bottom-40 -right-40 w-96 h-96 bg-[#FFFFFF0D] rounded-full blur-3xl"></div>
         </div>
 
-        <div className="lg:w-1/2 relative z-10 space-y-8">
+        <div className="lg:w-1/2 relative z-10 flex flex-col items-start gap-5">
           <div className="w-fit relative bg-white/10 rounded-full outline-1 -outline-offset-1 outline-white/20 flex gap-2 items-center py-1 px-4">
             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
             <div className="justify-start text-white text-xs font-bold uppercase leading-4 tracking-wide">
@@ -54,8 +54,8 @@ export function Hero() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="lg:w-70 bg-blue-800/30 backdrop-blur-md border border-blue-700/50 rounded-3xl p-5 relative z-10 mt-12 lg:mt-0 shadow-2xl">
-          <div className="flex justify-between items-start mb-6">
+          className="lg:w-70 bg-blue-800/30 backdrop-blur-md border border-blue-700/50 rounded-3xl p-5 relative z-10 mt-12 lg:mt-0 shadow-2xl hover:bg-white/10 transition-colors flex flex-col gap-4">
+          <div className="flex justify-between items-start">
             <div className="flex items-center gap-3">
               <div className="bg-[#51A2FF33] rounded-[10px] w-8 h-8 flex justify-center items-center">
                 <Trophy size={16} className="text-[#BEDBFF]" />
@@ -77,7 +77,7 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="space-y-3 mb-8">
+          <div className="space-y-3">
             <div className="h-1 bg-[#FFFFFF1A] rounded-full overflow-hidden">
               <div className="h-full bg-[#8EC5FF] w-2/3 rounded-full"></div>
             </div>
