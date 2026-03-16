@@ -11,7 +11,7 @@ import { ResumeLearning } from "@/components/home/resume_learning";
 
 const Home = () => {
   return (
-    <div className="home min-h-screen bg-white font-sans text-gray-900 overflow-x-hidden">
+    <div className="home min-h-screen bg-white font-sans text-gray-900">
       <Header />
       <main className="max-w-6xl mx-auto space-y-12 pb-24">
         <Hero />
