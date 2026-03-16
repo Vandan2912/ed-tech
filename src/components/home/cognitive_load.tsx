@@ -1,22 +1,16 @@
 import { motion } from "motion/react";
-import { Activity, ChevronRight } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, YAxis, Tooltip } from "recharts";
-
+import { Brain, ChevronRight } from "lucide-react";
+import { AreaChart, Area, ResponsiveContainer } from "recharts";
 const data = [
-  { time: "Day 1", load: 30 },
-  { time: "Day 2", load: 35 },
-  { time: "Day 3", load: 25 },
-  { time: "Day 4", load: 45 },
-  { time: "Day 5", load: 40 },
-  { time: "Day 6", load: 50 },
-  { time: "Day 7", load: 45 },
-  { time: "Day 8", load: 60 },
-  { time: "Day 9", load: 55 },
-  { time: "Day 10", load: 70 },
-  { time: "Day 11", load: 65 },
-  { time: "Day 12", load: 80 },
-  { time: "Day 13", load: 75 },
-  { time: "Day 14", load: 90 },
+  { load: 40 },
+  { load: 50 },
+  { load: 55 },
+  { load: 52 },
+  { load: 45 },
+  { load: 30 },
+  { load: 35 },
+  { load: 55 },
+  { load: 80 },
 ];
 
 export function CognitiveLoad() {
@@ -28,65 +22,80 @@ export function CognitiveLoad() {
         viewport={{ once: true }}
         className="bg-[#111827] rounded-[2rem] p-10 lg:p-16 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col lg:flex-row gap-16 items-center justify-between relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-0 right-0 w-95 h-95 bg-[#155DFC33] rounded-full blur-[120px] "></div>
         </div>
 
-        <div className="lg:w-1/2 space-y-8 relative z-10">
-          <div className="inline-flex items-center gap-2 bg-blue-900/50 backdrop-blur-sm border border-blue-800 rounded-full px-4 py-1.5 text-xs font-bold text-blue-300 tracking-wider uppercase">
-            <Activity size={16} className="text-blue-400" />
+        <div className="lg:w-1/2 relative z-10 flex flex-col items-start gap-4">
+          <div className="inline-flex items-center gap-2 bg-[#2B7FFF1A] rounded-full px-4 py-1.5 text-xs uppercase text-[#51A2FF] text-[10px] not-italic font-bold leading-3.75 tracking-[0.117px]">
+            <Brain size={14} className="text-blue-400" />
             <span>COGNITIVE TRACKING</span>
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
+          <h2 className="text-white text-3xl not-italic font-bold leading-[37.5px] tracking-[0.396px]">
             Understand Your <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
-              Cognitive Load
-            </span>
+            <span className="text-[#51A2FF]">Cognitive Load</span>
           </h2>
 
-          <p className="text-gray-400 text-lg leading-relaxed max-w-lg">
+          <p className="max-w-md text-[#99A1AF] text-xs not-italic font-normal leading-[19.5px]">
             Our AI analyzes your response patterns and time to answer to determine real-time mental pressure. Our
             syllabus adapts while minimizing peak cognitive load.
           </p>
 
-          <div className="flex items-center gap-12 pt-4">
+          <div className="flex items-center gap-8">
             <div>
-              <div className="text-3xl font-black text-white">96%</div>
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">ACCURACY</div>
+              <div className="text-white text-center text-lg not-italic font-bold leading-7 tracking-[-0.439px]">
+                98%
+              </div>
+              <div className="text-[#6A7282] text-center text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
+                ACCURACY
+              </div>
             </div>
             <div>
-              <div className="text-3xl font-black text-white">2.4k</div>
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">STUDENTS</div>
+              <div className="text-white text-center text-lg not-italic font-bold leading-7 tracking-[-0.439px]">
+                2.4k
+              </div>
+              <div className="text-[#6A7282] text-center text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
+                STUDENTS
+              </div>
             </div>
-            <button className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 ml-auto">
+            <button className="bg-[#155DFC] px-8 py-4 transition-transform flex items-center gap-2 shadow-[0_10px_15px_-3px_rgba(28,57,142,0.20),0_4px_6px_-4px_rgba(28,57,142,0.20)] rounded-2xl text-white text-center text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase">
               VIEW ANALYTICS <ChevronRight size={18} />
             </button>
           </div>
         </div>
 
-        <div className="lg:w-1/2 w-full h-[300px] bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 relative z-10">
+        <div className="lg:w-1/2 w-full h-50 bg-[#FFFFFF0D] border border-[#FFFFFF1A] rounded-2xl p-5 relative z-10">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data}>
+            <AreaChart data={data}>
               <defs>
-                <linearGradient id="colorLoad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.05} />
                 </linearGradient>
               </defs>
-              <YAxis hide domain={["dataMin - 10", "dataMax + 10"]} />
-              <Tooltip
-                contentStyle={{ backgroundColor: "#1f2937", border: "none", borderRadius: "8px", color: "#f3f4f6" }}
-                itemStyle={{ color: "#60a5fa" }}
-              />
-              <Line
+
+              <Area
                 type="monotone"
                 dataKey="load"
                 stroke="#3b82f6"
-                strokeWidth={4}
+                strokeWidth={3}
+                fill="url(#areaGradient)"
                 dot={false}
-                activeDot={{ r: 8, fill: "#3b82f6", stroke: "#1e3a8a", strokeWidth: 3 }}
+                activeDot={false}
               />
-            </LineChart>
+
+              {/* dashed highlight line */}
+              <Area
+                type="monotone"
+                dataKey="load"
+                stroke="#ef4444"
+                strokeWidth={2}
+                strokeDasharray="6 6"
+                fill="transparent"
+                dot={false}
+                activeDot={false}
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </motion.div>

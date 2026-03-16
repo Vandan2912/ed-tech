@@ -1,57 +1,81 @@
 import { motion } from "motion/react";
-import { Flame, Calculator, Zap, FlaskConical, Dna, BookOpen, Globe2 } from "lucide-react";
+import { Zap, FlaskConical, Dna, ChevronRight, ChartColumn, Atom, Layers, Globe, Flame } from "lucide-react";
 import user from "@/assets/user.svg";
 
 export function ConsistencyQuest() {
   const subjects = [
-    { name: "Maths", points: "+50 Pts", icon: <Calculator size={20} className="text-blue-600" />, color: "bg-blue-50" },
-    { name: "Physics", points: "+30 Pts", icon: <Zap size={20} className="text-indigo-600" />, color: "bg-indigo-50" },
+    {
+      name: "Maths",
+      subheading: "Mastery",
+      isStreak: false,
+      icon: <ChartColumn size={20} className="text-white" />,
+      color: "bg-[#155DFC]",
+    },
+    {
+      name: "Physics",
+      subheading: null,
+      isStreak: true,
+      streak: "12D",
+      icon: <Atom size={20} className="text-white" />,
+      color: "bg-[#4F39F6]",
+    },
     {
       name: "Chemistry",
-      points: "+45 Pts",
-      icon: <FlaskConical size={20} className="text-emerald-600" />,
-      color: "bg-emerald-50",
+      subheading: null,
+      isStreak: true,
+      streak: "28D",
+      icon: <FlaskConical size={20} className="text-white" />,
+      color: "bg-[#009966]",
     },
-    { name: "Biology", points: "+20 Pts", icon: <Dna size={20} className="text-rose-600" />, color: "bg-rose-50" },
+    {
+      name: "Biology",
+      subheading: "Mastery",
+      isStreak: false,
+      icon: <Dna size={20} className="text-white" />,
+      color: "bg-[#EC003F]",
+    },
     {
       name: "History",
-      points: "+15 Pts",
-      icon: <BookOpen size={20} className="text-orange-600" />,
-      color: "bg-orange-50",
+      subheading: "Mastery",
+      isStreak: false,
+      icon: <Layers size={20} className="text-white" />,
+      color: "bg-[#F54900]",
     },
-    { name: "Geography", points: "+25 Pts", icon: <Globe2 size={20} className="text-cyan-600" />, color: "bg-cyan-50" },
+    {
+      name: "Geography",
+      subheading: "Mastery",
+      isStreak: false,
+      icon: <Globe size={20} className="text-cyan-600" />,
+      color: "bg-[#009689]",
+    },
   ];
 
   return (
-    <section className="px-8 py-20 relative">
+    <section className="px-8 py-16 relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         className="bg-white rounded-[2rem] p-10 lg:p-16 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-12 items-center justify-between">
-        <div className="lg:w-1/2 space-y-6">
-          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-full px-4 py-1.5 text-xs font-bold text-orange-600 tracking-wider uppercase">
-            <Flame size={16} fill="currentColor" />
-            <span>DAILY QUEST</span>
+        <div className="space-y-6 flex-1">
+          <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-full px-4 py-1.5 text-xs  text-[#F54900] text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase">
+            <Zap size={12} fill="currentColor" />
+            <span>Mastery Quest</span>
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
-            The 30-Day{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
-              Consistency
-            </span>{" "}
-            Quest
+          <h2 className="text-[#101828] text-3xl not-italic font-black leading-[37.5px] tracking-[-0.354px]">
+            The 30-Day <span className="text-[#FF6900]">Consistency</span> Quest
           </h2>
 
-          <p className="text-gray-500 text-lg leading-relaxed max-w-lg">
+          <p className="max-w-md text-[#6A7282] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
             Build a learning habit that lasts. Maintain your streak for 30 days to unlock the{" "}
-            <span className="font-bold text-gray-900">Elite Pioneer Badge</span> and{" "}
-            <span className="font-bold text-orange-600">5,000 XP</span>.
+            <span className="font-bold text-[#101828]">Elite Pioneer Badge</span> and{" "}
+            <span className="font-bold text-[#F54900]">5,000 XP</span>.
           </p>
 
           <div className="flex items-center gap-6 pt-4">
-            <button className="bg-gray-900 hover:bg-black text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5">
-              Join Challenge
+            <button className="bg-gray-900 hover:bg-black px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-white text-center text-xs not-italic font-bold leading-4">
+              Join Challenge <ChevronRight size={16} />
             </button>
 
             <div className="flex items-center gap-4">
@@ -59,36 +83,52 @@ export function ConsistencyQuest() {
                 <img
                   src={user}
                   alt="Avatar"
-                  className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
+                  className="w-7 h-w-7 rounded-full border-2 border-white object-cover shadow-sm"
                 />
                 <img
                   src={user}
                   alt="Avatar"
-                  className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
+                  className="w-7 h-w-7 rounded-full border-2 border-white object-cover shadow-sm"
                 />
                 <img
                   src={user}
                   alt="Avatar"
-                  className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
+                  className="w-7 h-w-7 rounded-full border-2 border-white object-cover shadow-sm"
                 />
               </div>
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">+2.3K ACTIVE LEARNERS</span>
+              <span className="text-xs text-[#101828] text-[10px] not-italic font-bold leading-3.75 tracking-[1.117px] uppercase">
+                +2.3K <span className="text-[#99A1AF]">ACTIVE LEARNERS</span>
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="lg:w-1/2">
+        <div className="shrink-0 md:min-w-[40%] md:w-auto w-full">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
             {subjects.map((sub, idx) => (
               <motion.div
                 key={idx}
                 whileHover={{ scale: 1.05 }}
-                className="bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-4 border border-gray-100 transition-all hover:shadow-md cursor-pointer">
-                <div className={`w-14 h-14 rounded-2xl ${sub.color} flex items-center justify-center`}>{sub.icon}</div>
-                <div>
-                  <div className="font-bold text-gray-900">{sub.name}</div>
-                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{sub.points}</div>
+                className="bg-[#F9FAFB80] rounded-2xl p-4.25 flex flex-col items-center justify-center text-center gap-4 border border-[#00000000] transition-all hover:shadow-md cursor-pointer">
+                <div
+                  className={`shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-9 h-9 justify-center items-center rounded-[14px] ${sub.color}`}>
+                  {sub.icon}
                 </div>
+                <div>
+                  <div className="text-[#101828] text-center text-xs not-italic font-bold leading-4">{sub.name}</div>
+                  {sub.isStreak ? (
+                    <div className="flex items-center justify-center gap-1 text-[#FF6900] text-center text-[8px] not-italic font-black leading-3 tracking-[1.006px] uppercase">
+                      <Flame size={8} className="fill-[#FF6900]" /> {sub.streak} STREAK
+                    </div>
+                  ) : (
+                    <div className="text-[#99A1AF] text-center text-[8px] not-italic font-bold leading-3 tracking-[1.006px] uppercase">
+                      {sub.subheading}
+                    </div>
+                  )}
+                </div>
+                <button className="text-center text-blue-600 bg-[#EFF6FF] text-[8px] font-black uppercase leading-3 tracking-wide inline-flex justify-center items-center border pl-[16.938px] pr-[16.063px] pt-[9.5px] pb-[8.5px] rounded-[14px] border-solid border-[rgba(219,234,254,0.50)]">
+                  Enroll Now
+                </button>
               </motion.div>
             ))}
           </div>

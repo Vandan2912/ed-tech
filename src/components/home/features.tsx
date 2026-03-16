@@ -53,8 +53,12 @@ export function Features() {
             <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center mb-8`}>
               {feature.icon}
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-4 leading-snug">{feature.title}</h3>
-            <p className="text-gray-500 leading-relaxed text-sm">{feature.desc}</p>
+            <h3 className="mb-4 text-[#101828] text-xl not-italic font-bold leading-7 tracking-[-0.449px]">
+              {feature.title}
+            </h3>
+            <p className="text-[#364153] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
+              {feature.desc}
+            </p>
           </motion.div>
         ))}
       </div>
