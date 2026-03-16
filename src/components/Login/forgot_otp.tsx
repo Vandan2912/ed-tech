@@ -1,5 +1,5 @@
 import { ArrowLeft, ShieldCheck } from "lucide-react";
-import { OTPInput } from "./Otp_input";
+import { OTPInput } from "./otp_input";
 import { useEffect, useState } from "react";
 
 const ForgotOtp = ({
