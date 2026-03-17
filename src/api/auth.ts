@@ -11,7 +11,7 @@ export const googleAuth = async (token: string, role: string) => {
       headers: {
         Authorization: `${token}`,
       },
-    }
+    },
   );
 
   return res.data;
