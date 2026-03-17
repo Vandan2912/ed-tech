@@ -1,7 +1,11 @@
-import { Bell, Brain, Flame, User, Users, Zap } from "lucide-react";
+import { Award, Bell, Brain, Flame, LogOut, Settings, User, Users, Zap } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "@/auth/useAuth";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function Header() {
+  const { user, logout } = useAuth();
+
   return (
     <header className="border-b border-gray-100 bg-white sticky top-0 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between py-4 px-8 ">
@@ -101,9 +105,52 @@ export function Header() {
             </div>
           </div>
           <div className="w-px h-5 bg-[#E5E7EB] rounded-full"></div>
-          <div className="w-8 h-8 flex-col shrink-0 shadow-[0_0_0_2px_#E5E7EB,0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] p-0.5 rounded-full border-2 border-solid border-white flex justify-center items-center">
-            <User size={16} className="text-black" />
-          </div>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="w-8 h-8 flex-col shrink-0 shadow-[0_0_0_2px_#E5E7EB,0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] rounded-full border-2 border-solid border-white flex justify-center items-center">
+                {user?.profile_picture ? (
+                  <img src={user?.profile_picture} className="rounded-full w-8 h-8" />
+                ) : (
+                  <User size={16} className="text-black" />
+                )}
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-60 bg-white rounded-3xl shadow-2xl border border-gray-100 py-3 px-0 overflow-hidden z-50">
+              <div className="px-5 py-3 border-b border-gray-50 mb-2 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Active {user?.role}</p>
+                  <p className="font-bold text-gray-900">
+                    {user?.first_name} {user?.last_name}
+                  </p>
+                </div>
+              </div>
+              <div className="px-2 space-y-0.5">
+                <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-2xl transition-all mb-1 group/upgrade">
+                  <Zap fill="currentColor" className="size-4" />
+                  <span className="shrink-0">Upgrade to Unlimited</span>
+                </button>
+                <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-2xl transition-all">
+                  <Settings className="size-4" />
+                  Profile Settings
+                </button>
+                <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-2xl transition-all">
+                  <Award className="size-4" />
+                  My Certificates
+                </button>
+                <div className="pt-1.5 mt-1.5 border-t border-gray-50">
+                  <button
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                    onClick={() => {
+                      logout();
+                    }}>
+                    <LogOut stroke="currentColor" className="size-4" />
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </header>

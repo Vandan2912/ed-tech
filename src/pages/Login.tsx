@@ -10,6 +10,7 @@ import CreateNewPassword from "@/components/Login/new_password";
 import { googleAuth } from "@/api/auth";
 import { useAuth } from "@/auth/useAuth";
 import { useNavigate } from "react-router-dom";
+import Loader from "@/components/loader";
 
 type Role = "student" | "teacher";
 
@@ -17,6 +18,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const [loader, setLoader] = useState(false);
   const [role, setRole] = useState<Role>("student");
   const [stage, setStage] = useState({
     forgot: false,
@@ -30,17 +32,17 @@ export default function Login() {
     onSuccess: async (tokenResponse) => {
       try {
         console.log("googleLogin", tokenResponse);
+        setLoader(true);
         const res = await googleAuth(tokenResponse.access_token, role);
 
         // save token in cookies using auth context
-        login(res.token);
-
-        // optional: save user
-        localStorage.setItem("user", JSON.stringify(res.user));
+        login(res.token, res.user);
 
         navigate("/");
       } catch (err) {
         console.error("Google login failed", err);
+      } finally {
+        setLoader(false);
       }
     },
 
@@ -73,6 +75,7 @@ export default function Login() {
     <div
       className="min-h-screen w-screen flex items-center justify-center relative overflow-hidden p-8"
       style={{ background: "#F9FAFB" }}>
+      {loader && <Loader />}
       {/* Background blurred circles */}
       <div className="absolute pointer-events-none  w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -right-24 -top-48" />
       <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -left-48 -bottom-48" />
