@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
 import { saveAcademicDetails } from "@/api/user";
 import type { User } from "@/auth/AuthProvider";
+import { Plus } from "lucide-react";
 
 /* ---------------- ZOD SCHEMA ---------------- */
 
@@ -13,6 +14,7 @@ const step1Schema = z.object({
   firstName: z.string().min(1, "First name required"),
   lastName: z.string().min(1, "Last name required"),
   email: z.string().email("Invalid email"),
+  countryCode: z.string().min(1),
   phone: z.string().min(10, "Phone must be 10 digits").max(10, "Phone must be 10 digits"),
 });
 
@@ -91,6 +93,7 @@ export default function Onboarding() {
       firstName: user?.first_name || "",
       lastName: user?.last_name || "",
       email: user?.email || "",
+      countryCode: "91",
       phone: user?.mobile_number || "",
       country: "India",
       district: user?.district || "",
@@ -119,6 +122,8 @@ export default function Onboarding() {
 
   const onSubmit = async (data: FormData) => {
     try {
+      const formattedPhone = `${data.countryCode.replace("+", "")} ${data.phone}`;
+
       const payload = {
         id: user?.id,
         first_name: data.firstName,
@@ -127,12 +132,11 @@ export default function Onboarding() {
         district: data.district,
         state: data.state,
         country: data.country,
-        contact_number: data.phone,
+        contact_number: `+${formattedPhone}`,
       };
 
       await saveAcademicDetails(payload);
 
-      // ✅ merge updated user
       const updatedUser = {
         ...user,
         ...payload,
@@ -216,11 +220,31 @@ export default function Onboarding() {
               </Field>
 
               <Field label="Mobile Number" error={errors.phone?.message}>
-                <input
-                  className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
-                  {...register("phone")}
-                  placeholder="9876543210"
-                />
+                <div className="flex gap-2">
+                  {/* Country Code */}
+                  <div className="flex items-center px-3 bg-gray-100 border border-gray-100 rounded-2xl font-bold text-gray-900">
+                    <span className="mr-1 text-gray-500">
+                      <Plus className="size-4" />
+                    </span>
+                    <input
+                      className="w-12 bg-transparent outline-none"
+                      {...register("countryCode")}
+                      maxLength={3}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck={false}
+                      inputMode="numeric"
+                    />
+                  </div>
+
+                  {/* Phone Number */}
+                  <input
+                    className="flex-1 px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
+                    {...register("phone")}
+                    placeholder="9876543210"
+                  />
+                </div>
               </Field>
 
               <button
