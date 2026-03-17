@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import brain from "@/assets/brain.svg";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,8 @@ import Loader from "@/components/loader";
 type Role = "student" | "teacher";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, token } = useAuth();
+
   const navigate = useNavigate();
 
   const [loader, setLoader] = useState(false);
@@ -31,14 +32,23 @@ export default function Login() {
 
     onSuccess: async (tokenResponse) => {
       try {
-        console.log("googleLogin", tokenResponse);
         setLoader(true);
         const res = await googleAuth(tokenResponse.access_token, role);
 
         // save token in cookies using auth context
         login(res.token, res.user);
 
-        navigate("/");
+        const isNewUser = res.isNewUser;
+        const openOnBoarding = isNewUser ? true : !res.user?.is_onboarded;
+
+        console.log("openOnBoarding", openOnBoarding, res);
+        if (openOnBoarding) {
+          console.log("openOnBoarding. 11111");
+          navigate("/onboarding");
+        } else {
+          console.log("openOnBoarding  2222222");
+          navigate("/");
+        }
       } catch (err) {
         console.error("Google login failed", err);
       } finally {
@@ -70,6 +80,12 @@ export default function Login() {
   const onSubmit = (data: LoginFormData) => {
     console.log("FINAL FORM DATA", data);
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div

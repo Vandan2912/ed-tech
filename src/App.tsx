@@ -10,7 +10,7 @@ import Onboarding from "./pages/OnBoarding";
 import Home from "./pages/Home";
 import { AuthProvider } from "./auth/AuthProvider";
 import ProtectedRoute from "./auth/ProtectedRoute";
-import PublicRoute from "./auth/PublicRoute";
+// import PublicRoute from "./auth/PublicRoute";
 
 function App() {
   return (
@@ -23,21 +23,14 @@ function App() {
           <BrowserRouter>
             <Routes>
               {/* PUBLIC ROUTES */}
-              <Route
-                path="/login"
-                element={
-                  <PublicRoute>
-                    <Login />
-                  </PublicRoute>
-                }
-              />
+              <Route path="/login" element={<Login />} />
 
               <Route
                 path="/onboarding"
                 element={
-                  <PublicRoute>
+                  <ProtectedRoute>
                     <Onboarding />
-                  </PublicRoute>
+                  </ProtectedRoute>
                 }
               />
 

@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/auth/useAuth";
+import { saveAcademicDetails } from "@/api/user";
+import type { User } from "@/auth/AuthProvider";
 
 /* ---------------- ZOD SCHEMA ---------------- */
 
@@ -72,6 +75,7 @@ function SuccessToast({ visible }: { visible: boolean }) {
 /* ---------------- MAIN COMPONENT ---------------- */
 
 export default function Onboarding() {
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [toastVisible, setToastVisible] = useState(false);
@@ -84,7 +88,14 @@ export default function Onboarding() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      firstName: user?.first_name || "",
+      lastName: user?.last_name || "",
+      email: user?.email || "",
+      phone: user?.mobile_number || "",
       country: "India",
+      district: user?.district || "",
+      state: user?.state || "",
+      schoolName: user?.school_name || "",
     },
   });
 
@@ -106,9 +117,35 @@ export default function Onboarding() {
 
   const prevStep = () => setStep(1);
 
-  const onSubmit = (data: FormData) => {
-    console.log("FINAL FORM DATA", data);
-    navigate("/dashboard");
+  const onSubmit = async (data: FormData) => {
+    try {
+      const payload = {
+        id: user?.id,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        school_name: data.schoolName,
+        district: data.district,
+        state: data.state,
+        country: data.country,
+        contact_number: data.phone,
+      };
+
+      const res = await saveAcademicDetails(payload);
+      console.log("Academic details saved", res);
+
+      // ✅ merge updated user
+      const updatedUser = {
+        ...user,
+        ...payload,
+        isOnboarded: true,
+      };
+
+      setUser(updatedUser as User);
+
+      navigate("/");
+    } catch (err) {
+      console.error("Onboarding failed", err);
+    }
   };
 
   return (
@@ -174,6 +211,7 @@ export default function Onboarding() {
                 <input
                   className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
                   {...register("email")}
+                  readOnly
                   placeholder="alex@gmail.com"
                 />
               </Field>

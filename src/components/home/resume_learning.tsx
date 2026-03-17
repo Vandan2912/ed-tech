@@ -37,7 +37,7 @@ export function ResumeLearning() {
             </div>
           </div>
         </div>
-        <button className="bg-white px-5 py-2.5 rounded-[14px] shadow flex items-center gap-2 transition-transform hover:-translate-y-0.5 text-[#1C398E] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
+        <button className="bg-white px-5 py-2.5 rounded-[14px] flex items-center gap-2 transition-transform hover:-translate-y-0.5 text-[#1C398E] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
           <Play size={16} className="fill-blue-900" /> RESUME
         </button>
       </div>
