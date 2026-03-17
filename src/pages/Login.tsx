@@ -7,10 +7,16 @@ import { z } from "zod";
 import Forgot from "@/components/Login/forgot";
 import ForgotOtp from "@/components/Login/forgot_otp";
 import CreateNewPassword from "@/components/Login/new_password";
+import { googleAuth } from "@/api/auth";
+import { useAuth } from "@/auth/useAuth";
+import { useNavigate } from "react-router-dom";
 
 type Role = "student" | "teacher";
 
 export default function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const [role, setRole] = useState<Role>("student");
   const [stage, setStage] = useState({
     forgot: false,
@@ -20,22 +26,24 @@ export default function Login() {
 
   const googleLogin = useGoogleLogin({
     flow: "implicit",
+
     onSuccess: async (tokenResponse) => {
-      const res = await fetch(
-        `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokenResponse.access_token}`,
-      );
+      try {
+        console.log("googleLogin", tokenResponse);
+        const res = await googleAuth(tokenResponse.access_token, role);
 
-      const user = await res.json();
+        // save token in cookies using auth context
+        login(res.token);
 
-      console.log("User:", user);
-      console.log("Role:", role);
-      console.log("Token Response:", tokenResponse);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", tokenResponse.access_token);
-      localStorage.setItem("role", role);
+        // optional: save user
+        localStorage.setItem("user", JSON.stringify(res.user));
 
-      // send to backend later
+        navigate("/");
+      } catch (err) {
+        console.error("Google login failed", err);
+      }
     },
+
     onError: () => {
       console.log("Login Failed");
     },

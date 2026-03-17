@@ -9,4 +9,19 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+ server: {
+  proxy: {
+    "/api": {
+      target: "https://smartlearn-575p.onrender.com",
+      changeOrigin: true,
+      secure: false,
+      rewrite: (path) => path.replace(/^\/api/, ""),
+      configure: (proxy) => {
+        proxy.on("proxyReq", (proxyReq, req) => {
+          console.log("Proxying:", req);
+        });
+      },
+    },
+  },
+},
 });
