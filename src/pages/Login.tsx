@@ -41,12 +41,9 @@ export default function Login() {
         const isNewUser = res.isNewUser;
         const openOnBoarding = isNewUser ? true : !res.user?.is_onboarded;
 
-        console.log("openOnBoarding", openOnBoarding, res);
         if (openOnBoarding) {
-          console.log("openOnBoarding. 11111");
           navigate("/onboarding");
         } else {
-          console.log("openOnBoarding  2222222");
           navigate("/");
         }
       } catch (err) {
@@ -57,7 +54,7 @@ export default function Login() {
     },
 
     onError: () => {
-      console.log("Login Failed");
+      console.error("Login Failed");
     },
   });
 

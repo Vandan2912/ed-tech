@@ -130,8 +130,7 @@ export default function Onboarding() {
         contact_number: data.phone,
       };
 
-      const res = await saveAcademicDetails(payload);
-      console.log("Academic details saved", res);
+      await saveAcademicDetails(payload);
 
       // ✅ merge updated user
       const updatedUser = {
