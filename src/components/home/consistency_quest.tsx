@@ -51,20 +51,23 @@ export function ConsistencyQuest() {
   ];
 
   return (
-    <section className="px-8 py-16 relative">
+    <section className="px-6 py-16 relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-white rounded-[2rem] p-10 lg:p-16 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col lg:flex-row gap-12 items-center justify-between">
+        className="bg-white rounded-[2rem] flex flex-col lg:flex-row gap-12 items-center justify-between p-8 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50/50 rounded-full blur-3xl -mr-32 -mt-32"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl -ml-32 -mb-32"></div>
+
         <div className="space-y-6 flex-1">
           <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-full px-4 py-1.5 text-xs  text-[#F54900] text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase">
             <Zap size={12} fill="currentColor" />
             <span>Mastery Quest</span>
           </div>
 
-          <h2 className="text-[#101828] text-3xl not-italic font-black leading-[37.5px] tracking-[-0.354px]">
-            The 30-Day <span className="text-[#FF6900]">Consistency</span> Quest
+          <h2 className="text-3xl font-black text-gray-900 tracking-tight leading-tight">
+            The 30-Day <span className="text-orange-500">Consistency</span> Quest
           </h2>
 
           <p className="max-w-md text-[#6A7282] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
@@ -73,8 +76,8 @@ export function ConsistencyQuest() {
             <span className="font-bold text-[#F54900]">5,000 XP</span>.
           </p>
 
-          <div className="flex items-center gap-6 pt-4">
-            <button className="bg-gray-900 hover:bg-black px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-white text-center text-xs not-italic font-bold leading-4">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <button className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-2xl font-bold text-xs hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-100 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
               Join Challenge <ChevronRight size={16} />
             </button>
 
@@ -104,7 +107,7 @@ export function ConsistencyQuest() {
         </div>
 
         <div className="shrink-0 md:min-w-[40%] md:w-auto w-full">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full lg:w-auto">
             {subjects.map((sub, idx) => (
               <motion.div
                 key={idx}

@@ -15,15 +15,13 @@ const data = [
 
 export function CognitiveLoad() {
   return (
-    <section className="px-8 py-20 relative">
+    <section className="px-6 py-20 relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-[#111827] rounded-[2rem] p-10 lg:p-16 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col lg:flex-row gap-16 items-center justify-between relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-95 h-95 bg-[#155DFC33] rounded-full blur-[120px] "></div>
-        </div>
+        className="justify-between bg-gray-900 rounded-[40px] p-6 md:p-10 flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full"></div>
 
         <div className="lg:w-1/2 relative z-10 flex flex-col items-start gap-4">
           <div className="inline-flex items-center gap-2 bg-[#2B7FFF1A] rounded-full px-4 py-1.5 text-xs uppercase text-[#51A2FF] text-[10px] not-italic font-bold leading-3.75 tracking-[0.117px]">
@@ -31,7 +29,7 @@ export function CognitiveLoad() {
             <span>COGNITIVE TRACKING</span>
           </div>
 
-          <h2 className="text-white text-3xl not-italic font-bold leading-[37.5px] tracking-[0.396px]">
+          <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight">
             Understand Your <br />
             <span className="text-[#51A2FF]">Cognitive Load</span>
           </h2>
@@ -58,7 +56,7 @@ export function CognitiveLoad() {
                 STUDENTS
               </div>
             </div>
-            <button className="bg-[#155DFC] px-8 py-4 transition-transform flex items-center gap-2 shadow-[0_10px_15px_-3px_rgba(28,57,142,0.20),0_4px_6px_-4px_rgba(28,57,142,0.20)] rounded-2xl text-white text-center text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase">
+            <button className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-blue-900/20 leading-normal">
               VIEW ANALYTICS <ChevronRight size={18} />
             </button>
           </div>

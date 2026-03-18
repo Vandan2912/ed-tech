@@ -8,31 +8,29 @@ export function Hero() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-[#1C398E] rounded-3xl py-8 px-12 text-white relative overflow-hidden flex flex-col lg:flex-row items-center justify-between">
+        className="bg-[#1C398E] rounded-3xl text-white relative overflow-hidden flex flex-col lg:flex-row items-center justify-between p-6 md:py-8 md:px-12 shadow-xl shadow-blue-100/50">
         {/* Background Patterns */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-40 -left-40 w-96 h-96 bg-[#51A2FF1A] rounded-full blur-3xl"></div>
-          <div className="absolute bottom-40 -right-40 w-96 h-96 bg-[#FFFFFF0D] rounded-full blur-3xl"></div>
-        </div>
+        <div className="absolute top-0 right-0 -mr-12 -mt-12 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-12 -mb-12 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl"></div>
 
         <div className="lg:w-1/2 relative z-10 flex flex-col items-start gap-5">
-          <div className="w-fit relative bg-white/10 rounded-full outline-1 -outline-offset-1 outline-white/20 flex gap-2 items-center py-1 px-4">
+          <div className="w-fit relative bg-white/10 rounded-full outline-1 -outline-offset-1 outline-white/20 flex gap-2 items-center px-3 py-1 backdrop-blur-md border border-white/20 uppercase tracking-wider">
             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-            <div className="justify-start text-white text-xs font-bold uppercase leading-4 tracking-wide">
+            <div className="justify-start text-white text-[11px]  font-bold uppercase leading-4 tracking-wide">
               Enrollment Open for 2026
             </div>
           </div>
 
-          <h1 className="text-white text-[42px] not-italic font-black leading-[46.2px] tracking-[-0.681px]">
+          <h1 className="text-white not-italic text-3xl md:text-4xl lg:text-[42px] font-black leading-[1.1] tracking-tight">
             Unlock Your Potential <br />
             with <span className="text-[#BEDBFF]">AI Intelligence</span>
           </h1>
 
-          <p className="text-[#EFF6FF] text-base not-italic font-normal leading-6.5 tracking-[-0.312px] pr-16">
+          <p className="not-italic font-normal tracking-[-0.312px] pr-16 text-sm md:text-base text-blue-50 max-w-md leading-relaxed">
             Join 50,000+ students mastering subjects with personalized paths and cognitive pressure analytics.
           </p>
 
-          <div className="flex items-center gap-6 pt-4">
+          <div className="flex flex-wrap items-center gap-6 pt-2">
             <button className="bg-white hover:bg-gray-50 px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-[#1C398E] text-center text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
               Enroll Now
             </button>
@@ -54,7 +52,7 @@ export function Hero() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="lg:w-70 bg-blue-800/30 backdrop-blur-md border border-blue-700/50 rounded-3xl p-5 relative z-10 mt-12 lg:mt-0 shadow-2xl hover:bg-white/10 transition-colors flex flex-col gap-4">
+          className=" hidden md:flex lg:w-70 bg-blue-800/30 backdrop-blur-md border border-blue-700/50 rounded-3xl p-5 relative z-10 mt-12 lg:mt-0 shadow-2xl hover:bg-white/10 transition-colors flex-col gap-4">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-3">
               <div className="bg-[#51A2FF33] rounded-[10px] w-8 h-8 flex justify-center items-center">

@@ -3,29 +3,27 @@ import { ChevronRight, Trophy, Award, Medal } from "lucide-react";
 
 export function Progress() {
   return (
-    <section className="px-8 pb-16 relative overflow-hidden bg-gray-50/50">
-      <div className="lg:flex-row gap-16 max-w-7xl mx-auto relative z-10 flex w-full flex-col items-start border border-blue-50 shadow-[0_25px_50px_-12px_rgba(239,246,255,0.50)] p-12.25 rounded-[40px] border-solid">
-        <div className="lg:w-1/3 text-left space-y-6">
-          <h2 className="md:text-xl text-[#101828] text-lg not-italic font-bold leading-7 tracking-[-0.449px]">
-            Your Progress
-          </h2>
-          <p className="text-[#364153] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
-            You are doing better than <span className="text-gray-900 font-bold">85%</span> of students in your grade.
-          </p>
-          <a
-            href="#"
-            className="inline-flex items-center gap-1 text-[#1C398E] text-center text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
-            See Learning Path <ChevronRight size={18} />
-          </a>
-        </div>
+    <section className="px-6 pb-16 relative overflow-hidden bg-gray-50/50">
+      <div className="lg:flex-row gap-16 max-w-7xl mx-auto relative z-10 flex w-full flex-col items-start border border-blue-50 rounded-[40px] border-solid bg-white p-8 md:p-12 shadow-2xl shadow-blue-50/50 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="space-y-4">
+            <h3 id="progress-snapshot-heading" className="text-xl font-bold text-gray-900">
+              Your Progress
+            </h3>
+            <p className="text-gray-700 text-sm leading-relaxed">
+              You are doing better than 85% of students in your grade.
+            </p>
+            <button className="text-blue-900 font-bold text-sm flex items-center gap-1 focus:underline">
+              See Learning Path <ChevronRight size={16} className="text-blue-900" />
+            </button>
+          </div>
 
-        <div className="lg:w-2/3 flex flex-col md:flex-row gap-6">
           {/* Current Level Card */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="flex-1 bg-blue-100/50 rounded-[2rem] p-6 relative overflow-hidden">
+            className="relative overflow-hidden bg-blue-100 p-6 rounded-3xl flex flex-col gap-4">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#1C398E] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
                 CURRENT LEVEL
@@ -51,7 +49,7 @@ export function Progress() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="flex-1 bg-purple-100/50 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-start">
+            className="bg-purple-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-start">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#59168B] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
                 CERTIFICATES
@@ -70,7 +68,7 @@ export function Progress() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="flex-1 bg-orange-100/50 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-start">
+            className="flex-1 bg-orange-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-start">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#7E2A0C] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
                 GLOBAL RANK

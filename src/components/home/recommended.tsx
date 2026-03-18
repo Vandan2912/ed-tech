@@ -28,21 +28,13 @@ export function Recommended() {
   ];
 
   return (
-    <section className="px-8 pb-16">
+    <section className="px-6 pb-16">
       <div className="flex justify-between items-end mb-10">
         <div>
-          <h2 className="mb-2 text-[#101828] text-3xl not-italic font-bold leading-9 tracking-[0.396px]">
-            Recommended for You
-          </h2>
-          <p className="text-[#6A7282] text-base not-italic font-normal leading-6 tracking-[-0.312px]">
-            Based on your 10th grade curriculum
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Recommended for You</h2>
+          <p className="text-gray-500">Based on your 10th grade curriculum</p>
         </div>
-        <a
-          href="#"
-          className="hidden sm:inline-flex items-center gap-1 text-[#155DFC] text-center text-base not-italic font-bold leading-6 tracking-[-0.312px]">
-          View All Subjects
-        </a>
+        <button className="text-blue-600 font-bold hover:underline">View All Subjects</button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -53,10 +45,10 @@ export function Recommended() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: idx * 0.1, type: "spring", stiffness: 100 }}
-            className="bg-white rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col justify-between h-full gap-8">
+            className="bg-white rounded-[2rem] flex flex-col justify-between h-full gap-8 group  border border-gray-200 p-8 transition-all hover:shadow-xl hover:shadow-gray-200/20 focus-within:ring-4 focus-within:ring-blue-100">
             <div className="flex justify-between items-start">
               <div className={`w-12 h-12 rounded-2xl ${rec.color} flex items-center justify-center`}>{rec.icon}</div>
-              <div className="bg-gray-50 px-3 py-1 rounded-full text-xs border border-gray-100 text-[#101828] text-[11px] not-italic font-black leading-[16.5px] tracking-[1.164px] uppercase">
+              <div className="bg-gray-100 text-gray-900 text-[11px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full border border-gray-200">
                 {rec.modules} MODULES
               </div>
             </div>

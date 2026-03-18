@@ -49,16 +49,12 @@ export function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ delay: idx * 0.1, duration: 0.5 }}
-            className="bg-white rounded-[2rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 text-left hover:shadow-xl transition-shadow">
+            className="group p-8 rounded-[32px] bg-white border border-gray-100 hover:border-blue-100 hover:shadow-2xl hover:shadow-blue-50 transition-all duration-300 text-start">
             <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center mb-8`}>
               {feature.icon}
             </div>
-            <h3 className="mb-4 text-[#101828] text-xl not-italic font-bold leading-7 tracking-[-0.449px]">
-              {feature.title}
-            </h3>
-            <p className="text-[#364153] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
-              {feature.desc}
-            </p>
+            <h3 className="text-xl font-bold text-gray-900 mb-3"> {feature.title}</h3>
+            <p className="text-sm text-gray-700 leading-relaxed">{feature.desc}</p>
           </motion.div>
         ))}
       </div>

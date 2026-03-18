@@ -2,12 +2,12 @@ import { Brain } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-100 bg-white pt-24 pb-12 px-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+    <footer className="bg-white border-t border-gray-100 py-12 mt-20">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="space-y-6 md:col-span-1">
           <div className="flex items-center gap-2">
-            <div className="bg-blue-600 p-1.5 rounded-lg text-white">
-              <Brain size={20} />
+            <div className="">
+              <Brain size={20} className="text-blue-600" />
             </div>
             <span className="font-bold text-xl text-gray-900 tracking-tight">
               SmartLearn <span className="text-blue-600 text-sm">AI</span>
@@ -19,8 +19,8 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="font-bold text-gray-900 mb-6">Subjects</h4>
-          <ul className="space-y-4 text-sm font-medium text-gray-500">
+          <h4 className="font-bold text-gray-900 mb-4">Subjects</h4>
+          <ul className="space-y-2 text-sm text-gray-500">
             <li>
               <a href="#" className="hover:text-blue-600 transition-colors">
                 Science & Tech
@@ -46,7 +46,7 @@ export function Footer() {
 
         <div>
           <h4 className="font-bold text-gray-900 mb-6">Platform</h4>
-          <ul className="space-y-4 text-sm font-medium text-gray-500">
+          <ul className="space-y-2 text-sm text-gray-500">
             <li>
               <a href="#" className="hover:text-blue-600 transition-colors">
                 Leaderboard
@@ -72,7 +72,7 @@ export function Footer() {
 
         <div>
           <h4 className="font-bold text-gray-900 mb-6">Support</h4>
-          <ul className="space-y-4 text-sm font-medium text-gray-500">
+          <ul className="space-y-2 text-sm text-gray-500">
             <li>
               <a href="#" className="hover:text-blue-600 transition-colors">
                 Help Center
