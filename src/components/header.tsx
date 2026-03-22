@@ -25,6 +25,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
+import { CoursesDropdown } from "./courses_drawer";
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -58,17 +59,8 @@ export function Header() {
             }>
             HOME
           </NavLink>
-          <NavLink
-            to="/courses"
-            className={({ isActive }) =>
-              `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] font-semibold bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)]"
-                  : "hover:text-[#1C398E]"
-              }`
-            }>
-            COURSES
-          </NavLink>
+          <CoursesDropdown />
+
           <NavLink
             to="/ranks"
             className={({ isActive }) =>
