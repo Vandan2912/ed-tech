@@ -9,13 +9,20 @@ import {
 
 import { BarChart3, Atom, FlaskConical, ChevronDown, Layers, Dna, Play, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function CoursesDropdown() {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const isActive = window.location.pathname.startsWith("/courses");
+
   return (
     <DropdownMenu onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <div className="flex gap-1 items-center px-3.75 py-1.5 rounded-full cursor-pointer hover:text-[#1C398E]">
+        <div
+          className={`flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+            isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+          }`}>
           COURSES
           <ChevronDown size={12} className={`ms-1 ${open ? "rotate-180" : ""} transition-transform`} />
         </div>
@@ -24,7 +31,11 @@ export function CoursesDropdown() {
       <DropdownMenuContent
         align="center"
         className="w-65 p-3 shadow-xl border border-gray-100 rounded-3xl border-solid space-y-1">
-        <div className="text-[#155DFC] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-4 py-2.5 rounded-full text-center cursor-pointer text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase">
+        <div
+          className="text-[#155DFC] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-4 py-2.5 rounded-full text-center cursor-pointer text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase"
+          onClick={() => {
+            navigate("/courses");
+          }}>
           <Layers size={16} className="text-[#155DFC]" />
           EXPLORE ALL SUBJECTS
         </div>

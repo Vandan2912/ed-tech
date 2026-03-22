@@ -52,9 +52,7 @@ export function Header() {
             to="/"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10 text-center "
-                  : "hover:text-[#1C398E]"
+                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
               }`
             }>
             HOME

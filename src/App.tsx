@@ -10,6 +10,10 @@ import Onboarding from "./pages/OnBoarding";
 import Home from "./pages/Home";
 import { AuthProvider } from "./auth/AuthProvider";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import Courses from "./pages/Courses";
+import Course from "./pages/Course";
+import Topic from "./pages/Topic";
+import Quiz from "./pages/Quiz";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -28,7 +32,7 @@ function App() {
               <Route
                 path="/onboarding"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute header={false} footer={false}>
                     <Onboarding />
                   </ProtectedRoute>
                 }
@@ -40,6 +44,38 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Home />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/courses"
+                element={
+                  <ProtectedRoute>
+                    <Courses />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/courses/:name"
+                element={
+                  <ProtectedRoute>
+                    <Course />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/courses/:courseSlug/:topicSlug"
+                element={
+                  <ProtectedRoute>
+                    <Topic />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/courses/:courseSlug/:topicSlug/quiz"
+                element={
+                  <ProtectedRoute>
+                    <Quiz />
                   </ProtectedRoute>
                 }
               />

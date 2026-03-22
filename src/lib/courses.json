@@ -1,0 +1,618 @@
+[
+  {
+    "name": "Maths",
+    "topics_count": 2,
+    "icon": "BarChart3",
+    "color": "bg-blue-600",
+    "slug": "maths",
+    "topics": [
+      {
+        "name": "Algebra Basics",
+        "time": "10 mins",
+        "level": "Medium",
+        "slug": "algebra-basics",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "Geometry Basics",
+        "time": "15 mins",
+        "level": "Easy",
+        "slug": "geometry-basics",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Physics",
+    "topics_count": 2,
+    "icon": "Atom",
+    "color": "bg-indigo-600",
+    "slug": "physics",
+    "topics": [
+      {
+        "name": "Newton's Laws",
+        "time": "12 mins",
+        "level": "Medium",
+        "slug": "newtons-laws",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "Work and Energy",
+        "time": "18 mins",
+        "level": "Hard",
+        "slug": "work-and-energy",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Chemistry",
+    "topics_count": 2,
+    "icon": "FlaskConical",
+    "color": "bg-emerald-600",
+    "slug": "chemistry",
+    "topics": [
+      {
+        "name": "Atomic Structure",
+        "time": "8 mins",
+        "level": "Easy",
+        "slug": "atomic-structure",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "Periodic Table",
+        "time": "20 mins",
+        "level": "Medium",
+        "slug": "periodic-table",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Biology",
+    "topics_count": 2,
+    "icon": "Dna",
+    "color": "bg-rose-600",
+    "slug": "biology",
+    "topics": [
+      {
+        "name": "Cell Structure",
+        "time": "10 mins",
+        "level": "Easy",
+        "slug": "cell-structure",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "Genetics Basics",
+        "time": "25 mins",
+        "level": "Hard",
+        "slug": "genetics-basics",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "History",
+    "topics_count": 2,
+    "icon": "Layers",
+    "color": "bg-orange-600",
+    "slug": "history",
+    "topics": [
+      {
+        "name": "Ancient Civilizations",
+        "time": "15 mins",
+        "level": "Medium",
+        "slug": "ancient-civilizations",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "World Wars Overview",
+        "time": "30 mins",
+        "level": "Hard",
+        "slug": "world-wars-overview",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Geography",
+    "topics_count": 2,
+    "icon": "Globe",
+    "color": "bg-teal-600",
+    "slug": "geography",
+    "topics": [
+      {
+        "name": "Map Reading",
+        "time": "10 mins",
+        "level": "Easy",
+        "slug": "map-reading",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "Climate Zones",
+        "time": "15 mins",
+        "level": "Medium",
+        "slug": "climate-zones",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Civics",
+    "topics_count": 2,
+    "icon": "Users",
+    "color": "bg-purple-600",
+    "slug": "civics",
+    "topics": [
+      {
+        "name": "Government Systems",
+        "time": "12 mins",
+        "level": "Medium",
+        "slug": "government-systems",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "Citizenship Rights",
+        "time": "18 mins",
+        "level": "Hard",
+        "slug": "citizenship-rights",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Economics",
+    "topics_count": 2,
+    "icon": "ChartPie",
+    "color": "bg-amber-600",
+    "slug": "economics",
+    "topics": [
+      {
+        "name": "Supply and Demand",
+        "time": "15 mins",
+        "level": "Medium",
+        "slug": "supply-and-demand",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      },
+      {
+        "name": "Market Structures",
+        "time": "20 mins",
+        "level": "Hard",
+        "slug": "market-structures",
+        "videoUrl": "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1",
+        "quiz": [
+          {
+            "question": "What is the primary goal of this topic?",
+            "options": ["Memorization", "Understanding", "Application", "Analysis"],
+            "answer": "Understanding"
+          },
+          {
+            "question": "Which skill is most important?",
+            "options": ["Reading", "Logic", "Memory", "Speed"],
+            "answer": "Logic"
+          },
+          {
+            "question": "How would you rate your confidence in this topic?",
+            "options": ["Not Confident", "Somewhat Confident", "Confident", "Very Confident"],
+            "answer": "Confident"
+          },
+          {
+            "question": "What is the best way to practice this topic?",
+            "options": ["Watching Videos", "Doing Exercises", "Reading Textbooks", "Group Study"],
+            "answer": "Doing Exercises"
+          },
+          {
+            "question": "How often should you review this topic?",
+            "options": ["Daily", "Weekly", "Monthly", "Only Before Exams"],
+            "answer": "Weekly"
+          }
+        ]
+      }
+    ]
+  }
+]

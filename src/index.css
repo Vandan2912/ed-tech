@@ -21,7 +21,8 @@
   --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
+  font-family: var(--sans);
+  line-height: 1.45; 
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -114,18 +115,6 @@
     filter: invert(1) brightness(2);
   }
 }
-/* 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-} */
 
 body {
   margin: 0;
@@ -238,4 +227,7 @@ code {
 
 .home section {
   margin: 0;
+}
+html {
+  font-size: 16px;
 }
