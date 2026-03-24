@@ -5,6 +5,8 @@ export const saveAcademicDetails = async (data:  {
     first_name: string;
     last_name: string;
     school_name: string;
+    class_level?: string;
+    pincode?: string;
     district: string;
     state: string;
     country: string;

@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
 import { saveAcademicDetails } from "@/api/user";
 import type { User } from "@/auth/AuthProvider";
-import { Plus } from "lucide-react";
+import CountryCodeSelect from "@/components/CountryCodeSelect";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 /* ---------------- ZOD SCHEMA ---------------- */
 
@@ -15,14 +16,23 @@ const step1Schema = z.object({
   lastName: z.string().min(1, "Last name required"),
   email: z.string().email("Invalid email"),
   countryCode: z.string().min(1),
-  phone: z.string().min(10, "Phone must be 10 digits").max(10, "Phone must be 10 digits"),
+  phone: z
+    .string()
+    .min(10, "Phone must be 10 digits")
+    .max(10, "Phone must be 10 digits"),
 });
 
 const step2Schema = z.object({
   schoolName: z.string().min(1, "School name required"),
-  district: z.string().min(1, "District required"),
+  classLevel: z.string().min(1, "Class required"),
+  country: z.string().min(1, "Country required"),
   state: z.string().min(1, "State required"),
-  country: z.string(),
+  pinCode: z
+    .string()
+    .min(6, "Invalid PIN")
+    .max(6, "Invalid PIN")
+    .regex(/^\d+$/, "Digits only"),
+  district: z.string().min(1, "District required"),
 });
 
 const schema = step1Schema.merge(step2Schema);
@@ -41,7 +51,8 @@ function SuccessToast({ visible }: { visible: boolean }) {
         transitionProperty: "transform, opacity",
         transitionDuration: "400ms",
         transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-      }}>
+      }}
+    >
       <div
         className="flex items-center gap-3 px-5 py-4 rounded-2xl"
         style={{
@@ -49,9 +60,16 @@ function SuccessToast({ visible }: { visible: boolean }) {
           boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
           minWidth: 280,
           whiteSpace: "nowrap",
-        }}>
+        }}
+      >
         {/* Checkmark icon */}
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -66,7 +84,8 @@ function SuccessToast({ visible }: { visible: boolean }) {
             fontSize: 14,
             fontWeight: 700,
             lineHeight: "20px",
-          }}>
+          }}
+        >
           Successfully authenticated with Google!
         </span>
       </div>
@@ -86,6 +105,8 @@ export default function Onboarding() {
     register,
     handleSubmit,
     trigger,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -99,8 +120,33 @@ export default function Onboarding() {
       district: user?.district || "",
       state: user?.state || "",
       schoolName: user?.school_name || "",
+      classLevel: "",
+      pinCode: "",
     },
   });
+
+  const countryCodeValue = watch("countryCode");
+  const countryValue = watch("country");
+  const pinCodeValue = watch("pinCode");
+  const [loadingPin, setLoadingPin] = useState(false);
+
+  useEffect(() => {
+    if (pinCodeValue?.length === 6 && countryValue === "India") {
+      setLoadingPin(true);
+      fetch(`https://api.postalpincode.in/pincode/${pinCodeValue}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data[0] && data[0].Status === "Success") {
+            const state = data[0].PostOffice[0].State;
+            const district = data[0].PostOffice[0].District;
+            setValue("state", state, { shouldValidate: true });
+            setValue("district", district, { shouldValidate: true });
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoadingPin(false));
+    }
+  }, [pinCodeValue, countryValue, setValue]);
 
   useEffect(() => {
     const show = setTimeout(() => setToastVisible(true), 300);
@@ -129,6 +175,8 @@ export default function Onboarding() {
         first_name: data.firstName,
         last_name: data.lastName,
         school_name: data.schoolName,
+        class_level: data.classLevel,
+        pincode: data.pinCode,
         district: data.district,
         state: data.state,
         country: data.country,
@@ -152,20 +200,39 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="onboarding min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+    <div className="onboarding min-h-screen flex items-center justify-center bg-[#F9FAFB] p-4">
       <SuccessToast visible={toastVisible} />
 
-      <div className="relative w-full mx-4 flex flex-col overflow-hidden max-w-170 bg-white rounded-[40px] shadow-xl border border-gray-100">
-        {/* Progress bar */}
-
-        <div className="h-1.5 bg-gray-100 rounded-t-[40px]">
-          <div className="h-1.5 bg-[#1C398E] transition-all" style={{ width: step === 1 ? "50%" : "100%" }} />
+      <div className="relative w-full mx-4 flex flex-col max-w-170 bg-white rounded-[40px] shadow-xl border border-gray-100">
+        {/* Progress bar container (absolute to clip corners without `overflow-hidden` on the main card) */}
+        <div className="absolute inset-0 rounded-[40px] overflow-hidden pointer-events-none">
+          <div className="h-1.5 w-full bg-gray-100">
+            <div
+              className="h-1.5 bg-[#1C398E] transition-all flex items-center justify-end pr-1"
+              style={{ width: step === 1 ? "50%" : "100%" }}
+            >
+              {/* Optional glowing effect for the tip of the progress bar */}
+              <div className="w-4 h-full bg-blue-400 blur-sm opacity-50" />
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-12 flex flex-col">
+        {/* Spacer to offset the absolute progress bar */}
+        <div className="h-1.5 w-full shrink-0" />
+
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="p-12 flex flex-col relative z-10"
+        >
           {/* Step badge */}
           <div className="inline-flex w-fit items-center gap-2 px-3 py-1 bg-blue-50 rounded-full text-[10px] font-black text-blue-900 uppercase tracking-widest mb-4">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 d="M9.5 10.5V9.5C9.5 8.96957 9.28929 8.46086 8.91421 8.08579C8.53914 7.71071 8.03043 7.5 7.5 7.5H4.5C3.96957 7.5 3.46086 7.71071 3.08579 8.08579C2.71071 8.46086 2.5 8.96957 2.5 9.5V10.5"
                 stroke="#1C398E"
@@ -186,7 +253,9 @@ export default function Onboarding() {
             {step === 1 ? "Personal Information" : "Academic Details"}
           </h2>
 
-          <p className="text-gray-500 font-medium">Please provide accurate details to personalize your experience.</p>
+          <p className="text-gray-500 font-medium">
+            Please provide accurate details to personalize your experience.
+          </p>
 
           {/* ---------------- STEP 1 ---------------- */}
 
@@ -210,7 +279,10 @@ export default function Onboarding() {
                 </Field>
               </div>
 
-              <Field label="Email Address (Google)" error={errors.email?.message}>
+              <Field
+                label="Email Address (Google)"
+                error={errors.email?.message}
+              >
                 <input
                   className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
                   {...register("email")}
@@ -221,28 +293,18 @@ export default function Onboarding() {
 
               <Field label="Mobile Number" error={errors.phone?.message}>
                 <div className="flex gap-2">
-                  {/* Country Code */}
-                  <div className="flex items-center px-3 bg-gray-100 border border-gray-100 rounded-2xl font-bold text-gray-900">
-                    <span className="mr-1 text-gray-500">
-                      <Plus className="size-4" />
-                    </span>
-                    <input
-                      className="w-12 bg-transparent outline-none"
-                      {...register("countryCode")}
-                      maxLength={3}
-                      autoComplete="off"
-                      autoCorrect="off"
-                      autoCapitalize="off"
-                      spellCheck={false}
-                      inputMode="numeric"
-                    />
-                  </div>
+                  {/* Country Code Select */}
+                  <CountryCodeSelect
+                    value={countryCodeValue}
+                    onChange={(code) => setValue("countryCode", code)}
+                  />
 
                   {/* Phone Number */}
                   <input
                     className="flex-1 px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
                     {...register("phone")}
                     placeholder="9876543210"
+                    inputMode="numeric"
                   />
                 </div>
               </Field>
@@ -250,7 +312,8 @@ export default function Onboarding() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]">
+                className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]"
+              >
                 Next Step
               </button>
             </div>
@@ -261,36 +324,144 @@ export default function Onboarding() {
           {step === 2 && (
             <div className="flex flex-col gap-6 mt-10">
               <Field label="School Name" error={errors.schoolName?.message}>
-                <input
-                  className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
-                  {...register("schoolName")}
-                  placeholder="e.g Delhi Public School"
-                />
+                <div className="relative">
+                  <select
+                    {...register("schoolName")}
+                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
+                    defaultValue=""
+                  >
+                    <option value="" disabled hidden>
+                      Select your school
+                    </option>
+                    <option value="Delhi Public School">
+                      Delhi Public School
+                    </option>
+                    <option value="Kendriya Vidyalaya">
+                      Kendriya Vidyalaya
+                    </option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <ChevronDown
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                    size={16}
+                  />
+                </div>
               </Field>
 
-              <div className="grid grid-cols-2 gap-6">
-                <Field label="District" error={errors.district?.message}>
-                  <input
-                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
-                    {...register("district")}
-                    placeholder="e.g Central Delhi"
+              <Field label="Class" error={errors.classLevel?.message}>
+                <div className="relative">
+                  <select
+                    {...register("classLevel")}
+                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
+                    defaultValue=""
+                  >
+                    <option value="" disabled hidden>
+                      Select your class
+                    </option>
+                    <option value="Class 9">Class 9</option>
+                    <option value="Class 10">Class 10</option>
+                    <option value="Class 11">Class 11</option>
+                    <option value="Class 12">Class 12</option>
+                  </select>
+                  <ChevronDown
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                    size={16}
                   />
-                </Field>
+                </div>
+              </Field>
 
-                <Field label="State" error={errors.state?.message}>
-                  <input
-                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
+              <Field label="Country" error={errors.country?.message}>
+                <div className="relative">
+                  <select
+                    {...register("country")}
+                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
+                    defaultValue=""
+                  >
+                    <option value="" disabled hidden>
+                      Select your country
+                    </option>
+                    <option value="India">India</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <ChevronDown
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                    size={16}
+                  />
+                </div>
+              </Field>
+
+              <Field label="State" error={errors.state?.message}>
+                <div className="relative">
+                  <select
                     {...register("state")}
-                    placeholder="e.g Delhi"
+                    className="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl focus:outline-none transition-all font-bold text-gray-500 appearance-none pointer-events-none"
+                    defaultValue=""
+                  >
+                    <option value="" disabled hidden>
+                      Select your state
+                    </option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                  </select>
+                  <ChevronDown
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                    size={16}
                   />
-                </Field>
-              </div>
+                </div>
+              </Field>
 
-              <Field label="Country">
+              <Field label="PIN Code" error={errors.pinCode?.message}>
+                <div className="relative">
+                  <input
+                    {...register("pinCode")}
+                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
+                    placeholder="e.g. 110001"
+                    maxLength={6}
+                    inputMode="numeric"
+                  />
+                  {loadingPin && (
+                    <Loader2
+                      className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 animate-spin"
+                      size={16}
+                    />
+                  )}
+                </div>
+              </Field>
+
+              <Field label="District" error={errors.district?.message}>
                 <input
-                  className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
-                  {...register("country")}
+                  {...register("district")}
+                  className="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl focus:outline-none transition-all font-bold text-gray-500 read-only:text-gray-400 read-only:bg-gray-100"
                   readOnly
+                  placeholder="Enter PIN code to auto-fill"
                 />
               </Field>
 
@@ -298,13 +469,15 @@ export default function Onboarding() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="flex-1 py-4 border-2 border-gray-100 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:border-gray-200 transition-all">
+                  className="flex-1 py-4 border-2 border-gray-100 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:border-gray-200 transition-all"
+                >
                   Back
                 </button>
 
                 <button
                   type="submit"
-                  className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]">
+                  className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]"
+                >
                   Complete Signup
                 </button>
               </div>
@@ -318,12 +491,24 @@ export default function Onboarding() {
 
 /* ---------------- FIELD COMPONENT ---------------- */
 
-function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
+function Field({
+  label,
+  children,
+  error,
+}: {
+  label: string;
+  children: React.ReactNode;
+  error?: string;
+}) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">{label}</label>
+      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+        {label}
+      </label>
       {children}
-      {error && <span className="text-red-500 text-xs font-semibold">{error}</span>}
+      {error && (
+        <span className="text-red-500 text-xs font-semibold">{error}</span>
+      )}
     </div>
   );
 }
