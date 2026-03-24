@@ -7,7 +7,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { BarChart3, Atom, FlaskConical, ChevronDown, Layers, Dna, Play, ChevronRight } from "lucide-react";
+import {
+  BarChart3,
+  Atom,
+  FlaskConical,
+  ChevronDown,
+  Layers,
+  Dna,
+  Play,
+  ChevronRight,
+} from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,25 +30,23 @@ export function CoursesDropdown() {
       <DropdownMenuTrigger asChild>
         <div
           className={`flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-            isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
-          }`}>
+            isActive
+              ? "text-[#1C398E] bg-white shadow-sm text-center "
+              : "hover:text-[#1C398E]"
+          }`}
+        >
           COURSES
-          <ChevronDown size={12} className={`ms-1 ${open ? "rotate-180" : ""} transition-transform`} />
+          <ChevronDown
+            size={12}
+            className={`ms-1 ${open ? "rotate-180" : ""} transition-transform`}
+          />
         </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         align="center"
-        className="w-65 p-3 shadow-xl border border-gray-100 rounded-3xl border-solid space-y-1">
-        <div
-          className="text-[#155DFC] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-4 py-2.5 rounded-full text-center cursor-pointer text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase"
-          onClick={() => {
-            navigate("/courses");
-          }}>
-          <Layers size={16} className="text-[#155DFC]" />
-          EXPLORE ALL SUBJECTS
-        </div>
-
+        className="w-65 p-3 shadow-xl border border-gray-100 rounded-3xl border-solid space-y-1"
+      >
         {/* Maths */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="flex items-center gap-3 rounded-xl px-3 py-2 focus:bg-gray-100 data-[state=open]:bg-gray-100 group">
@@ -52,7 +59,9 @@ export function CoursesDropdown() {
               LEARNING PATH
             </div>
             <div className="flex justify-between items-center mb-4 px-3">
-              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">Maths</div>
+              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">
+                Maths
+              </div>
               <div className="flex justify-center items-center px-2 py-1 rounded-[10px] bg-[#F9FAFB]">
                 <p className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[13.5px] tracking-[-0.283px] uppercase">
                   2 Modules
@@ -72,7 +81,8 @@ export function CoursesDropdown() {
                     Algebra Basics
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    18:30 <span>•</span> <span className="text-orange-500">MEDIUM</span>
+                    18:30 <span>•</span>{" "}
+                    <span className="text-orange-500">MEDIUM</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -91,7 +101,8 @@ export function CoursesDropdown() {
                     Trigonometry
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    22:10 <span>•</span> <span className="text-red-500">HARD</span>
+                    22:10 <span>•</span>{" "}
+                    <span className="text-red-500">HARD</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -114,7 +125,9 @@ export function CoursesDropdown() {
               LEARNING PATH
             </div>
             <div className="flex justify-between items-center mb-4 px-3">
-              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">Physics</div>
+              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">
+                Physics
+              </div>
               <div className="flex justify-center items-center px-2 py-1 rounded-[10px] bg-[#F9FAFB]">
                 <p className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[13.5px] tracking-[-0.283px] uppercase">
                   2 Modules
@@ -134,7 +147,8 @@ export function CoursesDropdown() {
                     Algebra Basics
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    18:30 <span>•</span> <span className="text-orange-500">MEDIUM</span>
+                    18:30 <span>•</span>{" "}
+                    <span className="text-orange-500">MEDIUM</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -153,7 +167,8 @@ export function CoursesDropdown() {
                     Trigonometry
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    22:10 <span>•</span> <span className="text-red-500">HARD</span>
+                    22:10 <span>•</span>{" "}
+                    <span className="text-red-500">HARD</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -176,7 +191,9 @@ export function CoursesDropdown() {
               LEARNING PATH
             </div>
             <div className="flex justify-between items-center mb-4 px-3">
-              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">Chemistry</div>
+              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">
+                Chemistry
+              </div>
               <div className="flex justify-center items-center px-2 py-1 rounded-[10px] bg-[#F9FAFB]">
                 <p className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[13.5px] tracking-[-0.283px] uppercase">
                   2 Modules
@@ -196,7 +213,8 @@ export function CoursesDropdown() {
                     Algebra Basics
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    18:30 <span>•</span> <span className="text-orange-500">MEDIUM</span>
+                    18:30 <span>•</span>{" "}
+                    <span className="text-orange-500">MEDIUM</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -215,7 +233,8 @@ export function CoursesDropdown() {
                     Trigonometry
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    22:10 <span>•</span> <span className="text-red-500">HARD</span>
+                    22:10 <span>•</span>{" "}
+                    <span className="text-red-500">HARD</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -228,7 +247,7 @@ export function CoursesDropdown() {
 
         {/* Biology */}
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="flex items-center gap-3 rounded-xl px-3 py-2 focus:bg-gray-100 data-[state=open]:bg-gray-100 group mb-0">
+          <DropdownMenuSubTrigger className="flex items-center gap-3 rounded-xl px-3 py-2 focus:bg-gray-100 data-[state=open]:bg-gray-100 group">
             <Dna size={16} className="group-hover:stroke-[#155DFC]" />
             Biology
           </DropdownMenuSubTrigger>
@@ -238,7 +257,9 @@ export function CoursesDropdown() {
               LEARNING PATH
             </div>
             <div className="flex justify-between items-center mb-4 px-3">
-              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">Biology</div>
+              <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px]">
+                Biology
+              </div>
               <div className="flex justify-center items-center px-2 py-1 rounded-[10px] bg-[#F9FAFB]">
                 <p className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[13.5px] tracking-[-0.283px] uppercase">
                   2 Modules
@@ -258,7 +279,8 @@ export function CoursesDropdown() {
                     Algebra Basics
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    18:30 <span>•</span> <span className="text-orange-500">MEDIUM</span>
+                    18:30 <span>•</span>{" "}
+                    <span className="text-orange-500">MEDIUM</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -277,7 +299,8 @@ export function CoursesDropdown() {
                     Trigonometry
                   </div>
                   <div className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[12.857px] tracking-[0.617px] uppercase flex items-center gap-2">
-                    22:10 <span>•</span> <span className="text-red-500">HARD</span>
+                    22:10 <span>•</span>{" "}
+                    <span className="text-red-500">HARD</span>
                   </div>
                 </div>
                 <div className="w-6 h-6 justify-center items-center shadow-[0_10px_15px_-3px_#BEDBFF,0_4px_6px_-4px_#BEDBFF] px-1.5 py-0 rounded-full bg-[#155DFC] text-white hidden group-hover:flex ml-auto">
@@ -287,6 +310,16 @@ export function CoursesDropdown() {
             </div>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+
+        <div
+          className="text-[#155DFC] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-4 py-2.5 rounded-full text-center cursor-pointer text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase"
+          onClick={() => {
+            navigate("/courses");
+          }}
+        >
+          <Layers size={16} className="text-[#155DFC]" />
+          EXPLORE ALL SUBJECTS
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
