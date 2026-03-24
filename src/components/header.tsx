@@ -21,13 +21,18 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useState } from "react";
 import { CoursesDropdown } from "./courses_drawer";
 
 export function Header() {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [imgError, setImgError] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -35,7 +40,12 @@ export function Header() {
   return (
     <header className="border-b border-gray-100 bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-4 md:px-8">
-        <div className="flex items-center gap-2.5">
+        <div
+          className="flex items-center gap-2.5 cursor-pointer"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
           <div className="bg-[#1C398E] p-2 rounded-xl text-white">
             <Brain size={20} />
           </div>
@@ -52,9 +62,12 @@ export function Header() {
             to="/"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
               }`
-            }>
+            }
+          >
             HOME
           </NavLink>
           <CoursesDropdown />
@@ -63,36 +76,48 @@ export function Header() {
             to="/ranks"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
               }`
-            }>
+            }
+          >
             RANKS
           </NavLink>
           <NavLink
             to="/stats"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
               }`
-            }>
+            }
+          >
             STATS
           </NavLink>
           <NavLink
             to="/progress"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
               }`
-            }>
+            }
+          >
             PROGRESS
           </NavLink>
           <NavLink
             to="/study"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
               }`
-            }>
+            }
+          >
             <Users size={16} className="me-1.75" /> STUDY
           </NavLink>
         </nav>
@@ -118,7 +143,9 @@ export function Header() {
               <button className="w-8 h-8 flex-col shrink-0 shadow-[0_0_0_2px_#E5E7EB,0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] rounded-full border-2 border-solid border-white flex justify-center items-center group focus-visible:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 {user?.profile_picture ? (
                   <img
-                    src={!imgError ? user.profile_picture : "/default-avatar.png"}
+                    src={
+                      !imgError ? user.profile_picture : "/default-avatar.png"
+                    }
                     onError={() => setImgError(true)}
                     alt="profile"
                     className="w-8 h-8 rounded-full"
@@ -132,7 +159,9 @@ export function Header() {
             <PopoverContent className="w-60 bg-white rounded-3xl shadow-2xl border border-gray-100 py-3 px-0 overflow-hidden z-50">
               <div className="px-5 py-3 border-b border-gray-50 mb-2 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Active {user?.role}</p>
+                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                    Active {user?.role}
+                  </p>
                   <p className="font-bold text-gray-900">
                     {user?.first_name} {user?.last_name}
                   </p>
@@ -156,7 +185,8 @@ export function Header() {
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all focus-visible:outline-none"
                     onClick={() => {
                       logout();
-                    }}>
+                    }}
+                  >
                     <LogOut stroke="currentColor" className="size-4" />
                     Logout
                   </button>
@@ -167,15 +197,19 @@ export function Header() {
 
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
-            className="md:hidden w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-600 transition-colors">
+            className="md:hidden w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-600 transition-colors"
+          >
             {menuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
           </button>
         </div>
       </div>
       <div
         className={`md:hidden overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          menuOpen ? "max-h-175 opacity-100 translate-y-0" : "max-h-0 opacity-0 -translate-y-2"
-        } border-t border-gray-100 bg-white shadow-xl`}>
+          menuOpen
+            ? "max-h-175 opacity-100 translate-y-0"
+            : "max-h-0 opacity-0 -translate-y-2"
+        } border-t border-gray-100 bg-white shadow-xl`}
+      >
         <div className="px-4 py-6 space-y-4 bg-white">
           {/* GRID MENU */}
           <div className="grid grid-cols-2 gap-4">
@@ -189,12 +223,20 @@ export function Header() {
 
           {/* SUBJECT LIST */}
           <div className="pt-4">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 px-2">POPULAR SUBJECTS</p>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 px-2">
+              POPULAR SUBJECTS
+            </p>
 
             <div className="space-y-2">
-              <SubjectItem label="Maths" icon={<ChartColumn className="size-6" />} />
+              <SubjectItem
+                label="Maths"
+                icon={<ChartColumn className="size-6" />}
+              />
               <SubjectItem label="Physics" icon={<Atom className="size-6" />} />
-              <SubjectItem label="Chemistry" icon={<FlaskConical className="size-6" />} />
+              <SubjectItem
+                label="Chemistry"
+                icon={<FlaskConical className="size-6" />}
+              />
               <SubjectItem label="Biology" icon={<Dna className="size-6" />} />
             </div>
           </div>
@@ -204,23 +246,44 @@ export function Header() {
   );
 }
 
-function MenuCard({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) {
+function MenuCard({
+  icon,
+  label,
+  active,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+}) {
   return (
     <div
       className={`flex flex-col items-center justify-center rounded-2xl border ${
-        active ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-gray-50 text-gray-500 border-0"
-      } p-4 transition-all`}>
+        active
+          ? "bg-blue-50 text-blue-600 border-blue-100"
+          : "bg-gray-50 text-gray-500 border-0"
+      } p-4 transition-all`}
+    >
       <div className="mb-2 size-6">{icon}</div>
-      <span className="text-xs font-black tracking-widest uppercase">{label}</span>
+      <span className="text-xs font-black tracking-widest uppercase">
+        {label}
+      </span>
     </div>
   );
 }
 
-function SubjectItem({ icon, label }: { icon: React.ReactNode; label: string }) {
+function SubjectItem({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) {
   return (
     <div className="w-full flex items-center justify-between p-3 bg-gray-50/50 hover:bg-gray-50 rounded-2xl transition-all group">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">{icon}</div>
+        <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
+          {icon}
+        </div>
         <span className="font-semibold text-gray-700">{label}</span>
       </div>
       <ChevronRight className="size-4 text-gray-300" />
