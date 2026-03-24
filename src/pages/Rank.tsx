@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
   useInView,
   type Variants,
 } from "motion/react";
-import { useRef } from "react";
 import {
   Trophy,
   Flame,
@@ -18,6 +17,7 @@ import {
   Crown,
   BookOpen,
   Award,
+  X,
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────
@@ -32,6 +32,9 @@ interface LeaderboardUser {
   positionChange: number;
   isCurrentUser?: boolean;
   image: string;
+  badges?: number;
+  league?: string;
+  memberType?: string;
 }
 
 interface RoadmapLevel {
@@ -75,6 +78,9 @@ const topThree: LeaderboardUser[] = [
     avatar: "SK",
     positionChange: 1,
     image: "/src/assets/user.jpg",
+    badges: 18,
+    league: "Diamond League",
+    memberType: "Elite Member",
   },
   {
     rank: 1,
@@ -84,6 +90,9 @@ const topThree: LeaderboardUser[] = [
     avatar: "AM",
     positionChange: 3,
     image: "/src/assets/user.jpg",
+    badges: 24,
+    league: "Diamond League",
+    memberType: "Pro Member",
   },
   {
     rank: 3,
@@ -93,6 +102,9 @@ const topThree: LeaderboardUser[] = [
     avatar: "LD",
     positionChange: -1,
     image: "/src/assets/user.jpg",
+    badges: 15,
+    league: "Diamond League",
+    memberType: "Rising Star",
   },
 ];
 
@@ -105,6 +117,9 @@ const leaderboard: LeaderboardUser[] = [
     avatar: "PS",
     positionChange: 2,
     image: "/src/assets/user.jpg",
+    badges: 16,
+    league: "Diamond League",
+    memberType: "Active Learner",
   },
   {
     rank: 5,
@@ -115,6 +130,9 @@ const leaderboard: LeaderboardUser[] = [
     positionChange: 2,
     isCurrentUser: true,
     image: "/src/assets/user.jpg",
+    badges: 12,
+    league: "Diamond League",
+    memberType: "Member",
   },
   {
     rank: 6,
@@ -124,6 +142,9 @@ const leaderboard: LeaderboardUser[] = [
     avatar: "RG",
     positionChange: -1,
     image: "/src/assets/user.jpg",
+    badges: 14,
+    league: "Platinum League",
+    memberType: "Explorer",
   },
   {
     rank: 7,
@@ -133,6 +154,9 @@ const leaderboard: LeaderboardUser[] = [
     avatar: "ZA",
     positionChange: 2,
     image: "/src/assets/user.jpg",
+    badges: 10,
+    league: "Platinum League",
+    memberType: "Challenger",
   },
 ];
 
@@ -174,6 +198,169 @@ function AnimatedSection({
       className={className}
     >
       {children}
+    </motion.div>
+  );
+}
+
+// ─── Profile Modal ───────────────────────────────────
+
+function ProfileModal({
+  user,
+  onClose,
+}: {
+  user: LeaderboardUser;
+  onClose: () => void;
+}) {
+  // Close on Escape
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
+  const badgeColor =
+    user.rank === 1
+      ? "bg-yellow-400"
+      : user.rank === 2
+        ? "bg-gray-400"
+        : user.rank === 3
+          ? "bg-orange-500"
+          : "bg-blue-500";
+
+  const gradientFrom =
+    user.rank === 1
+      ? "from-yellow-400 to-amber-600"
+      : user.rank === 2
+        ? "from-gray-300 to-gray-500"
+        : user.rank === 3
+          ? "from-orange-400 to-orange-600"
+          : "from-blue-400 to-indigo-600";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+
+      {/* Modal */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 30 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-lg bg-white rounded-[48px] overflow-hidden shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Gradient header */}
+        <div className={`h-40 bg-linear-to-br ${gradientFrom} relative`}>
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 2px 2px, white 1px, transparent 0px)",
+              backgroundSize: "24px 24px",
+            }}
+          />
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 w-10 h-10 bg-black/10 hover:bg-black/20 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="px-10 pb-10 -mt-16 relative">
+          <div className="flex flex-col items-center">
+            {/* Avatar */}
+            <div className="relative mb-4">
+              <div className="w-32 h-32 rounded-[40px] border-[6px] border-white shadow-xl overflow-hidden bg-gray-100">
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div
+                className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white ${badgeColor}`}
+              >
+                <span className="font-black text-white text-sm">
+                  #{user.rank}
+                </span>
+              </div>
+            </div>
+
+            {/* Name */}
+            <h3 className="text-3xl font-black text-gray-900 mb-1">
+              {user.name}
+            </h3>
+
+            {/* Tags */}
+            <div className="flex items-center gap-2 mb-8">
+              <div className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-blue-100">
+                {user.league || "Diamond League"}
+              </div>
+              <div className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-100">
+                {user.memberType || "Member"}
+              </div>
+            </div>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-3 gap-4 w-full mb-10">
+              <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                  Level
+                </p>
+                <p className="text-xl font-black text-gray-900">{user.level}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                  Total XP
+                </p>
+                <p className="text-xl font-black text-gray-900">
+                  {user.xp.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                  Badges
+                </p>
+                <p className="text-xl font-black text-gray-900">
+                  {user.badges ?? 0}
+                </p>
+              </div>
+            </div>
+
+            {/* Top Achievements */}
+            <div className="w-full space-y-4">
+              <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2">
+                Top Achievements
+              </h4>
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {[Zap, Star, Trophy, Award].map((Icon, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 + i * 0.08 }}
+                    className="shrink-0 w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100"
+                  >
+                    <Icon className="w-6 h-6 text-yellow-500 fill-current" />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -294,10 +481,12 @@ function PodiumCard({
   user,
   size,
   delay = 0,
+  onProfileClick,
 }: {
   user: LeaderboardUser;
   size: "lg" | "sm";
   delay?: number;
+  onProfileClick?: (user: LeaderboardUser) => void;
 }) {
   const isFirst = user.rank === 1;
   const dim = size === "lg" ? "w-44 h-44" : "w-32 h-32";
@@ -327,6 +516,7 @@ function PodiumCard({
       <motion.div
         // whileHover={{ scale: 1.08 }}
         className="group relative cursor-pointer"
+        onClick={() => onProfileClick?.(user)}
       >
         {/* Glow */}
         <div
@@ -393,17 +583,36 @@ function PodiumCard({
 }
 
 /** Podium section */
-function Podium() {
+function Podium({
+  onProfileClick,
+}: {
+  onProfileClick?: (user: LeaderboardUser) => void;
+}) {
   return (
     <div className="flex items-end justify-center gap-10 pb-4 pt-8">
       <div className="mt-12">
-        <PodiumCard user={topThree[0]} size="sm" delay={0.2} />
+        <PodiumCard
+          user={topThree[0]}
+          size="sm"
+          delay={0.2}
+          onProfileClick={onProfileClick}
+        />
       </div>
       <div>
-        <PodiumCard user={topThree[1]} size="lg" delay={0} />
+        <PodiumCard
+          user={topThree[1]}
+          size="lg"
+          delay={0}
+          onProfileClick={onProfileClick}
+        />
       </div>
       <div className="mt-12">
-        <PodiumCard user={topThree[2]} size="sm" delay={0.4} />
+        <PodiumCard
+          user={topThree[2]}
+          size="sm"
+          delay={0.4}
+          onProfileClick={onProfileClick}
+        />
       </div>
     </div>
   );
@@ -436,9 +645,11 @@ function PositionBadge({ change }: { change: number }) {
 function LeaderboardRow({
   user,
   index = 0,
+  onProfileClick,
 }: {
   user: LeaderboardUser;
   index?: number;
+  onProfileClick?: (user: LeaderboardUser) => void;
 }) {
   const isMe = user.isCurrentUser;
   const ref = useRef(null);
@@ -454,19 +665,16 @@ function LeaderboardRow({
         duration: 0.5,
         ease: [0.22, 1, 0.36, 1],
       }}
-      // whileHover={
-      //   !isMe ? { backgroundColor: "rgba(249,250,251,0.5)" } : undefined
-      // }
+      onClick={() => !isMe && onProfileClick?.(user)}
       className={`flex items-center justify-between px-6 py-5 ${
         isMe
           ? "rounded-3xl bg-blue-600 text-white shadow-[0px_25px_50px_0px_#bedbff]"
-          : "border-b border-gray-50"
+          : "border-b border-gray-50 cursor-pointer hover:bg-gray-50/50 transition-colors"
       }`}
     >
       {/* Left side */}
       <div className="flex items-center gap-5">
         <motion.div
-          // whileHover={{ scale: 1.15 }}
           className={`flex h-10 w-10 items-center justify-center rounded-[14px] text-base font-black ${
             isMe ? "bg-white/20 text-white" : "bg-gray-100 text-gray-400"
           }`}
@@ -474,10 +682,7 @@ function LeaderboardRow({
           #{user.rank}
         </motion.div>
 
-        <motion.div
-          // whileHover={{ scale: 1.06 }}
-          className="relative"
-        >
+        <motion.div className="relative">
           <div
             className={`flex h-14 w-14 items-center justify-center rounded-2xl border-2 text-lg font-black ${
               isMe
@@ -837,7 +1042,14 @@ function XpOverdriveCard() {
 }
 
 /** Weekly Rival card */
-function WeeklyRivalCard() {
+function WeeklyRivalCard({
+  onProfileClick,
+}: {
+  onProfileClick?: (user: LeaderboardUser) => void;
+}) {
+  const rivalUser =
+    leaderboard.find((u) => u.name === "Priya Sharma") ?? leaderboard[0];
+
   return (
     <AnimatedSection delay={0.3} variants={fadeRight}>
       <div className="rounded-[40px] border border-gray-100 bg-white p-8 shadow-sm">
@@ -859,21 +1071,15 @@ function WeeklyRivalCard() {
         </div>
 
         <motion.div
-          // whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
-          className="mt-4 rounded-[32px] border border-gray-100 bg-gray-50 p-4"
+          className="mt-4 rounded-[32px] border border-gray-100 bg-gray-50 p-4 cursor-pointer hover:bg-gray-100/60 transition-colors"
+          onClick={() => onProfileClick?.(rivalUser)}
         >
           <div className="flex items-center gap-4">
-            <motion.div
-              // whileHover={{ scale: 1.08 }}
-              className="relative"
-            >
+            <motion.div className="relative">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-white bg-linear-to-br from-pink-50 to-rose-50 text-lg font-black text-pink-600 shadow-md">
                 PS
               </div>
-              <motion.div
-                // whileHover={{ scale: 1.15 }}
-                className="absolute -left-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-black text-white shadow-lg"
-              >
+              <motion.div className="absolute -left-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-black text-white shadow-lg">
                 #4
               </motion.div>
             </motion.div>
@@ -903,13 +1109,9 @@ function WeeklyRivalCard() {
         </motion.div>
 
         <motion.button
-          // whileHover={{
-          //   scale: 1.03,
-          //   borderColor: "#bfdbfe",
-          //   backgroundColor: "rgba(239,246,255,0.5)",
-          // }}
           whileTap={{ scale: 0.97 }}
-          className="mt-4 w-full rounded-2xl border-2 border-gray-100 py-3 text-xs font-black uppercase tracking-wider text-gray-500 transition-colors"
+          onClick={() => onProfileClick?.(rivalUser)}
+          className="mt-4 w-full rounded-2xl border-2 border-gray-100 py-3 text-xs font-black uppercase tracking-wider text-gray-500 transition-colors cursor-pointer hover:border-blue-200 hover:bg-blue-50/50"
         >
           VIEW PROFILE
         </motion.button>
@@ -922,6 +1124,9 @@ function WeeklyRivalCard() {
 
 const Ranks = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("global");
+  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(
+    null,
+  );
   const leaderboardRef = useRef(null);
   const leaderboardInView = useInView(leaderboardRef, {
     once: true,
@@ -949,7 +1154,7 @@ const Ranks = () => {
         </div>
 
         {/* 3. Podium */}
-        <Podium />
+        <Podium onProfileClick={setSelectedUser} />
 
         {/* 4. Main content area */}
         <div className="mt-12 flex gap-6">
@@ -979,7 +1184,12 @@ const Ranks = () => {
               {leaderboard
                 .filter((u) => !u.isCurrentUser && u.rank < 5)
                 .map((user, i) => (
-                  <LeaderboardRow key={user.rank} user={user} index={i} />
+                  <LeaderboardRow
+                    key={user.rank}
+                    user={user}
+                    index={i}
+                    onProfileClick={setSelectedUser}
+                  />
                 ))}
 
               {/* "Your" blue card with mastery */}
@@ -1058,7 +1268,12 @@ const Ranks = () => {
               {leaderboard
                 .filter((u) => !u.isCurrentUser && u.rank > 5)
                 .map((user, i) => (
-                  <LeaderboardRow key={user.rank} user={user} index={i + 2} />
+                  <LeaderboardRow
+                    key={user.rank}
+                    user={user}
+                    index={i + 2}
+                    onProfileClick={setSelectedUser}
+                  />
                 ))}
             </div>
           </div>
@@ -1066,10 +1281,20 @@ const Ranks = () => {
           {/* Right column — Sidebar */}
           <div className="w-[304px] shrink-0 space-y-6">
             <XpOverdriveCard />
-            <WeeklyRivalCard />
+            <WeeklyRivalCard onProfileClick={setSelectedUser} />
           </div>
         </div>
       </main>
+
+      {/* Profile Details Modal */}
+      <AnimatePresence>
+        {selectedUser && (
+          <ProfileModal
+            user={selectedUser}
+            onClose={() => setSelectedUser(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
