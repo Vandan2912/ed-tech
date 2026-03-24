@@ -63,9 +63,7 @@ export function Header() {
             to="/ranks"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] font-semibold bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)]"
-                  : "hover:text-[#1C398E]"
+                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
               }`
             }>
             RANKS
@@ -74,9 +72,7 @@ export function Header() {
             to="/stats"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] font-semibold bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)]"
-                  : "hover:text-[#1C398E]"
+                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
               }`
             }>
             STATS
@@ -85,9 +81,7 @@ export function Header() {
             to="/progress"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] font-semibold bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)]"
-                  : "hover:text-[#1C398E]"
+                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
               }`
             }>
             PROGRESS
@@ -96,9 +90,7 @@ export function Header() {
             to="/study"
             className={({ isActive }) =>
               `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] font-semibold bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)]"
-                  : "hover:text-[#1C398E]"
+                isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
               }`
             }>
             <Users size={16} className="me-1.75" /> STUDY

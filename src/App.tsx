@@ -14,6 +14,7 @@ import Courses from "./pages/Courses";
 import Course from "./pages/Course";
 import Topic from "./pages/Topic";
 import Quiz from "./pages/Quiz";
+import Ranks from "./pages/Rank";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -76,6 +77,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Quiz />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ranks"
+                element={
+                  <ProtectedRoute>
+                    <Ranks />
                   </ProtectedRoute>
                 }
               />
