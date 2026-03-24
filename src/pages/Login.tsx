@@ -7,7 +7,7 @@ import { z } from "zod";
 import Forgot from "@/components/Login/forgot";
 import ForgotOtp from "@/components/Login/forgot_otp";
 import CreateNewPassword from "@/components/Login/new_password";
-import { googleAuth } from "@/api/auth";
+import { googleAuth, teacherLogin } from "@/api/auth";
 import { useAuth } from "@/auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/loader";
@@ -21,6 +21,7 @@ export default function Login() {
 
   const [loader, setLoader] = useState(false);
   const [role, setRole] = useState<Role>("student");
+  const [apiError, setApiError] = useState<string | null>(null);
   const [stage, setStage] = useState({
     forgot: false,
     forgotOTP: false,
@@ -58,24 +59,46 @@ export default function Login() {
     },
   });
 
-  const step1Schema = z.object({
-    email: z.string().email("Invalid email"),
-    phone: z.string().min(10, "Phone must be 10 digits").max(10, "Phone must be 10 digits"),
+  const teacherSchema = z.object({
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .email("Please enter a valid email address"),
+    password: z
+      .string()
+      .min(1, "Password is required")
+      .min(6, "Password must be at least 6 characters"),
   });
 
-  const schema = step1Schema;
-  type LoginFormData = z.infer<typeof schema>;
+  type TeacherLoginForm = z.infer<typeof teacherSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(schema),
+  } = useForm<TeacherLoginForm>({
+    resolver: zodResolver(teacherSchema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log("FINAL FORM DATA", data);
+  const onSubmit = async (data: TeacherLoginForm) => {
+    try {
+      setLoader(true);
+      setApiError(null);
+
+      const res = await teacherLogin(data.email, data.password);
+
+      login(res.token, res.user);
+
+      navigate("/");
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login failed. Please check your credentials.";
+      setApiError(message);
+    } finally {
+      setLoader(false);
+    }
   };
 
   useEffect(() => {
@@ -87,7 +110,8 @@ export default function Login() {
   return (
     <div
       className="min-h-screen w-screen flex items-center justify-center relative overflow-hidden p-8"
-      style={{ background: "#F9FAFB" }}>
+      style={{ background: "#F9FAFB" }}
+    >
       {loader && <Loader />}
       {/* Background blurred circles */}
       <div className="absolute pointer-events-none  w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -right-24 -top-48" />
@@ -121,9 +145,12 @@ export default function Login() {
 
             {/* Title & Subtitle */}
             <div className="mb-8">
-              <h1 className="text-3xl! font-black! text-gray-900! mb-3! mt-0! tracking-tight!">SmartLearn AI</h1>
+              <h1 className="text-3xl! font-black! text-gray-900! mb-3! mt-0! tracking-tight!">
+                SmartLearn AI
+              </h1>
               <p className="text-gray-500 font-medium!">
-                Join the next generation of learners. <br className="hidden sm:block" />
+                Join the next generation of learners.{" "}
+                <br className="hidden sm:block" />
                 Experience AI-powered education.
               </p>
             </div>
@@ -137,9 +164,18 @@ export default function Login() {
                 style={{
                   background: role === "student" ? "#FFF" : "transparent",
                   boxShadow:
-                    role === "student" ? "0 1px 3px 0 rgba(0,0,0,0.10), 0 1px 2px -1px rgba(0,0,0,0.10)" : "none",
-                }}>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    role === "student"
+                      ? "0 1px 3px 0 rgba(0,0,0,0.10), 0 1px 2px -1px rgba(0,0,0,0.10)"
+                      : "none",
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <g clipPath="url(#clip0_student)">
                     <path
                       d="M8 4.66666V14"
@@ -165,7 +201,8 @@ export default function Login() {
                 <span
                   style={{
                     color: role === "student" ? "#1C398E" : "#99A1AF",
-                  }}>
+                  }}
+                >
                   Student
                 </span>
               </button>
@@ -177,9 +214,18 @@ export default function Login() {
                 style={{
                   background: role === "teacher" ? "#FFF" : "transparent",
                   boxShadow:
-                    role === "teacher" ? "0 1px 3px 0 rgba(0,0,0,0.10), 0 1px 2px -1px rgba(0,0,0,0.10)" : "none",
-                }}>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    role === "teacher"
+                      ? "0 1px 3px 0 rgba(0,0,0,0.10), 0 1px 2px -1px rgba(0,0,0,0.10)"
+                      : "none",
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M14.28 7.28134C14.3993 7.22869 14.5006 7.14218 14.5713 7.03254C14.6419 6.9229 14.6789 6.79493 14.6775 6.6645C14.6762 6.53406 14.6366 6.40689 14.5637 6.29873C14.4908 6.19057 14.3877 6.10617 14.2673 6.056L8.55332 3.45334C8.37961 3.3741 8.19091 3.3331 7.99999 3.3331C7.80906 3.3331 7.62036 3.3741 7.44665 3.45334L1.73332 6.05334C1.61463 6.10532 1.51366 6.19076 1.44277 6.29921C1.37187 6.40767 1.33411 6.53443 1.33411 6.664C1.33411 6.79358 1.37187 6.92034 1.44277 7.02879C1.51366 7.13725 1.61463 7.22269 1.73332 7.27467L7.44665 9.88C7.62036 9.95924 7.80906 10.0002 7.99999 10.0002C8.19091 10.0002 8.37961 9.95924 8.55332 9.88L14.28 7.28134Z"
                     stroke={role === "teacher" ? "#1C398E" : "#99A1AF"}
@@ -205,7 +251,8 @@ export default function Login() {
                 <span
                   style={{
                     color: role === "teacher" ? "#1C398E" : "#99A1AF",
-                  }}>
+                  }}
+                >
                   Teacher
                 </span>
               </button>
@@ -217,7 +264,8 @@ export default function Login() {
               {role === "student" ? (
                 <button
                   className="group w-full bg-white border-2 border-gray-100 py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all duration-300 focus:outline-none focus:ring-4 hover:border-blue-600 hover:bg-blue-50/30 focus:ring-blue-100"
-                  onClick={() => googleLogin()}>
+                  onClick={() => googleLogin()}
+                >
                   {/* Google Icon */}
                   <div
                     className="flex items-center justify-center"
@@ -226,10 +274,18 @@ export default function Login() {
                       height: 24,
                       borderRadius: "50%",
                       background: "#FFF",
-                      boxShadow: "0 1px 3px 0 rgba(0,0,0,0.10), 0 1px 2px -1px rgba(0,0,0,0.10)",
+                      boxShadow:
+                        "0 1px 3px 0 rgba(0,0,0,0.10), 0 1px 2px -1px rgba(0,0,0,0.10)",
                       flexShrink: 0,
-                    }}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         d="M15.04 8.16666C15.04 7.64666 14.9933 7.14666 14.9067 6.66666H8V9.50666H11.9467C11.7733 10.42 11.2533 11.1933 10.4733 11.7133V13.56H12.8533C14.24 12.28 15.04 10.4 15.04 8.16666Z"
                         fill="#4285F4"
@@ -253,21 +309,32 @@ export default function Login() {
                   </span>
                 </button>
               ) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="flex flex-col"
+                >
                   <div className="flex flex-col gap-4">
-                    <Field label="Email Address (Google)" error={errors.email?.message}>
+                    {apiError && (
+                      <div className="w-full px-4 py-3 bg-red-50 border border-red-100 rounded-2xl text-sm font-bold text-red-600 text-left">
+                        {apiError}
+                      </div>
+                    )}
+
+                    <Field label="Email Address" error={errors.email?.message}>
                       <input
+                        type="email"
                         className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
                         {...register("email")}
-                        placeholder="alex@gmail.com"
+                        placeholder="teacher@school.com"
                       />
                     </Field>
 
-                    <Field label="Mobile Number" error={errors.phone?.message}>
+                    <Field label="Password" error={errors.password?.message}>
                       <input
+                        type="password"
                         className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
-                        {...register("phone")}
-                        placeholder="9876543210"
+                        {...register("password")}
+                        placeholder="••••••••"
                       />
                     </Field>
 
@@ -275,14 +342,17 @@ export default function Login() {
                       className="text-end text-indigo-600 text-[10px] font-black uppercase leading-4 tracking-wide cursor-pointer"
                       onClick={() => {
                         setStage((prev) => ({ ...prev, forgot: true }));
-                      }}>
+                      }}
+                    >
                       Forgot Password?
                     </div>
 
                     <button
                       type="submit"
-                      className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]">
-                      Sign in as Teacher
+                      disabled={loader}
+                      className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {loader ? "Signing in..." : "Sign in as Teacher"}
                     </button>
                   </div>
                 </form>
@@ -291,7 +361,8 @@ export default function Login() {
               {/* Terms */}
               <div
                 className="text-[10px] text-gray-400 font-bold! uppercase tracking-widest leading-loose"
-                style={{ gap: 0 }}>
+                style={{ gap: 0 }}
+              >
                 <p className="text-center">By continuing, you agree to our</p>
                 <p className="text-center">
                   <a href="#" className="text-blue-900 cursor-pointer">
@@ -313,11 +384,21 @@ export default function Login() {
                   {[0, 16, 32].map((_, i) => (
                     <div
                       key={i}
-                      className="w-6 h-6 rounded-full border-2 border-white bg-gray-100 overflow-hidden shadow-sm">
+                      className="w-6 h-6 rounded-full border-2 border-white bg-gray-100 overflow-hidden shadow-sm"
+                    >
                       <div className=" bg-gray-100 text-center align-middle flex items-center justify-center w-full h-full">
-                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
                           <circle cx="10" cy="7" r="4" fill="#C8CDD6" />
-                          <path d="M2 18c0-4.418 3.582-8 8-8s8 3.582 8 8" fill="#C8CDD6" />
+                          <path
+                            d="M2 18c0-4.418 3.582-8 8-8s8 3.582 8 8"
+                            fill="#C8CDD6"
+                          />
                         </svg>
                       </div>
                     </div>
@@ -339,12 +420,24 @@ export default function Login() {
 
 /* ---------------- FIELD COMPONENT ---------------- */
 
-export function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
+export function Field({
+  label,
+  children,
+  error,
+}: {
+  label: string;
+  children: React.ReactNode;
+  error?: string;
+}) {
   return (
     <div className="flex flex-col gap-1 items-start">
-      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">{label}</label>
+      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
+        {label}
+      </label>
       {children}
-      {error && <span className="text-red-500 text-xs font-semibold">{error}</span>}
+      {error && (
+        <span className="text-red-500 text-xs font-semibold">{error}</span>
+      )}
     </div>
   );
 }
