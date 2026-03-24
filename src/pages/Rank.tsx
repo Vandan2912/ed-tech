@@ -21,6 +21,11 @@ import {
   Atom,
   FlaskConical,
   Leaf,
+  Medal,
+  Target,
+  Users,
+  PlayCircle,
+  Brain,
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────
@@ -268,6 +273,110 @@ const streakLeaderboard: StreakUser[] = [
     tier: "Elite Tier",
     streakDays: 24,
     image: "/src/assets/user.jpg",
+  },
+];
+
+// ─── My Best Data ──────────────────────────────────────
+
+interface LevelHistory {
+  level: number;
+  title: string;
+  xp: string;
+}
+
+interface Badge {
+  id: string;
+  title: string;
+  description: string;
+  earnedDate?: string;
+  progress?: { current: number; max: number; label: string };
+  icon: React.ReactNode;
+  locked?: boolean;
+}
+
+const levelHistoryData: LevelHistory[] = [
+  { level: 1, title: "Beginner Explorer", xp: "250" },
+  { level: 2, title: "Knowledge Seeker", xp: "500" },
+  { level: 3, title: "Smart Scholar", xp: "1,000" },
+  { level: 4, title: "Rising Star", xp: "2,000" },
+];
+
+const earnedBadges: Badge[] = [
+  {
+    id: "early_bird_main",
+    title: "Early Bird",
+    description: "Jan 12, 2026",
+    icon: <Medal className="h-6 w-6 text-blue-500" />,
+  },
+  {
+    id: "quiz_master_main",
+    title: "Quiz Master",
+    description: "Jan 15, 2026",
+    icon: <Award className="h-6 w-6 text-blue-500" />,
+  },
+];
+
+const galleryBadges: Badge[] = [
+  {
+    id: "early_bird",
+    title: "Early Bird",
+    description: "Completed a lesson before 8 AM",
+    earnedDate: "Jan 12, 2026",
+    icon: <Zap className="h-6 w-6 text-orange-500" />,
+  },
+  {
+    id: "quiz_master",
+    title: "Quiz Master",
+    description: "Scored 100% on 5 consecutive quizzes",
+    earnedDate: "Jan 15, 2026",
+    icon: <Crown className="h-6 w-6 text-blue-500" />,
+  },
+  {
+    id: "consistent_learner",
+    title: "Consistent Learner",
+    description: "Maintained a 7-day learning streak",
+    earnedDate: "Jan 20, 2026",
+    icon: <Flame className="h-6 w-6 text-green-500" />,
+  },
+  {
+    id: "analytical_genius",
+    title: "Analytical Genius",
+    description: "Maintained low cognitive load for 3 hours",
+    progress: { current: 3, max: 5, label: "3/5 hours" },
+    icon: <Brain className="h-6 w-6 text-gray-400" />,
+    locked: true,
+  },
+  {
+    id: "social_star",
+    title: "Social Star",
+    description: "Invited 5 friends to the platform",
+    progress: { current: 2, max: 5, label: "2/5 invited" },
+    icon: <Users className="h-6 w-6 text-purple-500" />,
+    locked: true,
+  },
+  {
+    id: "subject_specialist",
+    title: "Subject Specialist",
+    description: "Complete all topics in any subject",
+    progress: { current: 85, max: 100, label: "85% complete" },
+    icon: <BookOpen className="h-6 w-6 text-indigo-500" />,
+    locked: true,
+  },
+  {
+    id: "elite_competitor",
+    title: "Elite Competitor",
+    description: "Reach top 10 on the global leaderboard",
+    progress: { current: 42, max: 100, label: "Rank #42" },
+    icon: <Trophy className="h-6 w-6 text-yellow-500" />,
+    locked: true,
+  },
+  {
+    id: "video_guru",
+    title: "Video Guru",
+    description: "Watch 50 hours of educational content",
+    progress: { current: 12, max: 50, label: "12/50 hours" },
+    icon: <PlayCircle className="h-6 w-6 text-red-400" />,
+    locked: true,
   },
 ];
 
@@ -1510,6 +1619,378 @@ function StreakMastersContent() {
   );
 }
 
+// ─── My Best Components ──────────────────────────────
+
+function MyBestContent() {
+  const ref = useRef(null);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -40 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="mt-12 space-y-16"
+    >
+      {/* 1. Active Standing */}
+      <section>
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-1 w-12 bg-blue-600 rounded-full" />
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+            Active Standing
+          </h2>
+        </div>
+
+        <div className="flex gap-6">
+          {/* Level Progress Card */}
+          <div className="flex-1 rounded-[40px] border border-gray-100 bg-white p-10 shadow-sm flex items-center gap-10">
+            <div className="relative h-40 w-40 shrink-0">
+              <svg
+                className="h-full w-full -rotate-90 transform"
+                viewBox="0 0 100 100"
+              >
+                <circle
+                  className="text-gray-100 stroke-current"
+                  strokeWidth="8"
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="transparent"
+                ></circle>
+                <circle
+                  className="text-blue-600 stroke-current"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="transparent"
+                  strokeDasharray="251.2"
+                  strokeDashoffset="87.92" // 65% progress
+                ></circle>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-4xl font-black tracking-tight text-gray-900">
+                  18
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                  Level
+                </span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-2xl font-black text-gray-900 mb-2">
+                Intermediate Scholar
+              </h3>
+              <p className="text-sm text-gray-500 mb-4 max-w-sm">
+                You've reached the current peak! Your progress is at{" "}
+                <span className="font-bold text-blue-600">65%</span> towards the
+                next level.
+              </p>
+              <div className="flex gap-3">
+                <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-600 border border-blue-100">
+                  Silver Badge
+                </span>
+                <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-600 border border-blue-100">
+                  Custom Avatar
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Badge Card */}
+          <div className="w-[304px] shrink-0 overflow-hidden rounded-[40px] bg-linear-to-br from-blue-600 to-indigo-700 p-10 text-center relative shadow-[0px_20px_25px_-5px_rgba(190,219,255,0.5)]">
+            <div className="absolute top-[-80px] -right-10 h-40 w-40 rounded-full bg-white/20 blur-3xl mix-blend-overlay" />
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20 shadow-xl border border-white/20 mb-6 backdrop-blur-md">
+              <Star className="h-8 w-8 text-white" />
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">
+              Main Badge
+            </p>
+            <h3 className="text-xl font-black text-white mb-2 leading-tight">
+              Consistent Learner
+            </h3>
+            <p className="text-xs text-blue-200/80">
+              Equipped as your primary showcase achievement.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Mastered History */}
+      <section>
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-1 w-12 bg-green-500 rounded-full" />
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+            Mastered History
+          </h2>
+        </div>
+
+        <div className="flex gap-12">
+          {/* Earned Badges */}
+          <div className="flex-1">
+            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+              Earned Badges
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              {earnedBadges.map((badge, i) => (
+                <motion.div
+                  key={badge.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="rounded-[32px] border border-gray-100 bg-white p-6 text-center shadow-sm cursor-pointer transition-shadow hover:shadow-md"
+                >
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50">
+                    {badge.icon}
+                  </div>
+                  <h4 className="font-bold text-gray-900 text-sm mb-1">
+                    {badge.title}
+                  </h4>
+                  <p className="text-[10px] text-gray-400">
+                    {badge.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Level History */}
+          <div className="flex-1">
+            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+              Level History
+            </h3>
+            <div className="space-y-3">
+              {levelHistoryData.map((lvl, i) => (
+                <motion.div
+                  key={lvl.level}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="flex items-center justify-between rounded-[32px] border border-cyan-200 bg-cyan-50 px-6 py-4"
+                >
+                  <div className="flex items-center gap-5">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-teal-600 text-lg font-black text-white shadow-md">
+                      {lvl.level}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-800 text-sm">
+                        {lvl.title}
+                      </h4>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-0.5">
+                        Completed • {lvl.xp} XP
+                      </p>
+                    </div>
+                  </div>
+                  <CheckCircle2 className="h-6 w-6 text-teal-600" />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Badge Gallery */}
+      <section>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="h-1 w-12 bg-indigo-600 rounded-full" />
+            <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+              Badge Gallery
+            </h2>
+          </div>
+          <div className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-gray-50 px-4 py-2">
+            <div className="flex items-center gap-2">
+              <div className="h-2.5 w-2.5 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.5)]" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">
+                3 Earned
+              </span>
+            </div>
+            <div className="h-4 w-px bg-gray-200" />
+            <div className="flex items-center gap-2">
+              <div className="h-2.5 w-2.5 rounded-full bg-gray-300" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                5 Locked
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-6">
+          {galleryBadges.map((badge) => (
+            <motion.div
+              key={badge.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -5 }}
+              className={`relative rounded-[32px] border p-6 shadow-sm transition-all duration-300 group cursor-pointer ${
+                badge.locked
+                  ? "border-gray-100 bg-gray-50/50 opacity-60 grayscale"
+                  : "border-blue-100 bg-white hover:shadow-md"
+              }`}
+            >
+              {badge.locked && (
+                <div className="absolute top-4 right-4">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-100 bg-white/80 backdrop-blur-sm">
+                    <X className="h-3 w-3 text-gray-400" />
+                  </div>
+                </div>
+              )}
+
+              <div
+                className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:rotate-6 ${
+                  badge.locked ? "bg-gray-200 text-gray-400" : "bg-gray-100/80"
+                }`}
+              >
+                {badge.icon}
+              </div>
+              <h4
+                className={`text-sm font-black mb-1 ${
+                  badge.locked ? "text-gray-500" : "text-gray-900"
+                }`}
+              >
+                {badge.title}
+              </h4>
+              <p className="text-[10px] font-bold text-gray-400 mb-4 h-8 leading-relaxed line-clamp-2">
+                {badge.description}
+              </p>
+
+              {badge.earnedDate && (
+                <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-auto">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-blue-600">
+                    Achieved
+                  </span>
+                  <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">
+                    {badge.earnedDate}
+                  </span>
+                </div>
+              )}
+
+              {badge.progress && (
+                <div className="flex flex-col gap-1.5 border-t border-gray-50 pt-3 mt-auto">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">
+                      Progress
+                    </span>
+                    <span className="text-[8px] font-black text-gray-900">
+                      {badge.progress.label}
+                    </span>
+                  </div>
+                  <div className="h-1 w-full overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full bg-blue-600 opacity-50"
+                      style={{
+                        width: `${
+                          (badge.progress.current / badge.progress.max) * 100
+                        }%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* 4. Next Evolution */}
+      <section>
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-1 w-12 bg-orange-500 rounded-full" />
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+            Next Evolution
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 gap-8">
+          {/* Priority Challenge */}
+          <div className="relative overflow-hidden rounded-[40px] bg-gray-900 p-8 shadow-xl flex items-center gap-8">
+            <div className="absolute top-[-100px] -right-20 h-64 w-64 rounded-full bg-blue-600/20 blur-[100px]" />
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm">
+              <Brain className="h-10 w-10 text-white/80" />
+            </div>
+            <div className="relative z-10 flex-1">
+              <div className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-3 py-1 mb-4">
+                <Target className="h-3 w-3 text-white" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-white">
+                  Priority Challenge
+                </span>
+              </div>
+              <h3 className="text-2xl font-black text-white mb-2">
+                Analytical Genius
+              </h3>
+              <p className="text-sm text-gray-400 max-w-[250px] mb-6">
+                Maintained low cognitive load for 3 hours
+              </p>
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                  <span className="text-blue-200">Requirement</span>
+                  <span className="text-gray-400">3/5 Hours</span>
+                </div>
+                <div className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                  <div className="h-full w-3/5 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Upcoming Levels */}
+          <div className="flex flex-col gap-4">
+            <div className="p-8 bg-white rounded-[40px] border border-gray-100 flex items-center gap-8 group hover:border-blue-200 transition-all shadow-sm hover:translate-x-2.5">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center font-black text-2xl transition-all shadow-lg bg-blue-600 text-white shadow-blue-200">
+                19
+              </div>
+              <div className="flex-1">
+                <h5 className="font-bold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
+                  Advanced Analyst
+                </h5>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="px-2 py-0.5 bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest rounded-md group-hover:bg-blue-50 group-hover:text-blue-400 transition-colors">
+                    2x XP Booster
+                  </span>
+                  <span className="px-2 py-0.5 bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest rounded-md group-hover:bg-blue-50 group-hover:text-blue-400 transition-colors">
+                    Exclusive Courses
+                  </span>
+                </div>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                <Lock className="w-4 h-4" />
+              </div>
+            </div>
+
+            <div className="p-8 bg-white rounded-[40px] border border-gray-100 flex items-center gap-8 group hover:border-gray-300 transition-all shadow-sm hover:translate-x-2.5">
+              <div className="w-16 h-16 rounded-3xl flex items-center justify-center font-black text-2xl transition-all shadow-inner bg-gray-50 text-gray-400">
+                20
+              </div>
+              <div className="flex-1">
+                <h5 className="font-bold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
+                  Master Learner
+                </h5>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="px-2 py-0.5 bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest rounded-md group-hover:bg-blue-50 group-hover:text-blue-400  transition-colors">
+                    Gold Certification
+                  </span>
+                  <span className="px-2 py-0.5 bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest rounded-md group-hover:bg-blue-50 group-hover:text-blue-400  transition-colors">
+                    AI Mentor Access
+                  </span>
+                </div>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-200 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                <Lock className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </motion.div>
+  );
+}
+
 // ─── Main Page ───────────────────────────────────────
 
 const Ranks = () => {
@@ -1688,22 +2169,7 @@ const Ranks = () => {
 
           {activeTab === "streak" && <StreakMastersContent key="streak" />}
 
-          {activeTab === "best" && (
-            <motion.div
-              key="best"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-16 flex flex-col items-center justify-center py-20"
-            >
-              <Star className="h-16 w-16 text-gray-200 mb-4" />
-              <p className="text-xl font-black text-gray-300">Coming Soon</p>
-              <p className="text-sm text-gray-400 mt-2">
-                Your personal bests will appear here
-              </p>
-            </motion.div>
-          )}
+          {activeTab === "best" && <MyBestContent key="best" />}
         </AnimatePresence>
       </main>
 
