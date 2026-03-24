@@ -18,6 +18,9 @@ import {
   BookOpen,
   Award,
   X,
+  Atom,
+  FlaskConical,
+  Leaf,
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────
@@ -171,6 +174,101 @@ const roadmapLevels: RoadmapLevel[] = [
   { level: 22, status: "locked" },
   { level: 23, status: "locked" },
   { level: 24, status: "locked" },
+];
+
+// ─── Streak Masters Data ─────────────────────────────
+
+interface StreakSubject {
+  name: string;
+  days: number;
+  status: "active" | "frozen";
+  progress: number; // 0-1
+  icon: React.ReactNode;
+}
+
+interface StreakUser {
+  rank: number;
+  name: string;
+  subject: string;
+  tier: string;
+  streakDays: number;
+  image: string;
+  isCurrentUser?: boolean;
+}
+
+const streakSubjects: StreakSubject[] = [
+  {
+    name: "Physics",
+    days: 12,
+    status: "active",
+    progress: 0.65,
+    icon: <Atom className="h-6 w-6 text-white" />,
+  },
+  {
+    name: "Mathematics",
+    days: 7,
+    status: "active",
+    progress: 0.45,
+    icon: <Zap className="h-6 w-6 text-white" />,
+  },
+  {
+    name: "Biology",
+    days: 0,
+    status: "frozen",
+    progress: 0,
+    icon: <Leaf className="h-6 w-6 text-gray-400" />,
+  },
+  {
+    name: "Chemistry",
+    days: 28,
+    status: "active",
+    progress: 0.9,
+    icon: <FlaskConical className="h-6 w-6 text-white" />,
+  },
+];
+
+const streakLeaderboard: StreakUser[] = [
+  {
+    rank: 1,
+    name: "Arjun Mehta",
+    subject: "Mastering Physics",
+    tier: "Elite Tier",
+    streakDays: 42,
+    image: "/src/assets/user.jpg",
+  },
+  {
+    rank: 2,
+    name: "Zoe Chen",
+    subject: "Mastering Mathematics",
+    tier: "Elite Tier",
+    streakDays: 38,
+    image: "/src/assets/user.jpg",
+  },
+  {
+    rank: 3,
+    name: "Sara Khan",
+    subject: "Mastering Biology",
+    tier: "Elite Tier",
+    streakDays: 35,
+    image: "/src/assets/user.jpg",
+  },
+  {
+    rank: 4,
+    name: "You",
+    subject: "Mastering Chemistry",
+    tier: "Elite Tier",
+    streakDays: 28,
+    image: "/src/assets/user.jpg",
+    isCurrentUser: true,
+  },
+  {
+    rank: 5,
+    name: "Leo Rossi",
+    subject: "Mastering History",
+    tier: "Elite Tier",
+    streakDays: 24,
+    image: "/src/assets/user.jpg",
+  },
 ];
 
 // ─── Utility: Section wrapper with scroll-triggered animation ─────
@@ -1120,6 +1218,298 @@ function WeeklyRivalCard({
   );
 }
 
+// ─── Streak Masters Components ───────────────────────
+
+/** Subject streak card */
+function StreakSubjectCard({
+  subject,
+  index = 0,
+}: {
+  subject: StreakSubject;
+  index?: number;
+}) {
+  const isActive = subject.status === "active";
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-40px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      whileHover={{ y: -5 }}
+      transition={{
+        delay: index * 0.1,
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="group relative overflow-hidden rounded-[32px] border border-gray-100 bg-white p-6 shadow-sm cursor-pointer"
+    >
+      {/* Decorative circle */}
+      <div
+        className={`absolute -top-8 right-[-10px] h-24 w-24 rounded-full transition-all duration-300 opacity-5 group-hover:scale-150 group-hover:opacity-10 ${
+          isActive ? "bg-orange-500" : "bg-gray-500"
+        }`}
+      />
+
+      {/* Icon + Label */}
+      <div className="flex items-center gap-4 mb-6">
+        <div
+          className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg transition-transform duration-300 group-hover:rotate-12 ${
+            isActive ? "bg-orange-500" : "bg-gray-200"
+          }`}
+        >
+          {subject.icon}
+        </div>
+        <div>
+          <p className="text-sm font-black tracking-tight text-gray-900">
+            {subject.name}
+          </p>
+          <span
+            className={`inline-block mt-1 rounded-lg px-2 py-0.5 text-[8px] font-black uppercase tracking-wider ${
+              isActive
+                ? "bg-orange-50 text-orange-600"
+                : "bg-gray-100 text-gray-400"
+            }`}
+          >
+            {subject.status}
+          </span>
+        </div>
+      </div>
+
+      {/* Days + progress */}
+      <div className="flex items-end justify-between">
+        <div className="flex items-baseline gap-1">
+          <motion.span
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: index * 0.1 + 0.3, duration: 0.4 }}
+            className="text-4xl font-black tracking-tight text-gray-900"
+          >
+            {subject.days}
+          </motion.span>
+          <span className="text-xs font-bold text-gray-400">DAYS</span>
+        </div>
+        <div className="h-1 w-10 overflow-hidden rounded-full bg-gray-100">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={isInView ? { width: `${subject.progress * 100}%` } : {}}
+            transition={{
+              delay: index * 0.1 + 0.4,
+              duration: 0.8,
+              ease: "easeOut",
+            }}
+            className={`h-full rounded-full ${
+              isActive ? "bg-orange-500" : "bg-gray-300"
+            }`}
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/** Streak leaderboard row */
+function StreakLeaderboardRow({
+  user,
+  index = 0,
+}: {
+  user: StreakUser;
+  index?: number;
+}) {
+  const isMe = user.isCurrentUser;
+  const isFirst = user.rank === 1;
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-30px" });
+  const rankStr = String(user.rank).padStart(2, "0");
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: -30 }}
+      animate={isInView ? { opacity: 1, x: 0 } : {}}
+      transition={{
+        delay: index * 0.1,
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className={`flex items-center justify-between px-8 py-7 ${
+        isMe
+          ? "bg-orange-50 border-x-4 border-b border-orange-500 border-b-gray-50"
+          : "border-b border-gray-50"
+      }`}
+    >
+      {/* Left side */}
+      <div className="flex items-center gap-8">
+        {/* Rank number */}
+        <span
+          className={`text-lg font-black italic tracking-tight ${
+            isMe ? "text-gray-300" : "text-orange-500"
+          }`}
+        >
+          {rankStr}
+        </span>
+
+        {/* Avatar */}
+        <div className="relative">
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border-2 border-gray-100 shadow-sm">
+            <img
+              src={user.image}
+              alt={user.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          {isFirst && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={isInView ? { scale: 1 } : {}}
+              transition={{ delay: 0.4, type: "spring", stiffness: 300 }}
+              className="absolute -right-1 -top-3 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-yellow-400 shadow-lg"
+            >
+              <Crown className="h-4 w-4 text-white" />
+            </motion.div>
+          )}
+        </div>
+
+        {/* Info */}
+        <div>
+          <div className="flex items-center gap-2">
+            <p className="text-lg font-bold tracking-tight text-gray-900">
+              {user.name}
+            </p>
+            {isMe && (
+              <motion.span
+                animate={{ opacity: [1, 0.6, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="rounded-2xl bg-orange-600 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-lg shadow-orange-200"
+              >
+                YOU
+              </motion.span>
+            )}
+          </div>
+          <div className="mt-1 flex items-center gap-2">
+            <span className="text-xs font-black uppercase tracking-wider text-orange-500">
+              {user.subject}
+            </span>
+            <span className="text-gray-300">•</span>
+            <span className="text-xs font-bold text-gray-400">{user.tier}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Right — Streak */}
+      <div className="flex items-center gap-3">
+        <div className="text-right">
+          <div className="flex items-center justify-end gap-2">
+            <motion.span
+              initial={{ scale: 0.5 }}
+              animate={isInView ? { scale: 1 } : {}}
+              transition={{ delay: index * 0.1 + 0.3 }}
+              className="text-4xl font-black tracking-tight text-gray-900"
+            >
+              {user.streakDays}
+            </motion.span>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Flame className="h-8 w-8 text-orange-500 fill-orange-500" />
+            </motion.div>
+          </div>
+          <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 text-right">
+            Day Learning Streak
+          </p>
+        </div>
+        <ChevronRight className="h-6 w-6 text-gray-300" />
+      </div>
+    </motion.div>
+  );
+}
+
+/** Full Streak Masters tab content */
+function StreakMastersContent() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-40px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="mt-10"
+    >
+      {/* Subject Streak Cards */}
+      <div className="grid grid-cols-4 gap-4 mb-12">
+        {streakSubjects.map((subject, i) => (
+          <StreakSubjectCard key={subject.name} subject={subject} index={i} />
+        ))}
+      </div>
+
+      {/* Consistency Champions Card */}
+      <div className="overflow-hidden rounded-[40px] border border-gray-100 shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between bg-linear-to-r from-gray-50 to-white px-10 py-10 border-b border-gray-50">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="rounded-xl bg-orange-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-orange-600">
+                Top Consistency
+              </span>
+              <h3 className="text-2xl font-black tracking-tight text-gray-900">
+                Consistency Champions
+              </h3>
+            </div>
+            <p className="text-sm text-gray-500">
+              Global ranking based on consecutive days of learning.
+            </p>
+          </div>
+          <motion.div
+            animate={{ rotate: [0, 3, -3, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="flex h-16 w-16 items-center justify-center rounded-3xl bg-orange-500 shadow-[0px_20px_25px_0px_#ffd6a8]"
+          >
+            <Flame className="h-8 w-8 text-white" />
+          </motion.div>
+        </div>
+
+        {/* Leaderboard rows */}
+        <div>
+          {streakLeaderboard.map((user, i) => (
+            <StreakLeaderboardRow key={user.rank} user={user} index={i} />
+          ))}
+        </div>
+
+        {/* Dark footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.6, duration: 0.5 }}
+          className="bg-gray-900 px-8 py-8"
+        >
+          <p className="text-center text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
+            You're in the Top 15% of consistent learners
+          </p>
+          <div className="flex items-center justify-center gap-2">
+            {[1, 2, 3, 4].map((i) => (
+              <motion.div
+                key={i}
+                initial={{ scaleX: 0 }}
+                animate={isInView ? { scaleX: 1 } : {}}
+                transition={{ delay: 0.7 + i * 0.08, duration: 0.3 }}
+                className="h-2 w-10 rounded-full bg-orange-500"
+              />
+            ))}
+            {[5, 6, 7].map((i) => (
+              <div key={i} className="h-2 w-10 rounded-full bg-white/10" />
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Main Page ───────────────────────────────────────
 
 const Ranks = () => {
@@ -1153,137 +1543,168 @@ const Ranks = () => {
           <TabSwitcher active={activeTab} onChange={setActiveTab} />
         </div>
 
-        {/* 3. Podium */}
-        <Podium onProfileClick={setSelectedUser} />
-
-        {/* 4. Main content area */}
-        <div className="mt-12 flex gap-6">
-          {/* Left column — Leaderboard */}
-          <div className="flex-1">
-            {/* Table header */}
-            <AnimatedSection className="flex items-center justify-between rounded-2xl bg-gray-50 px-8 py-3">
-              <div className="flex gap-12">
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  Rank
-                </span>
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  Learner
-                </span>
-              </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                Total XP
-              </span>
-            </AnimatedSection>
-
-            {/* Leaderboard card */}
-            <div
-              ref={leaderboardRef}
-              className="mt-4 overflow-hidden rounded-[40px] border border-gray-100 shadow-xl"
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          {activeTab === "global" && (
+            <motion.div
+              key="global"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Users above "you" */}
-              {leaderboard
-                .filter((u) => !u.isCurrentUser && u.rank < 5)
-                .map((user, i) => (
-                  <LeaderboardRow
-                    key={user.rank}
-                    user={user}
-                    index={i}
-                    onProfileClick={setSelectedUser}
-                  />
-                ))}
+              {/* 3. Podium */}
+              <Podium onProfileClick={setSelectedUser} />
 
-              {/* "Your" blue card with mastery */}
-              <AnimatePresence>
-                {leaderboard
-                  .filter((u) => u.isCurrentUser)
-                  .map((user) => (
-                    <motion.div
-                      key={user.rank}
-                      initial={{ opacity: 0, scale: 0.92 }}
-                      animate={
-                        leaderboardInView ? { opacity: 1, scale: 1 } : {}
-                      }
-                      transition={{
-                        delay: 0.15,
-                        duration: 0.6,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      className="rounded-3xl bg-blue-600 p-6 shadow-[0px_25px_50px_0px_#bedbff]"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-5">
+              {/* 4. Main content area */}
+              <div className="mt-12 flex gap-6">
+                {/* Left column — Leaderboard */}
+                <div className="flex-1">
+                  {/* Table header */}
+                  <AnimatedSection className="flex items-center justify-between rounded-2xl bg-gray-50 px-8 py-3">
+                    <div className="flex gap-12">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Rank
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Learner
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                      Total XP
+                    </span>
+                  </AnimatedSection>
+
+                  {/* Leaderboard card */}
+                  <div
+                    ref={leaderboardRef}
+                    className="mt-4 overflow-hidden rounded-[40px] border border-gray-100 shadow-xl"
+                  >
+                    {/* Users above "you" */}
+                    {leaderboard
+                      .filter((u) => !u.isCurrentUser && u.rank < 5)
+                      .map((user, i) => (
+                        <LeaderboardRow
+                          key={user.rank}
+                          user={user}
+                          index={i}
+                          onProfileClick={setSelectedUser}
+                        />
+                      ))}
+
+                    {/* "Your" blue card with mastery */}
+                    <AnimatePresence>
+                      {leaderboard
+                        .filter((u) => u.isCurrentUser)
+                        .map((user) => (
                           <motion.div
-                            // whileHover={{ scale: 1.15 }}
-                            className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-white/20 text-base font-black text-white"
+                            key={user.rank}
+                            initial={{ opacity: 0, scale: 0.92 }}
+                            animate={
+                              leaderboardInView ? { opacity: 1, scale: 1 } : {}
+                            }
+                            transition={{
+                              delay: 0.15,
+                              duration: 0.6,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="rounded-3xl bg-blue-600 p-6 shadow-[0px_25px_50px_0px_#bedbff]"
                           >
-                            #{user.rank}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-5">
+                                <motion.div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-white/20 text-base font-black text-white">
+                                  #{user.rank}
+                                </motion.div>
+                                <motion.div className="relative">
+                                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/40 bg-blue-500 text-lg font-black text-white">
+                                    {user.avatar}
+                                  </div>
+                                  <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-[10px] bg-white shadow-sm">
+                                    <Trophy className="h-3 w-3 text-blue-600" />
+                                  </div>
+                                </motion.div>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <p className="text-lg font-black text-white">
+                                      {user.name}
+                                    </p>
+                                    <motion.span
+                                      animate={{ opacity: [1, 0.5, 1] }}
+                                      transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                      }}
+                                      className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-blue-600"
+                                    >
+                                      YOU
+                                    </motion.span>
+                                  </div>
+                                  <div className="mt-0.5 flex items-center gap-3">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200">
+                                      Level {user.level}
+                                    </span>
+                                    <PositionBadge
+                                      change={user.positionChange}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-2xl font-black text-white">
+                                  {user.xp.toLocaleString()}
+                                </p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-blue-200">
+                                  Total XP
+                                </p>
+                              </div>
+                            </div>
+                            <MasteryRoadmap />
                           </motion.div>
-                          <motion.div
-                            // whileHover={{ scale: 1.06 }}
-                            className="relative"
-                          >
-                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/40 bg-blue-500 text-lg font-black text-white">
-                              {user.avatar}
-                            </div>
-                            <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-[10px] bg-white shadow-sm">
-                              <Trophy className="h-3 w-3 text-blue-600" />
-                            </div>
-                          </motion.div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="text-lg font-black text-white">
-                                {user.name}
-                              </p>
-                              <motion.span
-                                animate={{ opacity: [1, 0.5, 1] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                                className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-blue-600"
-                              >
-                                YOU
-                              </motion.span>
-                            </div>
-                            <div className="mt-0.5 flex items-center gap-3">
-                              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200">
-                                Level {user.level}
-                              </span>
-                              <PositionBadge change={user.positionChange} />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-black text-white">
-                            {user.xp.toLocaleString()}
-                          </p>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-blue-200">
-                            Total XP
-                          </p>
-                        </div>
-                      </div>
-                      <MasteryRoadmap />
-                    </motion.div>
-                  ))}
-              </AnimatePresence>
+                        ))}
+                    </AnimatePresence>
 
-              {/* Users below "you" */}
-              {leaderboard
-                .filter((u) => !u.isCurrentUser && u.rank > 5)
-                .map((user, i) => (
-                  <LeaderboardRow
-                    key={user.rank}
-                    user={user}
-                    index={i + 2}
-                    onProfileClick={setSelectedUser}
-                  />
-                ))}
-            </div>
-          </div>
+                    {/* Users below "you" */}
+                    {leaderboard
+                      .filter((u) => !u.isCurrentUser && u.rank > 5)
+                      .map((user, i) => (
+                        <LeaderboardRow
+                          key={user.rank}
+                          user={user}
+                          index={i + 2}
+                          onProfileClick={setSelectedUser}
+                        />
+                      ))}
+                  </div>
+                </div>
 
-          {/* Right column — Sidebar */}
-          <div className="w-[304px] shrink-0 space-y-6">
-            <XpOverdriveCard />
-            <WeeklyRivalCard onProfileClick={setSelectedUser} />
-          </div>
-        </div>
+                {/* Right column — Sidebar */}
+                <div className="w-[304px] shrink-0 space-y-6">
+                  <XpOverdriveCard />
+                  <WeeklyRivalCard onProfileClick={setSelectedUser} />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "streak" && <StreakMastersContent key="streak" />}
+
+          {activeTab === "best" && (
+            <motion.div
+              key="best"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-16 flex flex-col items-center justify-center py-20"
+            >
+              <Star className="h-16 w-16 text-gray-200 mb-4" />
+              <p className="text-xl font-black text-gray-300">Coming Soon</p>
+              <p className="text-sm text-gray-400 mt-2">
+                Your personal bests will appear here
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       {/* Profile Details Modal */}
