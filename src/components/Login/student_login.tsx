@@ -24,9 +24,9 @@ export default function StudentLogin({
         login(res.token, res.user);
 
         const isNewUser = res.isNewUser;
-        const openOnBoarding = isNewUser ? true : !res.user?.is_onboarded;
+        const needsOnboarding = isNewUser || !res.user?.is_onboarded;
 
-        if (openOnBoarding) {
+        if (needsOnboarding) {
           navigate("/onboarding");
         } else {
           navigate("/");
