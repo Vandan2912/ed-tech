@@ -33,7 +33,7 @@ function App() {
               <Route
                 path="/onboarding"
                 element={
-                  <ProtectedRoute header={false} footer={false} allowUnboarded>
+                  <ProtectedRoute header={false} footer={false}>
                     <Onboarding />
                   </ProtectedRoute>
                 }

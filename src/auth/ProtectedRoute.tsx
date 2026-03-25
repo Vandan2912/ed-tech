@@ -8,14 +8,17 @@ export default function ProtectedRoute({
   children,
   header = true,
   footer = true,
-  allowUnboarded = false,
+  // allowUnboarded = false,
 }: {
   children: JSX.Element;
   header?: boolean;
   footer?: boolean;
   allowUnboarded?: boolean;
 }) {
-  const { token, user } = useAuth();
+  const {
+    token,
+    // user
+  } = useAuth();
 
   if (!token) {
     return <Navigate to="/login" replace />;
@@ -23,9 +26,9 @@ export default function ProtectedRoute({
 
   // If onboarding is pending and this route doesn't allow un-onboarded users,
   // redirect to /onboarding
-  if (!allowUnboarded && user && !user.is_onboarded) {
-    return <Navigate to="/onboarding" replace />;
-  }
+  // if (!allowUnboarded && user && !user.is_onboarded) {
+  //   return <Navigate to="/onboarding" replace />;
+  // }
 
   return (
     <>
