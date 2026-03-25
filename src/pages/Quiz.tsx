@@ -4,6 +4,7 @@ import courses from "@/lib/courses.json";
 import type { Course as CourseType } from "@/types/course";
 import { CircleAlert, CircleCheck, X } from "lucide-react";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 const Quiz = () => {
   const { courseSlug, topicSlug } = useParams();
@@ -31,6 +32,24 @@ const Quiz = () => {
 
     if (selected === q.answer) {
       setScore((prev) => prev + 1);
+      toast.custom(
+        () => (
+          <div className="flex gap-[10px] items-center px-[24px] h-[57px] bg-[#00c950] rounded-[16px] shadow-[0px_25px_50px_0px_#7bf1a8] w-fit pointer-events-auto">
+            <div className="bg-white/20 relative rounded-[14px] shrink-0 w-[32px] h-[32px] flex items-center justify-center">
+              <CircleCheck size={16} className="text-white" strokeWidth={3} />
+            </div>
+            <div className="flex flex-col items-start justify-center">
+              <p className="font-black leading-[18px] text-[18px] text-white tracking-[-0.4395px] m-0">
+                +25 XP
+              </p>
+              <p className="font-bold leading-[15px] text-[#dcfce7] text-[10px] tracking-[1.1172px] uppercase m-0 mt-0.5">
+                Correct Answer!
+              </p>
+            </div>
+          </div>
+        ),
+        { duration: 3000, position: "top-center" },
+      );
     }
     setShowAnswer(true);
 
@@ -59,31 +78,43 @@ const Quiz = () => {
         <div
           className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 ${
             isPassed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
-          }`}>
+          }`}
+        >
           {isPassed ? <CircleCheck size={48} /> : <CircleAlert size={48} />}
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">{isPassed ? "Target Achieved" : "Target Not Met"}</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          {isPassed ? "Target Achieved" : "Target Not Met"}
+        </h2>
 
         {/* Description */}
         <p className="text-gray-500 mb-8">
-          You scored {percentage}/100. A minimum of 70 is required to progress this challenge.
+          You scored {percentage}/100. A minimum of 70 is required to progress
+          this challenge.
         </p>
 
         {/* Metrics */}
         <div className="w-full max-w-sm space-y-4">
           <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Challenge Metrics</h4>
+            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+              Challenge Metrics
+            </h4>
 
             <div className="flex justify-between items-center mb-4">
               <span className="text-gray-600">Quest Accuracy</span>
-              <span className={`font-bold ${isPassed ? "text-green-500" : "text-red-500"}`}>{percentage}%</span>
+              <span
+                className={`font-bold ${isPassed ? "text-green-500" : "text-red-500"}`}
+              >
+                {percentage}%
+              </span>
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Points Earned</span>
-              <span className="font-bold text-blue-600">+{isPassed ? percentage : 0} XP</span>
+              <span className="font-bold text-blue-600">
+                +{isPassed ? percentage : 0} XP
+              </span>
             </div>
           </div>
 
@@ -97,7 +128,8 @@ const Quiz = () => {
                 navigate(`/courses/${course.slug}`);
               }
             }}
-            className="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-colors shadow-lg">
+            className="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-colors shadow-lg"
+          >
             {isPassed ? "Continue" : "Try Again"}
           </button>
         </div>
@@ -111,7 +143,9 @@ const Quiz = () => {
         {/* 📊 Progress */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-bold text-blue-600 uppercase tracking-widest">AI Generated Quiz</span>
+            <span className="text-sm font-bold text-blue-600 uppercase tracking-widest">
+              AI Generated Quiz
+            </span>
 
             <div className="flex items-center gap-3">
               <span className="text-sm text-gray-400">
@@ -121,7 +155,8 @@ const Quiz = () => {
               <button
                 onClick={() => setOpenAbort(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label="Abort quiz">
+                aria-label="Abort quiz"
+              >
                 <X size={14} />
                 Abort
               </button>
@@ -167,7 +202,8 @@ const Quiz = () => {
                           ? "border-blue-600 bg-blue-50"
                           : "border-gray-100 hover:border-blue-400"
                     }
-                `}>
+                `}
+                >
                   <div
                     className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black transition-all ${selected === opt ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
                     ${
@@ -181,19 +217,28 @@ const Quiz = () => {
                           ? "bg-blue-600 text-white"
                           : "bg-gray-100 text-gray-500"
                     }
-                    `}>
+                    `}
+                  >
                     {String.fromCharCode(65 + i)}
                   </div>
                   <span className="font-semibold flex-1">{opt}</span>
-                  {selected === opt && !showAnswer && <CircleCheck size={20} className="text-blue-600" />}
+                  {selected === opt && !showAnswer && (
+                    <CircleCheck size={20} className="text-blue-600" />
+                  )}
                   {showAnswer && (
                     <div className="flex items-center gap-2 text-sm">
                       {/* % picked (mock for now) */}
-                      <span className="text-gray-400">{percentPicked}% picked</span>
+                      <span className="text-gray-400">
+                        {percentPicked}% picked
+                      </span>
 
                       {/* Icons */}
-                      {isCorrect && <CircleCheck size={20} className="text-green-600" />}
-                      {isSelected && !isCorrect && <CircleAlert size={20} className="text-red-600" />}
+                      {isCorrect && (
+                        <CircleCheck size={20} className="text-green-600" />
+                      )}
+                      {isSelected && !isCorrect && (
+                        <CircleAlert size={20} className="text-red-600" />
+                      )}
                     </div>
                   )}
                 </button>
@@ -206,14 +251,16 @@ const Quiz = () => {
             <button
               disabled={!selected}
               onClick={handleSubmit}
-              className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2">
+              className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
+            >
               <CircleCheck size={20} />
               Submit Answer
             </button>
 
             <button
               onClick={() => setOpenAbort(true)}
-              className="px-6 py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-50 hover:text-red-600 border border-gray-200 hover:border-red-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              className="px-6 py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-50 hover:text-red-600 border border-gray-200 hover:border-red-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
               <X size={20} />
               Abort
             </button>
@@ -227,16 +274,20 @@ const Quiz = () => {
             <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
               <CircleAlert size={32} className="text-red-500" />
             </div>
-            <h3 className="text-xl font-black text-gray-900 mb-2">Abort this quiz?</h3>
+            <h3 className="text-xl font-black text-gray-900 mb-2">
+              Abort this quiz?
+            </h3>
             <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-              Your progress on this quiz will be lost and no XP will be awarded. You can retake it anytime.
+              Your progress on this quiz will be lost and no XP will be awarded.
+              You can retake it anytime.
             </p>
             <div className="flex gap-3">
               <button
                 className="flex-1 py-3.5 bg-gray-100 text-gray-700 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-200 transition-all"
                 onClick={() => {
                   setOpenAbort(false);
-                }}>
+                }}
+              >
                 Keep Going
               </button>
               <button
@@ -244,7 +295,8 @@ const Quiz = () => {
                 onClick={() => {
                   setOpenAbort(false);
                   navigate(-1);
-                }}>
+                }}
+              >
                 Yes, Abort
               </button>
             </div>
