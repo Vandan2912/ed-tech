@@ -8,6 +8,7 @@ import { saveAcademicDetails } from "@/api/user";
 import type { User } from "@/auth/AuthProvider";
 import CountryCodeSelect from "@/components/CountryCodeSelect";
 import { ChevronDown, Loader2 } from "lucide-react";
+import CustomSelect from "@/components/CustomSelect";
 
 /* ---------------- ZOD SCHEMA ---------------- */
 
@@ -24,6 +25,7 @@ const step1Schema = z.object({
 
 const step2Schema = z.object({
   schoolName: z.string().min(1, "School name required"),
+  otherSchoolName: z.string().optional(),
   classLevel: z.string().min(1, "Class required"),
   country: z.string().min(1, "Country required"),
   state: z.string().min(1, "State required"),
@@ -35,7 +37,18 @@ const step2Schema = z.object({
   district: z.string().min(1, "District required"),
 });
 
-const schema = step1Schema.merge(step2Schema);
+const schema = step1Schema.merge(step2Schema).superRefine((data, ctx) => {
+  if (
+    data.schoolName === "Other" &&
+    (!data.otherSchoolName || data.otherSchoolName.trim() === "")
+  ) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Please enter your school name",
+      path: ["otherSchoolName"],
+    });
+  }
+});
 
 type FormData = z.infer<typeof schema>;
 
@@ -120,6 +133,7 @@ export default function Onboarding() {
       district: user?.district || "",
       state: user?.state || "",
       schoolName: user?.school_name || "",
+      otherSchoolName: "",
       classLevel: "",
       pinCode: "",
     },
@@ -127,6 +141,8 @@ export default function Onboarding() {
 
   const countryCodeValue = watch("countryCode");
   const countryValue = watch("country");
+  const schoolNameValue = watch("schoolName");
+  const classLevelValue = watch("classLevel");
   const pinCodeValue = watch("pinCode");
   const [loadingPin, setLoadingPin] = useState(false);
 
@@ -174,8 +190,9 @@ export default function Onboarding() {
         id: user?.id,
         first_name: data.firstName,
         last_name: data.lastName,
-        school_name: data.schoolName,
-        class_level: data.classLevel,
+        school_name:
+          data.schoolName === "Other" ? data.otherSchoolName! : data.schoolName,
+        std: data.classLevel,
         pincode: data.pinCode,
         district: data.district,
         state: data.state,
@@ -324,70 +341,107 @@ export default function Onboarding() {
           {step === 2 && (
             <div className="flex flex-col gap-6 mt-10">
               <Field label="School Name" error={errors.schoolName?.message}>
-                <div className="relative">
-                  <select
-                    {...register("schoolName")}
-                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
-                    defaultValue=""
-                  >
-                    <option value="" disabled hidden>
-                      Select your school
-                    </option>
-                    <option value="Delhi Public School">
-                      Delhi Public School
-                    </option>
-                    <option value="Kendriya Vidyalaya">
-                      Kendriya Vidyalaya
-                    </option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <ChevronDown
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                    size={16}
-                  />
-                </div>
+                <CustomSelect
+                  value={schoolNameValue}
+                  onChange={(val) =>
+                    setValue("schoolName", val, { shouldValidate: true })
+                  }
+                  placeholder="Select your school"
+                  options={[
+                    {
+                      label: "Delhi Public School",
+                      value: "Delhi Public School",
+                    },
+                    {
+                      label: "Kendriya Vidyalaya",
+                      value: "Kendriya Vidyalaya",
+                    },
+                    {
+                      label: "St. Xavier's School",
+                      value: "St. Xavier's School",
+                    },
+                    { label: "DAV Public School", value: "DAV Public School" },
+                    {
+                      label: "Army Public School",
+                      value: "Army Public School",
+                    },
+                    {
+                      label: "Ryan International School",
+                      value: "Ryan International School",
+                    },
+                    {
+                      label: "Amity International School",
+                      value: "Amity International School",
+                    },
+                    { label: "The Doon School", value: "The Doon School" },
+                    {
+                      label: "La Martiniere College",
+                      value: "La Martiniere College",
+                    },
+                    {
+                      label: "Bishop Cotton School",
+                      value: "Bishop Cotton School",
+                    },
+                    { label: "Modern School", value: "Modern School" },
+                    { label: "Sanskriti School", value: "Sanskriti School" },
+                    {
+                      label: "Springdales School",
+                      value: "Springdales School",
+                    },
+                    {
+                      label: "Birla Vidya Niketan",
+                      value: "Birla Vidya Niketan",
+                    },
+                    {
+                      label: "Mount Litera Zee School",
+                      value: "Mount Litera Zee School",
+                    },
+                    { label: "Other", value: "Other" },
+                  ]}
+                />
               </Field>
 
-              <Field label="Class" error={errors.classLevel?.message}>
-                <div className="relative">
-                  <select
-                    {...register("classLevel")}
-                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
-                    defaultValue=""
-                  >
-                    <option value="" disabled hidden>
-                      Select your class
-                    </option>
-                    <option value="Class 9">Class 9</option>
-                    <option value="Class 10">Class 10</option>
-                    <option value="Class 11">Class 11</option>
-                    <option value="Class 12">Class 12</option>
-                  </select>
-                  <ChevronDown
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                    size={16}
+              {schoolNameValue === "Other" && (
+                <Field
+                  label="Enter School Name"
+                  error={errors.otherSchoolName?.message}
+                >
+                  <input
+                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
+                    {...register("otherSchoolName")}
+                    placeholder="Type your school name..."
                   />
-                </div>
+                </Field>
+              )}
+
+              <Field label="Class" error={errors.classLevel?.message}>
+                <CustomSelect
+                  value={classLevelValue}
+                  onChange={(val) =>
+                    setValue("classLevel", val, { shouldValidate: true })
+                  }
+                  placeholder="Select your class"
+                  options={[
+                    { label: "Class 9", value: "9" },
+                    { label: "Class 10", value: "10" },
+                    { label: "Class 11", value: "11" },
+                    { label: "Class 12", value: "12" },
+                  ]}
+                />
               </Field>
 
               <Field label="Country" error={errors.country?.message}>
-                <div className="relative">
-                  <select
-                    {...register("country")}
-                    className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
-                    defaultValue=""
-                  >
-                    <option value="" disabled hidden>
-                      Select your country
-                    </option>
-                    <option value="India">India</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <ChevronDown
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                    size={16}
-                  />
-                </div>
+                <CustomSelect
+                  value={countryValue}
+                  onChange={(val) =>
+                    setValue("country", val, { shouldValidate: true })
+                  }
+                  placeholder="Select your country"
+                  options={[
+                    { label: "India", value: "India" },
+                    { label: "Other", value: "Other" },
+                  ]}
+                />
               </Field>
 
               <Field label="State" error={errors.state?.message}>
