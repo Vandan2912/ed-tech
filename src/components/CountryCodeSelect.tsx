@@ -88,7 +88,7 @@ export default function CountryCodeSelect({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-1.5 h-full px-4 bg-gray-50 border border-gray-100 rounded-2xl hover:bg-gray-100 transition-all min-w-[100px] justify-between"
+        className="flex items-center gap-1.5 h-full px-3 sm:px-4 bg-gray-50 border border-gray-100 rounded-2xl hover:bg-gray-100 transition-all min-w-[75px] sm:min-w-[100px] shrink-0 justify-between"
         style={{ minHeight: 58 }}
       >
         <span className="text-base font-bold text-gray-900">
@@ -103,7 +103,7 @@ export default function CountryCodeSelect({
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute left-0 top-full mt-2 w-64 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden"
+          className="absolute left-0 sm:top-full top-[unset] sm:bottom-[unset] bottom-full mt-2 w-64 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden"
           style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.12)" }}
         >
           {/* Search input */}
@@ -122,7 +122,7 @@ export default function CountryCodeSelect({
           </div>
 
           {/* Country list */}
-          <div className="max-h-36 overflow-y-auto overscroll-contain">
+          <div className="sm:max-h-36 max-h-48 overflow-y-auto overscroll-contain">
             {filtered.length === 0 ? (
               <div className="px-4 py-6 text-center text-sm text-gray-400 font-medium">
                 No countries found

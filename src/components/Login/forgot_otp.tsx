@@ -103,22 +103,22 @@ const ForgotOtp = ({
       </button>
 
       {/* Icon */}
-      <div className="w-16 h-16 bg-indigo-100 rounded-2xl inline-flex justify-center items-center mb-6">
-        <ShieldCheck size={32} className="text-indigo-700" />
+      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-xl sm:rounded-2xl inline-flex justify-center items-center mb-4 sm:mb-6">
+        <ShieldCheck className="text-indigo-700 w-6 h-6 sm:w-8 sm:h-8" />
       </div>
 
       {/* Heading */}
-      <h1 className="text-3xl font-black text-gray-900 mb-3">
+      <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2 sm:mb-3">
         Verify Your Email
       </h1>
 
       {/* Subtitle */}
-      <p className="text-gray-500 font-medium mb-3 px-8">
+      <p className="text-sm sm:text-base text-gray-500 font-medium mb-1 sm:mb-3 px-0 sm:px-8">
         We've sent a 6-digit code to
       </p>
 
       {/* Email */}
-      <p className="text-center justify-start text-indigo-700 text-sm font-black leading-5 mb-10">
+      <p className="text-center justify-center text-indigo-700 text-sm sm:text-base font-black leading-5 mb-6 sm:mb-10 break-all">
         {email}
       </p>
 
@@ -136,7 +136,7 @@ const ForgotOtp = ({
           </div>
         )}
 
-        <div className="relative w-full">
+        <div className="relative w-full flex justify-center overflow-hidden sm:overflow-visible">
           <OTPInput length={6} onComplete={handleOtpComplete} />
         </div>
 

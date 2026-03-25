@@ -75,7 +75,7 @@ const Forgot = ({
       </button>
 
       {/* Icon */}
-      <div className="w-16 h-16 bg-indigo-100 rounded-2xl inline-flex justify-center items-center mb-6">
+      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-xl sm:rounded-2xl inline-flex justify-center items-center mb-6">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
           <path
             d="M4 6H20V18H4V6Z"
@@ -95,12 +95,12 @@ const Forgot = ({
       </div>
 
       {/* Heading */}
-      <h1 className="text-3xl font-black text-gray-900 mb-3">
+      <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2 sm:mb-3">
         Forgot Password?
       </h1>
 
       {/* Subtitle */}
-      <p className="text-gray-500 font-medium mb-10 px-8">
+      <p className="text-sm sm:text-base text-gray-500 font-medium mb-8 sm:mb-10 px-0 sm:px-8">
         No worries! Enter your registered email and we'll send you a reset code.
       </p>
 

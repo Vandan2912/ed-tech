@@ -47,16 +47,16 @@ export default function Login() {
   const renderLoginContent = () => (
     <>
       {/* Brain Icon */}
-      <div className="w-20 h-20 bg-blue-900 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-100 transition-colors duration-300">
-        <img src={brain} alt="Brain Icon" style={{ width: 40, height: 40 }} />
+      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-900 rounded-[20px] sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-xl shadow-blue-100 transition-colors duration-300">
+        <img src={brain} alt="Brain Icon" className="w-8 h-8 sm:w-10 sm:h-10" />
       </div>
 
       {/* Title & Subtitle */}
-      <div className="mb-8">
-        <h1 className="text-3xl! font-black! text-gray-900! mb-3! mt-0! tracking-tight!">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl! font-black! text-gray-900! mb-2 sm:mb-3! mt-0! tracking-tight!">
           SmartLearn AI
         </h1>
-        <p className="text-gray-500 font-medium!">
+        <p className="text-sm sm:text-base text-gray-500 font-medium!">
           Join the next generation of learners.{" "}
           <br className="hidden sm:block" />
           Experience AI-powered education.
@@ -104,17 +104,17 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-screen w-screen flex items-center justify-center relative overflow-hidden p-8"
+      className="min-h-dvh w-screen flex flex-col items-center justify-center relative overflow-x-hidden p-4 sm:p-8"
       style={{ background: "#F9FAFB" }}
     >
       {loader && <Loader />}
 
       {/* Background blurred circles */}
-      <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -right-24 -top-48" />
-      <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -left-48 -bottom-48" />
+      <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -right-24 -top-48 hidden sm:block" />
+      <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -left-48 -bottom-48 hidden sm:block" />
 
       {/* Card */}
-      <div className="bg-white rounded-[40px] p-10 w-full max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 text-center relative z-10">
+      <div className="bg-white rounded-[24px] sm:rounded-[40px] p-6 sm:p-10 w-full max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 text-center relative z-10 mx-auto">
         {stage.forgot ? renderForgotFlow() : renderLoginContent()}
       </div>
     </div>

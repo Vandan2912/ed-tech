@@ -220,9 +220,9 @@ export default function Onboarding() {
     <div className="onboarding min-h-screen flex items-center justify-center bg-[#F9FAFB] p-4">
       <SuccessToast visible={toastVisible} />
 
-      <div className="relative w-full mx-4 flex flex-col max-w-170 bg-white rounded-[40px] shadow-xl border border-gray-100">
+      <div className="relative w-full flex flex-col max-w-170 bg-white rounded-2xl sm:rounded-[40px] shadow-xl border border-gray-100">
         {/* Progress bar container (absolute to clip corners without `overflow-hidden` on the main card) */}
-        <div className="absolute inset-0 rounded-[40px] overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 rounded-2xl sm:rounded-[40px] overflow-hidden pointer-events-none">
           <div className="h-1.5 w-full bg-gray-100">
             <div
               className="h-1.5 bg-[#1C398E] transition-all flex items-center justify-end pr-1"
@@ -239,7 +239,7 @@ export default function Onboarding() {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="p-12 flex flex-col relative z-10"
+          className="p-6 sm:p-12 flex flex-col relative z-10"
         >
           {/* Step badge */}
           <div className="inline-flex w-fit items-center gap-2 px-3 py-1 bg-blue-50 rounded-full text-[10px] font-black text-blue-900 uppercase tracking-widest mb-4">
@@ -266,18 +266,18 @@ export default function Onboarding() {
             <span>Step {step} of 2</span>
           </div>
 
-          <h2 className="text-3xl! font-black! text-gray-900! tracking-tight mb-2">
+          <h2 className="text-2xl! sm:text-3xl! font-black! text-gray-900! tracking-tight mb-2">
             {step === 1 ? "Personal Information" : "Academic Details"}
           </h2>
 
-          <p className="text-gray-500 font-medium">
+          <p className="text-sm sm:text-base text-gray-500 font-medium">
             Please provide accurate details to personalize your experience.
           </p>
 
           {/* ---------------- STEP 1 ---------------- */}
 
           {step === 1 && (
-            <div className="flex flex-col gap-6 mt-10">
+            <div className="flex flex-col gap-6 mt-6 sm:mt-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Field label="First Name" error={errors.firstName?.message}>
                   <input
@@ -318,7 +318,7 @@ export default function Onboarding() {
 
                   {/* Phone Number */}
                   <input
-                    className="flex-1 px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
+                    className="flex-1 w-full min-w-0 px-3 sm:px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
                     {...register("phone")}
                     placeholder="9876543210"
                     inputMode="numeric"
@@ -339,7 +339,7 @@ export default function Onboarding() {
           {/* ---------------- STEP 2 ---------------- */}
 
           {step === 2 && (
-            <div className="flex flex-col gap-6 mt-10">
+            <div className="flex flex-col gap-6 mt-6 sm:mt-10">
               <Field label="School Name" error={errors.schoolName?.message}>
                 <CustomSelect
                   value={schoolNameValue}

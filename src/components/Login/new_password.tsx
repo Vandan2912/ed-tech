@@ -87,7 +87,7 @@ export default function CreateNewPassword({
           You can now sign in with your new password.
         </div>
         <button
-          className="w-96 h-12 bg-indigo-700 rounded-2xl shadow-[0px_10px_15px_-3px_rgba(224,231,255,1.00)] text-center justify-start text-white text-sm font-black uppercase leading-5 tracking-wider cursor-pointer"
+          className="w-full sm:w-96 h-12 bg-indigo-700 rounded-2xl shadow-[0px_10px_15px_-3px_rgba(224,231,255,1.00)] text-center justify-center text-white text-sm font-black uppercase leading-5 tracking-wider cursor-pointer px-4"
           onClick={() => {
             setStage({ forgot: false, forgotOTP: false, newPassword: false });
           }}>
@@ -107,8 +107,8 @@ export default function CreateNewPassword({
       </button>
 
       {/* Icon */}
-      <div className="w-16 h-16 bg-indigo-100 rounded-3xl flex items-center justify-center mx-auto mb-8">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-xl sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" className="w-6 h-6 sm:w-8 sm:h-8">
           <path
             d="M3.44833 23.2187C2.94819 23.7187 2.66714 24.3969 2.66699 25.1041V28.0001C2.66699 28.3537 2.80747 28.6928 3.05752 28.9429C3.30756 29.1929 3.6467 29.3334 4.00033 29.3334H8.00033C8.35395 29.3334 8.69309 29.1929 8.94313 28.9429C9.19318 28.6928 9.33366 28.3537 9.33366 28.0001V26.6667C9.33366 26.3131 9.47414 25.974 9.72418 25.7239C9.97423 25.4739 10.3134 25.3334 10.667 25.3334H12.0003C12.3539 25.3334 12.6931 25.1929 12.9431 24.9429C13.1932 24.6928 13.3337 24.3537 13.3337 24.0001V22.6667C13.3337 22.3131 13.4741 21.974 13.7242 21.7239C13.9742 21.4739 14.3134 21.3334 14.667 21.3334H14.8963C15.6035 21.3332 16.2817 21.0522 16.7817 20.5521L17.867 19.4667C19.7201 20.1122 21.7374 20.1098 23.589 19.4597C25.4405 18.8097 27.0166 17.5505 28.0595 15.8882C29.1023 14.2259 29.5502 12.2589 29.3298 10.309C29.1094 8.35912 28.2338 6.54172 26.8462 5.15414C25.4587 3.76657 23.6413 2.89096 21.6913 2.67057C19.7414 2.45018 17.7744 2.89805 16.1122 3.94091C14.4499 4.98377 13.1907 6.55988 12.5407 8.41141C11.8906 10.2629 11.8881 12.2803 12.5337 14.1334L3.44833 23.2187Z"
             stroke="#432DD7"
@@ -128,9 +128,9 @@ export default function CreateNewPassword({
       </div>
 
       {/* Title */}
-      <h1 className="text-3xl font-black text-gray-900 mb-3">Create New Password</h1>
+      <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2 sm:mb-3">Create New Password</h1>
 
-      <p className="text-gray-500 font-medium mb-10">Your new password must be at least 6 characters long.</p>
+      <p className="text-sm sm:text-base text-gray-500 font-medium mb-8 sm:mb-10 px-0 sm:px-8">Your new password must be at least 6 characters long.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
         {/* New Password */}

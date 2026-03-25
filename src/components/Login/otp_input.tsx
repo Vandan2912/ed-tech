@@ -30,7 +30,10 @@ export function OTPInput({ length = 6, onComplete }: OTPInputProps) {
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       // Move to previous input on backspace if current is empty
       inputRefs.current[index - 1]?.focus();
@@ -63,7 +66,7 @@ export function OTPInput({ length = 6, onComplete }: OTPInputProps) {
   };
 
   return (
-    <div className="flex items-center" style={{ gap: "10px" }}>
+    <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full">
       {otp.map((digit, index) => (
         <input
           key={index}
@@ -77,12 +80,7 @@ export function OTPInput({ length = 6, onComplete }: OTPInputProps) {
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}
-          className="w-12 h-14 text-center text-xl font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-          style={{
-            borderRadius: "14px",
-            border: "2px solid #F3F4F6",
-            background: "#F9FAFB",
-          }}
+          className="w-10 sm:w-12 h-12 sm:h-14 text-center text-lg sm:text-xl font-semibold outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all rounded-xl border-2 border-gray-100 bg-gray-50 shrink min-w-0"
           aria-label={`OTP digit ${index + 1}`}
         />
       ))}
