@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import userImage from "@/assets/user.jpg";
 import {
   motion,
   AnimatePresence,
@@ -85,7 +86,7 @@ const topThree: LeaderboardUser[] = [
     xp: 2320,
     avatar: "SK",
     positionChange: 1,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     badges: 18,
     league: "Diamond League",
     memberType: "Elite Member",
@@ -97,7 +98,7 @@ const topThree: LeaderboardUser[] = [
     xp: 2450,
     avatar: "AM",
     positionChange: 3,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     badges: 24,
     league: "Diamond League",
     memberType: "Pro Member",
@@ -109,7 +110,7 @@ const topThree: LeaderboardUser[] = [
     xp: 2210,
     avatar: "LD",
     positionChange: -1,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     badges: 15,
     league: "Diamond League",
     memberType: "Rising Star",
@@ -124,7 +125,7 @@ const leaderboard: LeaderboardUser[] = [
     xp: 1940,
     avatar: "PS",
     positionChange: 2,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     badges: 16,
     league: "Diamond League",
     memberType: "Active Learner",
@@ -137,7 +138,7 @@ const leaderboard: LeaderboardUser[] = [
     avatar: "YO",
     positionChange: 2,
     isCurrentUser: true,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     badges: 12,
     league: "Diamond League",
     memberType: "Member",
@@ -149,7 +150,7 @@ const leaderboard: LeaderboardUser[] = [
     xp: 1720,
     avatar: "RG",
     positionChange: -1,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     badges: 14,
     league: "Platinum League",
     memberType: "Explorer",
@@ -161,7 +162,7 @@ const leaderboard: LeaderboardUser[] = [
     xp: 1650,
     avatar: "ZA",
     positionChange: 2,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     badges: 10,
     league: "Platinum League",
     memberType: "Challenger",
@@ -239,7 +240,7 @@ const streakLeaderboard: StreakUser[] = [
     subject: "Mastering Physics",
     tier: "Elite Tier",
     streakDays: 42,
-    image: "/src/assets/user.jpg",
+    image: userImage,
   },
   {
     rank: 2,
@@ -247,7 +248,7 @@ const streakLeaderboard: StreakUser[] = [
     subject: "Mastering Mathematics",
     tier: "Elite Tier",
     streakDays: 38,
-    image: "/src/assets/user.jpg",
+    image: userImage,
   },
   {
     rank: 3,
@@ -255,7 +256,7 @@ const streakLeaderboard: StreakUser[] = [
     subject: "Mastering Biology",
     tier: "Elite Tier",
     streakDays: 35,
-    image: "/src/assets/user.jpg",
+    image: userImage,
   },
   {
     rank: 4,
@@ -263,7 +264,7 @@ const streakLeaderboard: StreakUser[] = [
     subject: "Mastering Chemistry",
     tier: "Elite Tier",
     streakDays: 28,
-    image: "/src/assets/user.jpg",
+    image: userImage,
     isCurrentUser: true,
   },
   {
@@ -272,7 +273,7 @@ const streakLeaderboard: StreakUser[] = [
     subject: "Mastering History",
     tier: "Elite Tier",
     streakDays: 24,
-    image: "/src/assets/user.jpg",
+    image: userImage,
   },
 ];
 
