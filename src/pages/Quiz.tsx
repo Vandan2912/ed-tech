@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import courses from "@/lib/courses.json";
 import type { Course as CourseType } from "@/types/course";
-import { CircleAlert, CircleCheck, X } from "lucide-react";
+import { CircleAlert, CircleCheck, X, Flame, Brain } from "lucide-react";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
@@ -73,50 +73,97 @@ const Quiz = () => {
 
   if (showResult) {
     return (
-      <div className="min-h-screen bg-white p-6 md:pl-28 flex flex-col items-center justify-center text-center">
+      <div className="min-h-screen bg-white p-6 md:pl-28 flex flex-col items-center justify-center pt-16">
         {/* Icon */}
         <div
-          className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 ${
-            isPassed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+          className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shrink-0 ${
+            isPassed ? "bg-[#dcfce7] text-[#00a63e]" : "bg-red-100 text-red-600"
           }`}
         >
-          {isPassed ? <CircleCheck size={48} /> : <CircleAlert size={48} />}
+          {isPassed ? <CircleCheck size={48} strokeWidth={2.5} /> : <CircleAlert size={48} />}
         </div>
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          {isPassed ? "Target Achieved" : "Target Not Met"}
+        <h2 className="text-[30px] font-bold text-[#101828] tracking-[0.3955px] mb-2">
+          {isPassed ? "Quest Mastered!" : "Target Not Met"}
         </h2>
 
         {/* Description */}
-        <p className="text-gray-500 mb-8">
-          You scored {percentage}/100. A minimum of 70 is required to progress
-          this challenge.
+        <p className="text-[#6a7282] text-[16px] mb-10 text-center tracking-[-0.3125px] max-w-sm">
+          {isPassed 
+            ? `Fantastic work! You scored ${percentage}/100 and maintained your streak.` 
+            : `You scored ${percentage}/100. A minimum of 70 is required to progress this challenge.`
+          }
         </p>
 
-        {/* Metrics */}
-        <div className="w-full max-w-sm space-y-4">
-          <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+        {/* Metrics Container */}
+        <div className="w-full max-w-[384px] space-y-4 pb-20">
+          
+          {/* Main Metrics Box */}
+          <div className="bg-[#f9fafb] border border-[#f3f4f6] p-6 rounded-[24px]">
+            <h4 className="text-[14px] font-semibold text-[#6a7282] uppercase tracking-[0.5496px] text-center mb-6">
               Challenge Metrics
             </h4>
 
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-gray-600">Quest Accuracy</span>
+            <div className="flex justify-between items-center mb-6">
+              <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">Quest Accuracy</span>
               <span
-                className={`font-bold ${isPassed ? "text-green-500" : "text-red-500"}`}
+                className={`font-bold text-[16px] tracking-[-0.3125px] ${isPassed ? "text-[#00a63e]" : "text-red-500"}`}
               >
                 {percentage}%
               </span>
             </div>
 
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Points Earned</span>
-              <span className="font-bold text-blue-600">
-                +{isPassed ? percentage : 0} XP
+            <div className="flex justify-between items-center mb-5">
+              <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">Points Earned</span>
+              <span className="font-bold text-[#155dfc] text-[16px] tracking-[-0.3125px]">
+                +{isPassed ? percentage + 25 : 0} XP
               </span>
             </div>
+
+            {/* Bonus Badge */}
+            {isPassed && (
+              <div className="bg-[#d0fae5] rounded-[10px] py-[6px] w-full mt-2">
+                <p className="font-black text-[#007a55] text-[10px] uppercase text-center tracking-[0.1172px]">
+                  Misconception Fixed Bonus Included!
+                </p>
+              </div>
+            )}
           </div>
+
+          {/* Streak Bonus Card */}
+          {isPassed && (
+            <div className="bg-[#f54900] rounded-[24px] p-4 flex items-center gap-4 shadow-[0px_20px_25px_0px_#ffd6a8,0px_8px_10px_0px_#ffd6a8]">
+              <div className="bg-white/20 rounded-[16px] w-[48px] h-[48px] shrink-0 flex items-center justify-center">
+                <Flame className="text-white" size={24} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-[#ffedd4] text-[12px] uppercase tracking-[1.2px]">
+                  Streak Bonus
+                </span>
+                <span className="font-bold text-white text-[16px] tracking-[-0.3125px] mt-0.5">
+                  Consistency +1 Day
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Correction Streak Card */}
+          {isPassed && (
+            <div className="bg-[#009966] rounded-[24px] p-4 flex items-center gap-4 shadow-[0px_20px_25px_0px_#a4f4cf,0px_8px_10px_0px_#a4f4cf]">
+              <div className="bg-white/20 rounded-[16px] w-[48px] h-[48px] shrink-0 flex items-center justify-center">
+                <Brain className="text-white" size={24} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-bold text-[#d0fae5] text-[12px] uppercase tracking-[1.2px]">
+                  Correction Streak
+                </span>
+                <span className="font-bold text-white text-[16px] tracking-[-0.3125px] mt-0.5">
+                  Fixed Myth! +75 XP
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* CTA */}
           <button
@@ -128,9 +175,9 @@ const Quiz = () => {
                 navigate(`/courses/${course.slug}`);
               }
             }}
-            className="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-colors shadow-lg"
+            className="w-full h-[56px] mt-4 bg-[#101828] text-white rounded-[16px] font-bold text-[16px] tracking-[-0.3125px] hover:bg-black transition-colors shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)]"
           >
-            {isPassed ? "Continue" : "Try Again"}
+            {isPassed ? "Collect Rewards" : "Try Again"}
           </button>
         </div>
       </div>
