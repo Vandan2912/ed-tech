@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 
 export const teacherLogin = async (email: string, password: string) => {
-  const res = await api.post("/admin/teacher-login", {
+  const res = await api.post("/api/auth/teacher-login", {
     email,
     password,
   });
