@@ -18,11 +18,12 @@ import {
   Trophy,
   User,
   Users,
-  X,
-  Zap,
   Pin,
+  Zap,
+  X,
 } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAuth } from "@/auth/useAuth";
 import {
   Popover,
@@ -34,9 +35,17 @@ import { CoursesDropdown } from "./courses_drawer";
 
 export function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
   const [imgError, setImgError] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const teacherTabs = [
+    { id: "alerts", label: "Alerts", path: "/", icon: Bell, badge: 5 },
+    { id: "pin-message", label: "Pin Message", path: "/pin-message", icon: Pin },
+    { id: "engagement", label: "Engagement", path: "/engagement", icon: BarChart3 },
+    { id: "content", label: "Content", path: "/content", icon: BookOpen },
+  ];
 
   return (
     <header className="border-b border-gray-100 bg-white sticky top-0 z-50">
@@ -71,33 +80,44 @@ export function Header() {
 
         {user?.role === "teacher" ? (
           <nav className="hidden md:flex items-center p-1.5 bg-[#f3f4f6] rounded-[16px]">
-            <div className="bg-white shadow-sm flex items-center gap-2 px-4 py-2 rounded-[14px]">
-              <Bell size={16} className="text-[#e7000b]" />
-              <span className="text-[#e7000b] text-[12px] font-black uppercase tracking-[1.2px]">
-                Alerts
-              </span>
-              <span className="bg-[#fb2c36] text-white text-[8px] font-black px-1.5 py-0.5 rounded-full -ml-1">
-                5
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 hover:bg-white/50 rounded-[14px] cursor-pointer transition-colors">
-              <Pin size={16} className="text-[#6a7282]" />
-              <span className="text-[#6a7282] text-[12px] font-black uppercase tracking-[1.2px]">
-                Pin Message
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 hover:bg-white/50 rounded-[14px] cursor-pointer transition-colors">
-              <BarChart3 size={16} className="text-[#6a7282]" />
-              <span className="text-[#6a7282] text-[12px] font-black uppercase tracking-[1.2px]">
-                Engagement
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 hover:bg-white/50 rounded-[14px] cursor-pointer transition-colors">
-              <BookOpen size={16} className="text-[#6a7282]" />
-              <span className="text-[#6a7282] text-[12px] font-black uppercase tracking-[1.2px]">
-                Content
-              </span>
-            </div>
+            {teacherTabs.map((tab) => {
+              const isActive = location.pathname === tab.path;
+              const Icon = tab.icon;
+
+              return (
+                <div
+                  key={tab.id}
+                  onClick={() => navigate(tab.path)}
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-[14px] cursor-pointer transition-colors ${
+                    isActive
+                      ? tab.id === "alerts"
+                        ? "text-[#e7000b]"
+                        : "text-[#312c85]"
+                      : "text-[#6a7282] hover:bg-white/50"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="teacher-nav"
+                      className="absolute inset-0 bg-white shadow-sm rounded-[14px]"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
+                  <div className="relative z-10 flex items-center gap-2">
+                    <Icon size={16} />
+                    <span className="text-[12px] font-black uppercase tracking-[1.2px]">
+                      {tab.label}
+                    </span>
+                    {tab.badge && (
+                      <span className="bg-[#fb2c36] text-white text-[8px] font-black px-1.5 py-0.5 rounded-full -ml-1">
+                        {tab.badge}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </nav>
         ) : (
           <nav className="hidden md:flex items-center gap-0.5 p-1 text-sm text-[#6A7282] bg-[#F3F4F6E5] rounded-full border border-[#E5E7EBCC] text-[11px] not-italic font-black leading-[16.5px] tracking-[1.164px] uppercase">

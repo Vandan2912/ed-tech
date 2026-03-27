@@ -14,6 +14,7 @@ import Courses from "./pages/Courses";
 import Course from "./pages/Course";
 import Topic from "./pages/Topic";
 import Quiz from "./pages/Quiz";
+import PinMessage from "./pages/PinMessage";
 import Ranks from "./pages/Rank";
 // import PublicRoute from "./auth/PublicRoute";
 
@@ -45,6 +46,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Home />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/pin-message"
+                element={
+                  <ProtectedRoute>
+                    <PinMessage />
                   </ProtectedRoute>
                 }
               />
