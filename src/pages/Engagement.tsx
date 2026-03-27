@@ -1,0 +1,541 @@
+import { useState } from "react";
+import { useAuth } from "@/auth/useAuth";
+import {
+  Search,
+  Users,
+  CheckCircle,
+  AlertTriangle,
+  BarChart as BarChartIcon,
+} from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+const weeklyData = [
+  { name: "Mon", active: 25, inactive: 12 },
+  { name: "Tue", active: 30, inactive: 8 },
+  { name: "Wed", active: 28, inactive: 8 },
+  { name: "Thu", active: 32, inactive: 5 },
+  { name: "Fri", active: 29, inactive: 9 },
+  { name: "Sat", active: 20, inactive: 15 },
+  { name: "Sun", active: 18, inactive: 18 },
+];
+
+const students = [
+  {
+    id: 1,
+    name: "Arjun Mehta",
+    grade: "10th Grade",
+    status: "Active",
+    lastActive: "2 hours ago",
+    streak: "12d",
+    score: "88%",
+    lessons: 24,
+    time: "42h",
+    risk: "Low",
+    avatar: "https://i.pravatar.cc/150?u=1",
+  },
+  {
+    id: 2,
+    name: "Sara Khan",
+    grade: "10th Grade",
+    status: "Active",
+    lastActive: "5 hours ago",
+    streak: "8d",
+    score: "92%",
+    lessons: 28,
+    time: "56h",
+    risk: "Low",
+    avatar: "https://i.pravatar.cc/150?u=2",
+  },
+  {
+    id: 3,
+    name: "Rohan Gupta",
+    grade: "9th Grade",
+    status: "Inactive",
+    lastActive: "3 days ago",
+    streak: "0d",
+    score: "62%",
+    lessons: 8,
+    time: "12h",
+    risk: "High",
+    avatar: "https://i.pravatar.cc/150?u=3",
+  },
+  {
+    id: 4,
+    name: "Zoya Ali",
+    grade: "10th Grade",
+    status: "Active",
+    lastActive: "1 hour ago",
+    streak: "15d",
+    score: "95%",
+    lessons: 32,
+    time: "68h",
+    risk: "Low",
+    avatar: "https://i.pravatar.cc/150?u=4",
+  },
+  {
+    id: 5,
+    name: "Priya Sharma",
+    grade: "9th Grade",
+    status: "Inactive",
+    lastActive: "5 days ago",
+    streak: "0d",
+    score: "55%",
+    lessons: 5,
+    time: "8h",
+    risk: "Critical",
+    avatar: "https://i.pravatar.cc/150?u=5",
+  },
+  {
+    id: 6,
+    name: "Aarav Patel",
+    grade: "10th Grade",
+    status: "Active",
+    lastActive: "30 min ago",
+    streak: "5d",
+    score: "74%",
+    lessons: 16,
+    time: "28h",
+    risk: "Medium",
+    avatar: "https://i.pravatar.cc/150?u=6",
+  },
+  {
+    id: 7,
+    name: "Neha Singh",
+    grade: "9th Grade",
+    status: "Inactive",
+    lastActive: "1 week ago",
+    streak: "0d",
+    score: "48%",
+    lessons: 3,
+    time: "4h",
+    risk: "Critical",
+    avatar: "https://i.pravatar.cc/150?u=7",
+  },
+];
+
+const performanceData = [
+  { subject: "Mathematics", top: 95, average: 75, bottom: 45 },
+  { subject: "Physics", top: 92, average: 70, bottom: 40 },
+  { subject: "Chemistry", top: 98, average: 81, bottom: 55 },
+  { subject: "Biology", top: 90, average: 68, bottom: 48 },
+  { subject: "History", top: 96, average: 85, bottom: 60 },
+];
+
+export default function Engagement() {
+  const { user } = useAuth();
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<"ALL" | "ACTIVE" | "AT RISK">("ALL");
+
+  const filteredStudents = students.filter(
+    (s) =>
+      (filter === "ALL" ||
+        (filter === "ACTIVE" && s.status === "Active") ||
+        (filter === "AT RISK" && ["High", "Critical"].includes(s.risk))) &&
+      s.name.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  return (
+    <div className="bg-[#f9fafb] w-full min-h-screen font-['Inter']">
+      <div className="pt-10 pb-24 relative px-4 md:px-8 max-w-[1129px] mx-auto space-y-8">
+        {/* Welcome Banner */}
+        <div className="bg-linear-to-r from-[#4f39f6] to-[#1447e6] rounded-[32px] p-8 md:p-10 relative overflow-hidden text-white shadow-sm">
+          <div className="absolute -top-32 -right-32 w-64 h-64 bg-white/10 blur-3xl rounded-full"></div>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-black mb-2 tracking-tight">
+                Welcome back, {user?.first_name || "Aksh"}!
+              </h1>
+              <p className="text-blue-100 text-[16px]">
+                Monitor your students' progress and identify who needs extra
+                support.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Top Metrics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <MetricCard
+            title="Total Students"
+            value="7"
+            subtitle="In your class"
+            icon={Users}
+            iconColor="text-[#99a1af]"
+            valueColor="text-[#101828]"
+            bgClasses="bg-white border-[#f3f4f6]"
+          />
+          <MetricCard
+            title="Active Today"
+            value="4"
+            subtitle="57% engagement"
+            icon={CheckCircle}
+            iconColor="text-[#009966]"
+            valueColor="text-[#004f3b]"
+            bgClasses="bg-[#ecfdf5] border-[#d0fae5]"
+            titleColor="text-[#009966]"
+          />
+          <MetricCard
+            title="At Risk"
+            value="3"
+            subtitle="Need attention"
+            icon={AlertTriangle}
+            iconColor="text-[#e7000b]"
+            valueColor="text-[#82181a]"
+            bgClasses="bg-[#fef2f2] border-[#ffe2e2]"
+            titleColor="text-[#e7000b]"
+          />
+          <MetricCard
+            title="Avg Score"
+            value="73%"
+            subtitle="Class average"
+            icon={BarChartIcon}
+            iconColor="text-[#155dfc]"
+            valueColor="text-[#1c398e]"
+            bgClasses="bg-[#eff6ff] border-[#dbeafe]"
+            titleColor="text-[#155dfc]"
+          />
+        </div>
+
+        {/* Weekly Engagement Chart */}
+        <div className="bg-white border border-[#f3f4f6] rounded-[40px] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] p-8">
+          <div className="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
+            <div>
+              <h3 className="text-[#101828] text-[14px] font-black uppercase tracking-[0.55px]">
+                Weekly Engagement
+              </h3>
+              <p className="text-[#6a7282] text-[12px] mt-1">
+                Active vs Inactive students per day
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#00bc7d]"></div>
+                <span className="text-[#0a0a0a] text-[10px] font-bold">
+                  Active
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#ff6467]"></div>
+                <span className="text-[#0a0a0a] text-[10px] font-bold">
+                  Inactive
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="h-[224px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={weeklyData} barSize={24} barGap={8}>
+                <CartesianGrid
+                  vertical={false}
+                  stroke="#E5E7EB"
+                  strokeDasharray="3 3"
+                />
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#9ca3af", fontSize: 11, fontWeight: "bold" }}
+                  dy={10}
+                />
+                <YAxis hide />
+                <Tooltip
+                  cursor={{ fill: "rgba(229,231,235,0.4)" }}
+                  contentStyle={{
+                    borderRadius: "16px",
+                    border: "none",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+                  }}
+                />
+                <Bar dataKey="active" fill="#00bc7d" radius={[8, 8, 8, 8]} />
+                <Bar dataKey="inactive" fill="#ff6467" radius={[8, 8, 8, 8]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Student Roster Table */}
+        <div className="bg-white border border-[#f3f4f6] rounded-[40px] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] overflow-hidden">
+          <div className="border-b border-[#f9fafb] px-8 py-5 flex flex-col md:flex-row justify-between gap-4 items-center">
+            <h3 className="text-[#101828] text-[14px] font-black uppercase tracking-[0.55px]">
+              Student Roster
+            </h3>
+            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+              <div className="relative">
+                <Search
+                  size={16}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  type="text"
+                  placeholder="Search students..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-9 pr-4 py-2.5 bg-[#f9fafb] border border-[#f3f4f6] rounded-xl text-sm w-full md:w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+              <div className="bg-[#f3f4f6] p-1 flex rounded-[14px]">
+                {["ALL", "ACTIVE", "AT RISK"].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setFilter(tab as any)}
+                    className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-[1.1px] rounded-[10px] transition-all ${
+                      filter === tab
+                        ? "bg-white text-[#155dfc] shadow-sm"
+                        : "text-[#6a7282] hover:bg-gray-200"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#f9fafb] border-b border-[#f9fafb]">
+                  <th className="px-8 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Student
+                  </th>
+                  <th className="px-4 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Status
+                  </th>
+                  <th className="px-4 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Last Active
+                  </th>
+                  <th className="px-4 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Streak
+                  </th>
+                  <th className="px-4 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Avg Score
+                  </th>
+                  <th className="px-4 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Lessons
+                  </th>
+                  <th className="px-4 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Time
+                  </th>
+                  <th className="px-8 py-4 text-[10px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
+                    Risk Level
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#f9fafb]">
+                {filteredStudents.map((s, idx) => (
+                  <tr
+                    key={s.id}
+                    className={`hover:bg-gray-50/50 transition-colors ${idx % 2 === 1 ? "bg-[rgba(255,251,235,0.3)]" : ""}`}
+                  >
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={s.avatar}
+                          alt={s.name}
+                          className="w-10 h-10 rounded-xl object-cover border border-[#f3f4f6]"
+                        />
+                        <div>
+                          <p className="text-[#101828] text-[14px] font-bold">
+                            {s.name}
+                          </p>
+                          <p className="text-[#99a1af] text-[10px]">
+                            {s.grade}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-5">
+                      <div
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[1.06px] ${
+                          s.status === "Active"
+                            ? "bg-[#d0fae5] text-[#096]"
+                            : "bg-[#f3f4f6] text-[#6a7282]"
+                        }`}
+                      >
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full ${s.status === "Active" ? "bg-[#00bc7d]" : "bg-[#99a1af]"}`}
+                        />
+                        {s.status}
+                      </div>
+                    </td>
+                    <td className="px-4 py-5 text-[#6a7282] text-[14px] font-normal">
+                      {s.lastActive}
+                    </td>
+                    <td className="px-4 py-5 text-[#101828] text-[14px] font-bold">
+                      {s.streak}
+                    </td>
+                    <td className="px-4 py-5">
+                      <span
+                        className={`text-[14px] font-black ${s.status === "Active" ? "text-[#096]" : "text-[#e17100]"}`}
+                      >
+                        {s.score}
+                      </span>
+                    </td>
+                    <td className="px-4 py-5 text-[#364153] text-[14px] font-bold">
+                      {s.lessons}
+                    </td>
+                    <td className="px-4 py-5 text-[#364153] text-[14px] font-bold">
+                      {s.time}
+                    </td>
+                    <td className="px-8 py-5">
+                      <div
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[1.06px] text-white ${
+                          s.risk === "Low"
+                            ? "bg-[#81c784]"
+                            : s.risk === "Medium"
+                              ? "bg-[#64b5f6]"
+                              : s.risk === "High"
+                                ? "bg-[#ffb900]"
+                                : "bg-[#fb2c36]"
+                        }`}
+                      >
+                        {s.risk}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filteredStudents.length === 0 && (
+              <div className="text-center py-10 text-gray-400">
+                No students found matching filters.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Class Performance Chart */}
+        <div className="bg-white border border-[#f3f4f6] rounded-[40px] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] p-8">
+          <div className="flex flex-col md:flex-row justify-between md:items-center mb-8 gap-4">
+            <div>
+              <h3 className="text-[#101828] text-[14px] font-black uppercase tracking-[0.55px]">
+                Class Performance By Subject
+              </h3>
+              <p className="text-[#6a7282] text-[12px] mt-1">
+                Average, top, and bottom scores
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#4f39f6]"></div>
+                <span className="text-[#0a0a0a] text-[10px] font-bold">
+                  Top Score
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#00bc7d]"></div>
+                <span className="text-[#0a0a0a] text-[10px] font-bold">
+                  Average
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#ff6467]"></div>
+                <span className="text-[#0a0a0a] text-[10px] font-bold">
+                  Bottom Score
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="h-[280px] w-full mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={performanceData} barSize={20} barGap={12}>
+                <CartesianGrid
+                  vertical={false}
+                  stroke="#E5E7EB"
+                  strokeDasharray="3 3"
+                />
+                <XAxis
+                  dataKey="subject"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#9ca3af", fontSize: 11, fontWeight: "bold" }}
+                  dy={10}
+                />
+                <YAxis hide />
+                <Tooltip
+                  cursor={{ fill: "rgba(229,231,235,0.4)" }}
+                  contentStyle={{
+                    borderRadius: "16px",
+                    border: "none",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+                  }}
+                />
+                <Bar
+                  dataKey="top"
+                  name="Top Score"
+                  fill="#4f39f6"
+                  radius={[6, 6, 6, 6]}
+                />
+                <Bar
+                  dataKey="average"
+                  name="Average"
+                  fill="#00bc7d"
+                  radius={[6, 6, 6, 6]}
+                />
+                <Bar
+                  dataKey="bottom"
+                  name="Bottom Score"
+                  fill="#ff6467"
+                  radius={[6, 6, 6, 6]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  iconColor,
+  valueColor,
+  bgClasses,
+  titleColor = "text-[#99a1af]",
+}: {
+  title: string;
+  value: string;
+  subtitle: string;
+  icon: any;
+  iconColor: string;
+  valueColor: string;
+  bgClasses: string;
+  titleColor?: string;
+}) {
+  return (
+    <div
+      className={`p-6 rounded-[24px] border ${bgClasses} shadow-sm flex flex-col justify-between h-[133px]`}
+    >
+      <div className="flex justify-between items-start">
+        <h4
+          className={`text-[10px] font-black uppercase tracking-[1.1px] ${titleColor}`}
+        >
+          {title}
+        </h4>
+        <Icon size={16} className={iconColor} />
+      </div>
+      <div>
+        <div
+          className={`text-[30px] font-black leading-none mb-1 ${valueColor}`}
+        >
+          {value}
+        </div>
+        <p className={`text-[10px] font-bold ${titleColor} opacity-90`}>
+          {subtitle}
+        </p>
+      </div>
+    </div>
+  );
+}
