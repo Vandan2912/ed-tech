@@ -16,6 +16,7 @@ import Topic from "./pages/Topic";
 import Quiz from "./pages/Quiz";
 import PinMessage from "./pages/PinMessage";
 import Engagement from "./pages/Engagement";
+import Content from "./pages/Content";
 import Ranks from "./pages/Rank";
 // import PublicRoute from "./auth/PublicRoute";
 
@@ -63,6 +64,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Engagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/content"
+                element={
+                  <ProtectedRoute>
+                    <Content />
                   </ProtectedRoute>
                 }
               />
