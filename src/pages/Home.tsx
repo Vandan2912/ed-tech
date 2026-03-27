@@ -7,8 +7,15 @@ import { Hero } from "@/components/home/hero";
 import { Progress } from "@/components/home/progress";
 import { Recommended } from "@/components/home/recommended";
 import { ResumeLearning } from "@/components/home/resume_learning";
+import { useAuth } from "@/auth/useAuth";
+import TeacherDashboard from "./TeacherDashboard";
 
 const Home = () => {
+  const { user } = useAuth();
+
+  if (user?.role === "teacher") {
+    return <TeacherDashboard />;
+  }
   return (
     <div className="home min-h-screen bg-white text-gray-900">
       <main className="max-w-7xl mx-auto space-y-12 pb-24">

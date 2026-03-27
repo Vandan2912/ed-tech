@@ -20,6 +20,7 @@ import {
   Users,
   X,
   Zap,
+  Pin,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
@@ -49,94 +50,157 @@ export function Header() {
           <div className="bg-[#1C398E] p-2 rounded-xl text-white">
             <Brain size={20} />
           </div>
-          <div className="text-[#101828] text-center text-base not-italic font-black leading-6 tracking-[-0.712px] flex items-center gap-1.5">
-            SmartLearn
-            <div className="bg-[#DBEAFE] px-1.5 py-0.5 text-[#1447E6] text-center text-[9px] not-italic font-black leading-[13.5px] tracking-[1.067px] uppercase rounded-[8px]">
-              AI
+          {user?.role === "teacher" ? (
+            <div className="flex flex-col">
+              <span className="text-[#101828] text-[18px] font-black leading-[18px] tracking-[-0.4395px] -mt-0.5">
+                SmartLearn
+              </span>
+              <span className="text-[#4f39f6] text-[10px] font-black uppercase tracking-[1.1172px]">
+                Teacher Portal
+              </span>
             </div>
-          </div>
+          ) : (
+            <div className="text-[#101828] text-center text-base not-italic font-black leading-6 tracking-[-0.712px] flex items-center gap-1.5">
+              SmartLearn
+              <div className="bg-[#DBEAFE] px-1.5 py-0.5 text-[#1447E6] text-center text-[9px] not-italic font-black leading-[13.5px] tracking-[1.067px] uppercase rounded-[8px]">
+                AI
+              </div>
+            </div>
+          )}
         </div>
 
-        <nav className="hidden md:flex items-center gap-0.5 p-1 text-sm text-[#6A7282] bg-[#F3F4F6E5] rounded-full border border-[#E5E7EBCC] text-[11px] not-italic font-black leading-[16.5px] tracking-[1.164px] uppercase">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
-              }`
-            }
-          >
-            HOME
-          </NavLink>
-          <CoursesDropdown />
+        {user?.role === "teacher" ? (
+          <nav className="hidden md:flex items-center p-1.5 bg-[#f3f4f6] rounded-[16px]">
+            <div className="bg-white shadow-sm flex items-center gap-2 px-4 py-2 rounded-[14px]">
+              <Bell size={16} className="text-[#e7000b]" />
+              <span className="text-[#e7000b] text-[12px] font-black uppercase tracking-[1.2px]">
+                Alerts
+              </span>
+              <span className="bg-[#fb2c36] text-white text-[8px] font-black px-1.5 py-0.5 rounded-full -ml-1">
+                5
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 hover:bg-white/50 rounded-[14px] cursor-pointer transition-colors">
+              <Pin size={16} className="text-[#6a7282]" />
+              <span className="text-[#6a7282] text-[12px] font-black uppercase tracking-[1.2px]">
+                Pin Message
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 hover:bg-white/50 rounded-[14px] cursor-pointer transition-colors">
+              <BarChart3 size={16} className="text-[#6a7282]" />
+              <span className="text-[#6a7282] text-[12px] font-black uppercase tracking-[1.2px]">
+                Engagement
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 hover:bg-white/50 rounded-[14px] cursor-pointer transition-colors">
+              <BookOpen size={16} className="text-[#6a7282]" />
+              <span className="text-[#6a7282] text-[12px] font-black uppercase tracking-[1.2px]">
+                Content
+              </span>
+            </div>
+          </nav>
+        ) : (
+          <nav className="hidden md:flex items-center gap-0.5 p-1 text-sm text-[#6A7282] bg-[#F3F4F6E5] rounded-full border border-[#E5E7EBCC] text-[11px] not-italic font-black leading-[16.5px] tracking-[1.164px] uppercase">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
+                }`
+              }
+            >
+              HOME
+            </NavLink>
+            <CoursesDropdown />
 
-          <NavLink
-            to="/ranks"
-            className={({ isActive }) =>
-              `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
-              }`
-            }
-          >
-            RANKS
-          </NavLink>
-          <NavLink
-            to="/stats"
-            className={({ isActive }) =>
-              `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
-              }`
-            }
-          >
-            STATS
-          </NavLink>
-          <NavLink
-            to="/progress"
-            className={({ isActive }) =>
-              `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
-              }`
-            }
-          >
-            PROGRESS
-          </NavLink>
-          <NavLink
-            to="/study"
-            className={({ isActive }) =>
-              `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
-              }`
-            }
-          >
-            <Users size={16} className="me-1.75" /> STUDY
-          </NavLink>
-        </nav>
+            <NavLink
+              to="/ranks"
+              className={({ isActive }) =>
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
+                }`
+              }
+            >
+              RANKS
+            </NavLink>
+            <NavLink
+              to="/stats"
+              className={({ isActive }) =>
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
+                }`
+              }
+            >
+              STATS
+            </NavLink>
+            <NavLink
+              to="/progress"
+              className={({ isActive }) =>
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
+                }`
+              }
+            >
+              PROGRESS
+            </NavLink>
+            <NavLink
+              to="/study"
+              className={({ isActive }) =>
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
+                }`
+              }
+            >
+              <Users size={16} className="me-1.75" /> STUDY
+            </NavLink>
+          </nav>
+        )}
 
         <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-1 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full text-sm group text-[#F54900] text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[0.064px] border border-[#FFD6A8CC]">
-            <Flame size={16} className="group-hover:scale-110" /> 7
-          </div>
-          <div className="hidden md:flex items-center gap-1 bg-blue-50 text-[#155DFC] px-3 py-1.5 rounded-full text-sm border border-[#A9C8FFCC] group text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[0.064px]">
-            <Zap size={16} fill="#155DFC" className="group-hover:scale-110" /> 4
-          </div>
+          {user?.role !== "teacher" && (
+            <>
+              <div className="hidden md:flex items-center gap-1 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full text-sm group text-[#F54900] text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[0.064px] border border-[#FFD6A8CC]">
+                <Flame size={16} className="group-hover:scale-110" /> 7
+              </div>
+              <div className="hidden md:flex items-center gap-1 bg-blue-50 text-[#155DFC] px-3 py-1.5 rounded-full text-sm border border-[#A9C8FFCC] group text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[0.064px]">
+                <Zap
+                  size={16}
+                  fill="#155DFC"
+                  className="group-hover:scale-110"
+                />{" "}
+                4
+              </div>
 
-          <div className="relative w-9 h-9 flex-col shrink-0 p-0.5 rounded-full bg-[#F3F4F6] hidden md:flex justify-center items-center ">
-            <Bell size={16} className="text-black" />
-            <div className="absolute -top-1 -right-1 bg-[#FB2C36] shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-4 h-4 justify-center items-center rounded-full text-white text-center text-[8px] not-italic font-black leading-3 tracking-[0.206px]">
-              3
+              <div className="relative w-9 h-9 flex-col shrink-0 p-0.5 rounded-full bg-[#F3F4F6] hidden md:flex justify-center items-center ">
+                <Bell size={16} className="text-black" />
+                <div className="absolute -top-1 -right-1 bg-[#FB2C36] shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-4 h-4 justify-center items-center rounded-full text-white text-center text-[8px] not-italic font-black leading-3 tracking-[0.206px]">
+                  3
+                </div>
+              </div>
+              <div className="hidden md:block w-px h-5 bg-[#E5E7EB] rounded-full"></div>
+            </>
+          )}
+
+          {user?.role === "teacher" && (
+            <div className="hidden md:flex flex-col items-end mr-3">
+              <span className="text-[#101828] text-[14px] font-bold tracking-[-0.1504px] leading-tight">
+                {user?.first_name || "Aksh"}
+              </span>
+              <span className="text-[#615fff] text-[10px] font-bold uppercase tracking-[1.1172px] leading-tight mt-0.5">
+                Teacher
+              </span>
             </div>
-          </div>
-          <div className="hidden md:block w-px h-5 bg-[#E5E7EB] rounded-full"></div>
+          )}
 
           <Popover>
             <PopoverTrigger asChild>
