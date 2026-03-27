@@ -26,7 +26,8 @@ export default function PinMessage() {
                 Welcome back, {user?.first_name || "Teacher"}!
               </h1>
               <p className="text-blue-100 text-base">
-                Pin a video, audio, or text message for all your connected students.
+                Pin a video, audio, or text message for all your connected
+                students.
               </p>
             </div>
           </div>
@@ -74,7 +75,11 @@ export default function PinMessage() {
                       layoutId="media-tab"
                       className="absolute inset-0 bg-[#4f39f6] rounded-2xl shadow-[0_10px_15px_0_#c6d2ff,0_4px_6px_0_#c6d2ff]"
                       initial={false}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 30,
+                      }}
                     />
                   )}
                   <div className="relative z-10 flex items-center gap-2">
@@ -89,32 +94,8 @@ export default function PinMessage() {
           </div>
 
           <div className="space-y-6">
-            {/* Title */}
-            <div>
-              <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
-                Message Title *
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Important: Revision for Unit 3 Test"
-                className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold"
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
-                Short Description *
-              </label>
-              <textarea
-                placeholder="Briefly describe what this message is about..."
-                rows={3}
-                className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold resize-none"
-              />
-            </div>
-
             {/* Conditional Media Inputs */}
-            <div className="relative min-h-[140px] overflow-hidden rounded-2xl">
+            <div className="relative overflow-hidden rounded-2xl">
               <AnimatePresence mode="popLayout" initial={false}>
                 {mediaTab === "video" && (
                   <motion.div
@@ -125,6 +106,26 @@ export default function PinMessage() {
                     transition={{ duration: 0.2 }}
                     className="space-y-6"
                   >
+                    <div>
+                      <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
+                        Message Title *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Important: Revision for Unit 3 Test"
+                        className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
+                        Short Description *
+                      </label>
+                      <textarea
+                        placeholder="Briefly describe what this message is about..."
+                        rows={3}
+                        className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold resize-none"
+                      />
+                    </div>
                     <div>
                       <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
                         Video URL (YouTube, Drive...)
@@ -164,6 +165,26 @@ export default function PinMessage() {
                   >
                     <div>
                       <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
+                        Message Title *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Important: Revision for Unit 3 Test"
+                        className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
+                        Short Description *
+                      </label>
+                      <textarea
+                        placeholder="Briefly describe what this message is about..."
+                        rows={3}
+                        className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
                         Audio URL (SoundCloud, Drive...)
                       </label>
                       <div className="relative">
@@ -201,10 +222,20 @@ export default function PinMessage() {
                   >
                     <div>
                       <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
-                        Detailed Message *
+                        Message Title *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Important: Revision for Unit 3 Test"
+                        className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#99a1af] text-[10px] font-black uppercase tracking-[1.1172px] mb-2 px-1">
+                        Message Content *
                       </label>
                       <textarea
-                        placeholder="Write your full message here..."
+                        placeholder="Type your message to students..."
                         rows={6}
                         className="w-full bg-[#f9fafb] border border-[#f3f4f6] text-[#101828] font-bold text-[16px] rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#4f39f6]/20 placeholder:text-[rgba(16,24,40,0.5)] placeholder:font-bold resize-none"
                       />
