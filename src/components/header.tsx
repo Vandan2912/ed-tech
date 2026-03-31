@@ -88,13 +88,12 @@ export function Header() {
                 <div
                   key={tab.id}
                   onClick={() => navigate(tab.path)}
-                  className={`relative flex items-center gap-2 px-4 py-2 rounded-[14px] cursor-pointer transition-colors ${
-                    isActive
-                      ? tab.id === "alerts"
-                        ? "text-[#e7000b]"
-                        : "text-[#312c85]"
-                      : "text-[#6a7282] hover:bg-white/50"
-                  }`}
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-[14px] cursor-pointer transition-colors ${isActive
+                    ? tab.id === "alerts"
+                      ? "text-[#e7000b]"
+                      : "text-[#312c85]"
+                    : "text-[#6a7282] hover:bg-white/50"
+                    }`}
                 >
                   {isActive && (
                     <motion.div
@@ -124,10 +123,9 @@ export function Header() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive
-                    ? "text-[#1C398E] bg-white shadow-sm text-center "
-                    : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
                 }`
               }
             >
@@ -138,10 +136,9 @@ export function Header() {
             <NavLink
               to="/ranks"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive
-                    ? "text-[#1C398E] bg-white shadow-sm text-center "
-                    : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
                 }`
               }
             >
@@ -150,10 +147,9 @@ export function Header() {
             <NavLink
               to="/stats"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive
-                    ? "text-[#1C398E] bg-white shadow-sm text-center "
-                    : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
                 }`
               }
             >
@@ -162,10 +158,9 @@ export function Header() {
             <NavLink
               to="/progress"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive
-                    ? "text-[#1C398E] bg-white shadow-sm text-center "
-                    : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
                 }`
               }
             >
@@ -174,10 +169,9 @@ export function Header() {
             <NavLink
               to="/study"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive
-                    ? "text-[#1C398E] bg-white shadow-sm text-center "
-                    : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
+                  ? "text-[#1C398E] bg-white shadow-sm text-center "
+                  : "hover:text-[#1C398E]"
                 }`
               }
             >
@@ -214,7 +208,7 @@ export function Header() {
           {user?.role === "teacher" && (
             <div className="hidden md:flex flex-col items-end mr-3">
               <span className="text-[#101828] text-[14px] font-bold tracking-[-0.1504px] leading-tight">
-                {user?.first_name || "Aksh"}
+                {user?.first_name || ""}
               </span>
               <span className="text-[#615fff] text-[10px] font-bold uppercase tracking-[1.1172px] leading-tight mt-0.5">
                 Teacher
@@ -279,6 +273,17 @@ export function Header() {
             </PopoverContent>
           </Popover>
 
+          {
+            user?.role === "teacher" && (
+              <button className="flex w-10 h-10 items-center justify-center px-2.5 py-0 relative bg-red-50 rounded-[14px] cursor-pointer"
+                onClick={() => {
+                  logout();
+                }}>
+                <LogOut size={20} stroke="#FB2C36" />
+              </button>
+            )
+          }
+
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
             className="md:hidden w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-600 transition-colors"
@@ -288,11 +293,10 @@ export function Header() {
         </div>
       </div>
       <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          menuOpen
-            ? "max-h-175 opacity-100 translate-y-0"
-            : "max-h-0 opacity-0 -translate-y-2"
-        } border-t border-gray-100 bg-white shadow-xl`}
+        className={`md:hidden overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${menuOpen
+          ? "max-h-175 opacity-100 translate-y-0"
+          : "max-h-0 opacity-0 -translate-y-2"
+          } border-t border-gray-100 bg-white shadow-xl`}
       >
         <div className="px-4 py-6 space-y-4 bg-white">
           {/* GRID MENU */}
@@ -341,11 +345,10 @@ function MenuCard({
 }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-2xl border ${
-        active
-          ? "bg-blue-50 text-blue-600 border-blue-100"
-          : "bg-gray-50 text-gray-500 border-0"
-      } p-4 transition-all`}
+      className={`flex flex-col items-center justify-center rounded-2xl border ${active
+        ? "bg-blue-50 text-blue-600 border-blue-100"
+        : "bg-gray-50 text-gray-500 border-0"
+        } p-4 transition-all`}
     >
       <div className="mb-2 size-6">{icon}</div>
       <span className="text-xs font-black tracking-widest uppercase">

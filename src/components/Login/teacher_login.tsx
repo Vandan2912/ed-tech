@@ -48,8 +48,13 @@ export default function TeacherLoginForm({
 
       const res = await teacherLogin(data.email, data.password);
 
-      login(res.token, res.user);
+      login(res.token, { id: res.userId, role: "teacher", ...res.user } as any);
+
+      // if (res.firstLogin) {
+      //   navigate("/onboarding");
+      // } else {
       navigate("/");
+      // }
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
@@ -89,7 +94,7 @@ export default function TeacherLoginForm({
         </Field>
 
         <div
-          className="text-end text-indigo-600 text-[10px] font-black uppercase leading-4 tracking-wide cursor-pointer"
+          className="w-fit ml-auto text-end text-indigo-600 text-[10px] font-black uppercase leading-4 tracking-wide cursor-pointer"
           onClick={onForgotPassword}
         >
           Forgot Password?
