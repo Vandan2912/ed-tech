@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import courseReducer from "./slices/courseSlice";
+import quizReducer from "./slices/quizSlice";
 
 export const store = configureStore({
   reducer: {
     course: courseReducer,
+    quiz: quizReducer,
   },
 });
 

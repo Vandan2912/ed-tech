@@ -1,36 +1,48 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import courses from "@/lib/courses.json";
-import type { Course as CourseType } from "@/types/course";
+import { useState, useEffect } from "react";
 import { CircleAlert, CircleCheck, X, Flame, Brain } from "lucide-react";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import {
+  fetchQuizQuestions,
+  clearQuiz,
+  type Option,
+} from "@/store/slices/quizSlice";
 
 const Quiz = () => {
-  const { courseSlug, topicSlug } = useParams();
+  const { courseId, topicId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const course = (courses as CourseType[]).find((c) => c.slug === courseSlug);
-
-  const topic = course?.topics.find((t) => t.slug === topicSlug);
-
-  const questions = topic?.quiz || [];
+  const { questions, loading } = useAppSelector((state) => state.quiz);
 
   const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Option | null>(null);
   const [score, setScore] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [openAbort, setOpenAbort] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
-  if (!course || !topic) return <h2 className="p-6">Quiz not found</h2>;
+  useEffect(() => {
+    if (topicId) {
+      dispatch(fetchQuizQuestions(topicId));
+    }
+    return () => {
+      dispatch(clearQuiz());
+    };
+  }, [dispatch, topicId]);
+
+  if (loading) return <h2 className="p-6 min-h-[50vh]">Loading quiz...</h2>;
+  if (!questions || questions.length === 0)
+    return <h2 className="p-6 min-h-[50vh]">No questions found</h2>;
 
   const q = questions[current];
 
   const handleSubmit = () => {
     if (!selected) return;
 
-    if (selected === q.answer) {
+    if (selected.is_correct) {
       setScore((prev) => prev + 1);
       toast.custom(
         () => (
@@ -66,7 +78,7 @@ const Quiz = () => {
   };
 
   const total = questions.length;
-  const finalScore = score + (selected === q.answer ? 1 : 0);
+  const finalScore = score + (selected?.is_correct ? 1 : 0);
   const percentage = Math.round((finalScore / total) * 100);
 
   const isPassed = percentage >= 70;
@@ -80,7 +92,11 @@ const Quiz = () => {
             isPassed ? "bg-[#dcfce7] text-[#00a63e]" : "bg-red-100 text-red-600"
           }`}
         >
-          {isPassed ? <CircleCheck size={48} strokeWidth={2.5} /> : <CircleAlert size={48} />}
+          {isPassed ? (
+            <CircleCheck size={48} strokeWidth={2.5} />
+          ) : (
+            <CircleAlert size={48} />
+          )}
         </div>
 
         {/* Title */}
@@ -90,15 +106,13 @@ const Quiz = () => {
 
         {/* Description */}
         <p className="text-[#6a7282] text-[16px] mb-10 text-center tracking-[-0.3125px] max-w-sm">
-          {isPassed 
-            ? `Fantastic work! You scored ${percentage}/100 and maintained your streak.` 
-            : `You scored ${percentage}/100. A minimum of 70 is required to progress this challenge.`
-          }
+          {isPassed
+            ? `Fantastic work! You scored ${percentage}/100 and maintained your streak.`
+            : `You scored ${percentage}/100. A minimum of 70 is required to progress this challenge.`}
         </p>
 
         {/* Metrics Container */}
         <div className="w-full max-w-[384px] space-y-4 pb-20">
-          
           {/* Main Metrics Box */}
           <div className="bg-[#f9fafb] border border-[#f3f4f6] p-6 rounded-[24px]">
             <h4 className="text-[14px] font-semibold text-[#6a7282] uppercase tracking-[0.5496px] text-center mb-6">
@@ -106,7 +120,9 @@ const Quiz = () => {
             </h4>
 
             <div className="flex justify-between items-center mb-6">
-              <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">Quest Accuracy</span>
+              <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">
+                Quest Accuracy
+              </span>
               <span
                 className={`font-bold text-[16px] tracking-[-0.3125px] ${isPassed ? "text-[#00a63e]" : "text-red-500"}`}
               >
@@ -115,7 +131,9 @@ const Quiz = () => {
             </div>
 
             <div className="flex justify-between items-center mb-5">
-              <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">Points Earned</span>
+              <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">
+                Points Earned
+              </span>
               <span className="font-bold text-[#155dfc] text-[16px] tracking-[-0.3125px]">
                 +{isPassed ? percentage + 25 : 0} XP
               </span>
@@ -172,7 +190,7 @@ const Quiz = () => {
               setCurrent(0);
               setScore(0);
               if (isPassed) {
-                navigate(`/courses/${course.slug}`);
+                navigate(`/courses/${courseId}`);
               }
             }}
             className="w-full h-[56px] mt-4 bg-[#101828] text-white rounded-[16px] font-bold text-[16px] tracking-[-0.3125px] hover:bg-black transition-colors shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)]"
@@ -223,19 +241,19 @@ const Quiz = () => {
 
         {/* ❓ Question */}
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-          <h2 className="text-xl font-bold mb-6">{q.question}</h2>
+          <h2 className="text-xl font-bold mb-6">{q.question_text}</h2>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
             Select an answer below, then submit
           </p>
           <div className="grid gap-4">
             {q.options.map((opt, i) => {
-              const isCorrect = opt === q.answer;
-              const isSelected = selected === opt;
+              const isCorrect = opt.is_correct;
+              const isSelected = selected?.id === opt.id;
               const percentPicked = Math.floor(0.4 * 70);
 
               return (
                 <button
-                  key={i}
+                  key={opt.id}
                   onClick={() => setSelected(opt)}
                   className={`relative w-full p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-5
                     ${
@@ -268,8 +286,10 @@ const Quiz = () => {
                   >
                     {String.fromCharCode(65 + i)}
                   </div>
-                  <span className="font-semibold flex-1">{opt}</span>
-                  {selected === opt && !showAnswer && (
+                  <span className="font-semibold flex-1">
+                    {opt.option_text}
+                  </span>
+                  {isSelected && !showAnswer && (
                     <CircleCheck size={20} className="text-blue-600" />
                   )}
                   {showAnswer && (
