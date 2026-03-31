@@ -22,7 +22,7 @@
   --mono: ui-monospace, Consolas, monospace;
 
   font-family: var(--sans);
-  line-height: 1.45; 
+  line-height: 1.45;
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -217,9 +217,11 @@ code {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
@@ -228,7 +230,17 @@ code {
 .home section {
   margin: 0;
 }
+
 html {
   font-size: 16px;
   background-color: #F9FAFB;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari and Opera */
 }

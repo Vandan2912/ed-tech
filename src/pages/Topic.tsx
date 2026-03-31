@@ -30,7 +30,7 @@ const Topic = () => {
         <div className="p-4 md:p-8">
           {/* 🎥 Video */}
           <div className="bg-black aspect-video rounded-3xl overflow-hidden shadow-2xl mb-6">
-            <iframe width="100%" height="100%" src={(topic as any).videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ"} title={topic.title} allowFullScreen />
+            <iframe width="100%" height="100%" src={(topic as any).videoUrl || "https://www.youtube.com/embed/mXId6hkkVnI?si=pQ2BhE97gVyAtGIw&modestbranding=1&controls=1&rel=0"} title={topic.title} allowFullScreen />
           </div>
 
           {/* 📘 Header */}
