@@ -151,15 +151,15 @@ const Quiz = () => {
 
           {/* Streak Bonus Card */}
           {isPassed && (
-            <div className="bg-[#f54900] rounded-[24px] p-4 flex items-center gap-4 shadow-[0px_20px_25px_0px_#ffd6a8,0px_8px_10px_0px_#ffd6a8]">
-              <div className="bg-white/20 rounded-[16px] w-[48px] h-[48px] shrink-0 flex items-center justify-center">
+            <div className="bg-[#f54900] rounded-[24px] p-4 flex items-center gap-3 sm:gap-4 shadow-[0px_20px_25px_0px_#ffd6a8,0px_8px_10px_0px_#ffd6a8]">
+              <div className="bg-white/20 rounded-[16px] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] shrink-0 flex items-center justify-center">
                 <Flame className="text-white" size={24} strokeWidth={2.5} />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-[#ffedd4] text-[12px] uppercase tracking-[1.2px]">
+                <span className="font-bold text-[#ffedd4] text-[10px] sm:text-[12px] uppercase tracking-[1.2px]">
                   Streak Bonus
                 </span>
-                <span className="font-bold text-white text-[16px] tracking-[-0.3125px] mt-0.5">
+                <span className="font-bold text-white text-[14px] sm:text-[16px] tracking-[-0.3125px] mt-0.5">
                   Consistency +1 Day
                 </span>
               </div>
@@ -168,15 +168,15 @@ const Quiz = () => {
 
           {/* Correction Streak Card */}
           {isPassed && (
-            <div className="bg-[#009966] rounded-[24px] p-4 flex items-center gap-4 shadow-[0px_20px_25px_0px_#a4f4cf,0px_8px_10px_0px_#a4f4cf]">
-              <div className="bg-white/20 rounded-[16px] w-[48px] h-[48px] shrink-0 flex items-center justify-center">
+            <div className="bg-[#009966] rounded-[24px] p-4 flex items-center gap-3 sm:gap-4 shadow-[0px_20px_25px_0px_#a4f4cf,0px_8px_10px_0px_#a4f4cf]">
+              <div className="bg-white/20 rounded-[16px] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] shrink-0 flex items-center justify-center">
                 <Brain className="text-white" size={24} strokeWidth={2.5} />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-[#d0fae5] text-[12px] uppercase tracking-[1.2px]">
+                <span className="font-bold text-[#d0fae5] text-[10px] sm:text-[12px] uppercase tracking-[1.2px]">
                   Correction Streak
                 </span>
-                <span className="font-bold text-white text-[16px] tracking-[-0.3125px] mt-0.5">
+                <span className="font-bold text-white text-[14px] sm:text-[16px] tracking-[-0.3125px] mt-0.5">
                   Fixed Myth! +75 XP
                 </span>
               </div>
@@ -206,20 +206,20 @@ const Quiz = () => {
     <div className="min-h-screen bg-gray-50 pb-24 md:pb-6 md:pl-28">
       <div className="max-w-4xl mx-auto p-4 md:p-8">
         {/* 📊 Progress */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-bold text-blue-600 uppercase tracking-widest">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
+            <span className="text-xs sm:text-sm font-bold text-blue-600 uppercase tracking-widest">
               AI Generated Quiz
             </span>
 
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-400">
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+              <span className="text-xs sm:text-sm text-gray-400 font-semibold">
                 Question {current + 1} of {questions.length}
               </span>
 
               <button
                 onClick={() => setOpenAbort(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                 aria-label="Abort quiz"
               >
                 <X size={14} />
@@ -240,9 +240,11 @@ const Quiz = () => {
         </div>
 
         {/* ❓ Question */}
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-          <h2 className="text-xl font-bold mb-6">{q.question_text}</h2>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+        <div className="bg-white p-5 sm:p-8 rounded-[24px] sm:rounded-3xl shadow-sm border border-gray-100">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">
+            {q.question_text}
+          </h2>
+          <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
             Select an answer below, then submit
           </p>
           <div className="grid gap-4">
@@ -255,7 +257,7 @@ const Quiz = () => {
                 <button
                   key={opt.id}
                   onClick={() => setSelected(opt)}
-                  className={`relative w-full p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-5
+                  className={`relative w-full p-4 sm:p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 sm:gap-5
                     ${
                       showAnswer
                         ? isCorrect
@@ -270,7 +272,7 @@ const Quiz = () => {
                 `}
                 >
                   <div
-                    className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black transition-all ${selected === opt ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
+                    className={`shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${selected === opt ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
                     ${
                       showAnswer
                         ? isCorrect
@@ -286,7 +288,7 @@ const Quiz = () => {
                   >
                     {String.fromCharCode(65 + i)}
                   </div>
-                  <span className="font-semibold flex-1">
+                  <span className="font-semibold flex-1 text-sm sm:text-base">
                     {opt.option_text}
                   </span>
                   {isSelected && !showAnswer && (
@@ -314,11 +316,11 @@ const Quiz = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 mt-8">
+          <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
             <button
               disabled={!selected}
               onClick={handleSubmit}
-              className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
+              className="flex-1 py-3.5 sm:py-4 bg-blue-600 text-white rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
             >
               <CircleCheck size={20} />
               Submit Answer
@@ -326,7 +328,7 @@ const Quiz = () => {
 
             <button
               onClick={() => setOpenAbort(true)}
-              className="px-6 py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-50 hover:text-red-600 border border-gray-200 hover:border-red-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3.5 sm:py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest hover:bg-red-50 hover:text-red-600 border border-gray-200 hover:border-red-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <X size={20} />
               Abort
@@ -348,9 +350,9 @@ const Quiz = () => {
               Your progress on this quiz will be lost and no XP will be awarded.
               You can retake it anytime.
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
-                className="flex-1 py-3.5 bg-gray-100 text-gray-700 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-200 transition-all"
+                className="w-full py-3.5 bg-gray-100 text-gray-700 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-200 transition-all"
                 onClick={() => {
                   setOpenAbort(false);
                 }}
@@ -358,7 +360,7 @@ const Quiz = () => {
                 Keep Going
               </button>
               <button
-                className="flex-1 py-3.5 bg-red-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-600 shadow-lg shadow-red-200 transition-all active:scale-95"
+                className="w-full py-3.5 bg-red-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-600 shadow-lg shadow-red-200 transition-all active:scale-95"
                 onClick={() => {
                   setOpenAbort(false);
                   navigate(-1);
