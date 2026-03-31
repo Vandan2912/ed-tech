@@ -74,9 +74,7 @@ const Courses = () => {
               return (
                 <div
                   key={course.id || course.name}
-                  onClick={() =>
-                    navigate(`/courses/${course.name.toLowerCase()}`)
-                  }
+                  onClick={() => navigate(`/courses/${course.id}`)}
                   className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm cursor-pointer flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition"
                 >
                   <div

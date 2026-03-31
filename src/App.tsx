@@ -84,7 +84,7 @@ function App() {
                 }
               />
               <Route
-                path="/courses/:name"
+                path="/courses/:courseId"
                 element={
                   <ProtectedRoute>
                     <Course />
@@ -92,7 +92,7 @@ function App() {
                 }
               />
               <Route
-                path="/courses/:courseSlug/:topicSlug"
+                path="/courses/:courseId/:topicId"
                 element={
                   <ProtectedRoute>
                     <Topic />
@@ -100,7 +100,7 @@ function App() {
                 }
               />
               <Route
-                path="/courses/:courseSlug/:topicSlug/quiz"
+                path="/courses/:courseId/:topicId/quiz"
                 element={
                   <ProtectedRoute>
                     <Quiz />

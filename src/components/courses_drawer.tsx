@@ -89,7 +89,7 @@ export function CoursesDropdown() {
               <DropdownMenuSub key={course.id || course.name}>
                 <DropdownMenuSubTrigger
                   onClick={() =>
-                    navigate(`/courses/${course.name.toLowerCase()}`)
+                    navigate(`/courses/${course.id}`)
                   }
                   className="flex items-center gap-3 rounded-xl px-3 py-2 focus:bg-gray-100 data-[state=open]:bg-gray-100 group cursor-pointer"
                 >
@@ -116,9 +116,7 @@ export function CoursesDropdown() {
                       <div
                         key={topic.id}
                         onClick={() =>
-                          navigate(
-                            `/courses/${course.name.toLowerCase()}/${topic.title?.toLowerCase().replace(/\s+/g, "-")}`,
-                          )
+                          navigate(`/courses/${course.id}/${topic.id}`)
                         }
                         className="flex items-center gap-3 group hover:bg-[#EFF6FF80] border border-transparent hover:border-[#EFF6FF80] rounded-lg px-3 py-2 cursor-pointer"
                       >

@@ -1,14 +1,26 @@
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import courses from "@/lib/courses.json";
-import type { Course as CourseType } from "@/types/course";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { fetchCourses } from "@/store/slices/courseSlice";
 
 const Topic = () => {
-  const { courseSlug, topicSlug } = useParams();
+  const { courseId, topicId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { subjects, loading } = useAppSelector((state) => state.course);
 
-  const course = (courses as CourseType[]).find((c) => c.slug === courseSlug);
+  useEffect(() => {
+    if (subjects.length === 0) {
+      dispatch(fetchCourses());
+    }
+  }, [dispatch, subjects.length]);
 
-  const topic = course?.topics.find((t) => t.slug === topicSlug);
+  const course = subjects.find((c) => c.id === Number(courseId));
+  const topic = course?.topics?.find((t) => t.id === Number(topicId));
+
+  if (loading && subjects.length === 0) {
+    return <h2 className="p-6">Loading...</h2>;
+  }
 
   if (!course || !topic) return <h2 className="p-6">Topic not found</h2>;
 
@@ -18,19 +30,19 @@ const Topic = () => {
         <div className="p-4 md:p-8">
           {/* 🎥 Video */}
           <div className="bg-black aspect-video rounded-3xl overflow-hidden shadow-2xl mb-6">
-            <iframe width="100%" height="100%" src={topic.videoUrl} title={topic.name} allowFullScreen />
+            <iframe width="100%" height="100%" src={(topic as any).videoUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ"} title={topic.title} allowFullScreen />
           </div>
 
           {/* 📘 Header */}
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{topic.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{topic.title}</h1>
               <p className="text-gray-500">Subject: {course.name}</p>
             </div>
 
             <button
               className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-700"
-              onClick={() => navigate(`/courses/${course.slug}/${topic.slug}/quiz`)}>
+              onClick={() => navigate(`/courses/${course.id}/${topic.id}/quiz`)}>
               Take Quiz
             </button>
           </div>
