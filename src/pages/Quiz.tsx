@@ -22,11 +22,20 @@ const Quiz = () => {
 
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<Option[]>([]);
-  const [answers, setAnswers] = useState<{ question_id: number; selected_option_ids: number[] }[]>([]);
-  const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<
+    { question_id: number; selected_option_ids: number[] }[]
+  >([]);
   const [showAnswer, setShowAnswer] = useState(false);
   const [openAbort, setOpenAbort] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [quizResult, setQuizResult] = useState<{
+    score: number;
+    correct: number;
+    incorrect: number;
+    totalQuestions: number;
+    passed: boolean;
+    attempts_today: number;
+  } | null>(null);
 
   useEffect(() => {
     if (topicId) {
@@ -46,19 +55,18 @@ const Quiz = () => {
   const handleSubmit = () => {
     if (selected.length === 0) return;
 
-    const allCorrectOptions = q.options.filter(o => o.is_correct);
+    const allCorrectOptions = q.options.filter((o) => o.is_correct);
     const isCurrentCorrect =
       selected.length === allCorrectOptions.length &&
-      selected.every(s => s.is_correct);
+      selected.every((s) => s.is_correct);
 
     const newAnswer = {
       question_id: q.id,
-      selected_option_ids: selected.map(s => s.id),
+      selected_option_ids: selected.map((s) => s.id),
     };
     setAnswers((prev) => [...prev, newAnswer]);
 
     if (isCurrentCorrect) {
-      setScore((prev) => prev + 1);
       toast.custom(
         () => (
           <div className="flex mx-auto gap-[10px] items-center px-[24px] h-[57px] bg-[#00c950] rounded-[16px] shadow-[0px_25px_50px_0px_#7bf1a8] w-fit pointer-events-auto">
@@ -89,13 +97,18 @@ const Quiz = () => {
       } else {
         try {
           const finalAnswers = [...answers, newAnswer];
-          await api.post(`/course/quiz/${(q as any).quiz_id || (questions[0] as any)?.quiz_id}/submit`, {
-            answers: finalAnswers
-          }, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
+          const response = await api.post(
+            `/course/quiz/${(q as any).quiz_id || (questions[0] as any)?.quiz_id}/submit`,
+            {
+              answers: finalAnswers,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+          setQuizResult(response.data);
         } catch (err) {
           console.error("Failed to submit quiz", err);
         }
@@ -104,22 +117,21 @@ const Quiz = () => {
     }, 3000);
   };
 
-  const total = questions.length;
-  const isCurrentCorrectPending = q ? (selected.length > 0 && selected.length === q.options.filter(o => o.is_correct).length && selected.every(s => s.is_correct)) : false;
-  const finalScore = score + (isCurrentCorrectPending ? 1 : 0);
-  const percentage = Math.round((finalScore / total) * 100);
+  if (showResult && quizResult) {
+    const passedStatus = quizResult.passed;
+    const finalPercentage = Math.round(quizResult.score);
 
-  const isPassed = percentage >= 70;
-
-  if (showResult) {
     return (
       <div className="min-h-screen bg-white p-6 md:pl-28 flex flex-col items-center justify-center pt-16">
         {/* Icon */}
         <div
-          className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shrink-0 ${isPassed ? "bg-[#dcfce7] text-[#00a63e]" : "bg-red-100 text-red-600"
-            }`}
+          className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shrink-0 ${
+            passedStatus
+              ? "bg-[#dcfce7] text-[#00a63e]"
+              : "bg-red-100 text-red-600"
+          }`}
         >
-          {isPassed ? (
+          {passedStatus ? (
             <CircleCheck size={48} strokeWidth={2.5} />
           ) : (
             <CircleAlert size={48} />
@@ -128,14 +140,14 @@ const Quiz = () => {
 
         {/* Title */}
         <h2 className="text-[30px] font-bold text-[#101828] tracking-[0.3955px] mb-2">
-          {isPassed ? "Quest Mastered!" : "Target Not Met"}
+          {passedStatus ? "Quest Mastered!" : "Target Not Met"}
         </h2>
 
         {/* Description */}
         <p className="text-[#6a7282] text-[16px] mb-10 text-center tracking-[-0.3125px] max-w-sm">
-          {isPassed
-            ? `Fantastic work! You scored ${percentage}/100 and maintained your streak.`
-            : `You scored ${percentage}/100. A minimum of 70 is required to progress this challenge.`}
+          {passedStatus
+            ? `Fantastic work! You scored ${finalPercentage}/100 and maintained your streak.`
+            : `You scored ${finalPercentage}/100. A minimum of 70 is required to progress this challenge.`}
         </p>
 
         {/* Metrics Container */}
@@ -151,9 +163,9 @@ const Quiz = () => {
                 Quest Accuracy
               </span>
               <span
-                className={`font-bold text-[16px] tracking-[-0.3125px] ${isPassed ? "text-[#00a63e]" : "text-red-500"}`}
+                className={`font-bold text-[16px] tracking-[-0.3125px] ${passedStatus ? "text-[#00a63e]" : "text-red-500"}`}
               >
-                {percentage}%
+                {finalPercentage}%
               </span>
             </div>
 
@@ -162,12 +174,13 @@ const Quiz = () => {
                 Points Earned
               </span>
               <span className="font-bold text-[#155dfc] text-[16px] tracking-[-0.3125px]">
-                +{isPassed ? percentage + 25 : 0} XP
+                +{passedStatus ? finalPercentage + 25 * quizResult.correct : 0}{" "}
+                XP
               </span>
             </div>
 
             {/* Bonus Badge */}
-            {isPassed && (
+            {passedStatus && (
               <div className="bg-[#d0fae5] rounded-[10px] py-[6px] w-full mt-2">
                 <p className="font-black text-[#007a55] text-[10px] uppercase text-center tracking-[0.1172px]">
                   Misconception Fixed Bonus Included!
@@ -177,7 +190,7 @@ const Quiz = () => {
           </div>
 
           {/* Streak Bonus Card */}
-          {isPassed && (
+          {passedStatus && (
             <div className="bg-[#f54900] rounded-[24px] p-4 flex items-center gap-3 sm:gap-4 shadow-[0px_20px_25px_0px_#ffd6a8,0px_8px_10px_0px_#ffd6a8]">
               <div className="bg-white/20 rounded-[16px] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] shrink-0 flex items-center justify-center">
                 <Flame className="text-white" size={24} strokeWidth={2.5} />
@@ -194,7 +207,7 @@ const Quiz = () => {
           )}
 
           {/* Correction Streak Card */}
-          {isPassed && (
+          {passedStatus && (
             <div className="bg-[#009966] rounded-[24px] p-4 flex items-center gap-3 sm:gap-4 shadow-[0px_20px_25px_0px_#a4f4cf,0px_8px_10px_0px_#a4f4cf]">
               <div className="bg-white/20 rounded-[16px] w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] shrink-0 flex items-center justify-center">
                 <Brain className="text-white" size={24} strokeWidth={2.5} />
@@ -214,16 +227,16 @@ const Quiz = () => {
           <button
             onClick={() => {
               setShowResult(false);
+              setQuizResult(null);
               setCurrent(0);
-              setScore(0);
               setAnswers([]);
-              if (isPassed) {
+              if (passedStatus) {
                 navigate(`/courses/${courseId}`);
               }
             }}
             className="w-full h-[56px] mt-4 bg-[#101828] text-white rounded-[16px] font-bold text-[16px] tracking-[-0.3125px] hover:bg-black transition-colors shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)]"
           >
-            {isPassed ? "Collect Rewards" : "Try Again"}
+            {passedStatus ? "Collect Rewards" : "Try Again"}
           </button>
         </div>
       </div>
@@ -273,12 +286,14 @@ const Quiz = () => {
             {q.question_text}
           </h2>
           <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
-            {(q as any).question_type === "multiple" ? "Select all correct answers below, then submit" : "Select an answer below, then submit"}
+            {(q as any).question_type === "multiple"
+              ? "Select all correct answers below, then submit"
+              : "Select an answer below, then submit"}
           </p>
           <div className="grid gap-4">
             {q.options.map((opt, i) => {
               const isCorrect = opt.is_correct;
-              const isSelected = selected.some(s => s.id === opt.id);
+              const isSelected = selected.some((s) => s.id === opt.id);
               const percentPicked = Math.floor(0.4 * 70);
 
               return (
@@ -286,31 +301,33 @@ const Quiz = () => {
                   key={opt.id}
                   onClick={() => {
                     if ((q as any).question_type === "multiple") {
-                      setSelected(prev =>
-                        prev.some(o => o.id === opt.id)
-                          ? prev.filter(o => o.id !== opt.id)
-                          : [...prev, opt]
+                      setSelected((prev) =>
+                        prev.some((o) => o.id === opt.id)
+                          ? prev.filter((o) => o.id !== opt.id)
+                          : [...prev, opt],
                       );
                     } else {
                       setSelected([opt]);
                     }
                   }}
                   className={`relative w-full p-4 sm:p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 sm:gap-5
-                    ${showAnswer
-                      ? isCorrect
-                        ? "border-green-500 bg-green-50"
+                    ${
+                      showAnswer
+                        ? isCorrect
+                          ? "border-green-500 bg-green-50"
+                          : isSelected
+                            ? "border-red-500 bg-red-50"
+                            : "border-[#F3F4F6] opacity-50"
                         : isSelected
-                          ? "border-red-500 bg-red-50"
-                          : "border-[#F3F4F6] opacity-50"
-                      : isSelected
-                        ? "border-blue-600 bg-blue-50"
-                        : "border-gray-100 hover:border-blue-400"
+                          ? "border-blue-600 bg-blue-50"
+                          : "border-gray-100 hover:border-blue-400"
                     }
                 `}
                 >
                   <div
                     className={`shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${isSelected ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
-                    ${showAnswer
+                    ${
+                      showAnswer
                         ? isCorrect
                           ? "bg-green-500 text-white"
                           : isSelected
@@ -319,7 +336,7 @@ const Quiz = () => {
                         : isSelected
                           ? "bg-blue-600 text-white"
                           : "bg-gray-100 text-gray-500"
-                      }
+                    }
                     `}
                   >
                     {String.fromCharCode(65 + i)}
