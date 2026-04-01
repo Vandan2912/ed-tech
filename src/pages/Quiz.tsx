@@ -9,16 +9,20 @@ import {
   clearQuiz,
   type Option,
 } from "@/store/slices/quizSlice";
+import { api } from "@/lib/api";
+import { useAuth } from "@/auth/useAuth";
 
 const Quiz = () => {
   const { courseId, topicId } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { token } = useAuth();
 
   const { questions, loading } = useAppSelector((state) => state.quiz);
 
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<Option[]>([]);
+  const [answers, setAnswers] = useState<{ question_id: number; selected_option_ids: number[] }[]>([]);
   const [score, setScore] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [openAbort, setOpenAbort] = useState(false);
@@ -47,6 +51,12 @@ const Quiz = () => {
       selected.length === allCorrectOptions.length &&
       selected.every(s => s.is_correct);
 
+    const newAnswer = {
+      question_id: q.id,
+      selected_option_ids: selected.map(s => s.id),
+    };
+    setAnswers((prev) => [...prev, newAnswer]);
+
     if (isCurrentCorrect) {
       setScore((prev) => prev + 1);
       toast.custom(
@@ -71,12 +81,24 @@ const Quiz = () => {
     setShowAnswer(true);
 
     // move to next after 3 sec
-    setTimeout(() => {
+    setTimeout(async () => {
       setShowAnswer(false);
       setSelected([]);
       if (current < questions.length - 1) {
         setCurrent((prev) => prev + 1);
       } else {
+        try {
+          const finalAnswers = [...answers, newAnswer];
+          await api.post(`/course/quiz/${(q as any).quiz_id || (questions[0] as any)?.quiz_id}/submit`, {
+            answers: finalAnswers
+          }, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        } catch (err) {
+          console.error("Failed to submit quiz", err);
+        }
         setShowResult(true);
       }
     }, 3000);
@@ -194,6 +216,7 @@ const Quiz = () => {
               setShowResult(false);
               setCurrent(0);
               setScore(0);
+              setAnswers([]);
               if (isPassed) {
                 navigate(`/courses/${courseId}`);
               }
