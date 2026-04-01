@@ -40,10 +40,10 @@ const Topic = () => {
   }, [topicId]);
 
   if (loading && subjects.length === 0) {
-    return <h2 className="p-6">Loading...</h2>;
+    return <h2 className="p-6 min-h-[55vh]">Loading...</h2>;
   }
 
-  if (!course || !topic) return <h2 className="p-6">Topic not found</h2>;
+  if (!course || !topic) return <h2 className="p-6 min-h-[55vh]">Topic not found</h2>;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24 md:pb-6 md:pl-28">

@@ -18,7 +18,7 @@ const Quiz = () => {
   const { questions, loading } = useAppSelector((state) => state.quiz);
 
   const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState<Option | null>(null);
+  const [selected, setSelected] = useState<Option[]>([]);
   const [score, setScore] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [openAbort, setOpenAbort] = useState(false);
@@ -40,13 +40,18 @@ const Quiz = () => {
   const q = questions[current];
 
   const handleSubmit = () => {
-    if (!selected) return;
+    if (selected.length === 0) return;
 
-    if (selected.is_correct) {
+    const allCorrectOptions = q.options.filter(o => o.is_correct);
+    const isCurrentCorrect =
+      selected.length === allCorrectOptions.length &&
+      selected.every(s => s.is_correct);
+
+    if (isCurrentCorrect) {
       setScore((prev) => prev + 1);
       toast.custom(
         () => (
-          <div className="flex gap-[10px] items-center px-[24px] h-[57px] bg-[#00c950] rounded-[16px] shadow-[0px_25px_50px_0px_#7bf1a8] w-fit pointer-events-auto">
+          <div className="flex mx-auto gap-[10px] items-center px-[24px] h-[57px] bg-[#00c950] rounded-[16px] shadow-[0px_25px_50px_0px_#7bf1a8] w-fit pointer-events-auto">
             <div className="bg-white/20 relative rounded-[14px] shrink-0 w-[32px] h-[32px] flex items-center justify-center">
               <CircleCheck size={16} className="text-white" strokeWidth={3} />
             </div>
@@ -60,15 +65,15 @@ const Quiz = () => {
             </div>
           </div>
         ),
-        { duration: 3000, position: "top-center" },
+        { duration: 30000, position: "top-center" },
       );
     }
     setShowAnswer(true);
 
-    // move to next after 5 sec
+    // move to next after 3 sec
     setTimeout(() => {
       setShowAnswer(false);
-      setSelected(null);
+      setSelected([]);
       if (current < questions.length - 1) {
         setCurrent((prev) => prev + 1);
       } else {
@@ -78,7 +83,8 @@ const Quiz = () => {
   };
 
   const total = questions.length;
-  const finalScore = score + (selected?.is_correct ? 1 : 0);
+  const isCurrentCorrectPending = q ? (selected.length > 0 && selected.length === q.options.filter(o => o.is_correct).length && selected.every(s => s.is_correct)) : false;
+  const finalScore = score + (isCurrentCorrectPending ? 1 : 0);
   const percentage = Math.round((finalScore / total) * 100);
 
   const isPassed = percentage >= 70;
@@ -88,9 +94,8 @@ const Quiz = () => {
       <div className="min-h-screen bg-white p-6 md:pl-28 flex flex-col items-center justify-center pt-16">
         {/* Icon */}
         <div
-          className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shrink-0 ${
-            isPassed ? "bg-[#dcfce7] text-[#00a63e]" : "bg-red-100 text-red-600"
-          }`}
+          className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shrink-0 ${isPassed ? "bg-[#dcfce7] text-[#00a63e]" : "bg-red-100 text-red-600"
+            }`}
         >
           {isPassed ? (
             <CircleCheck size={48} strokeWidth={2.5} />
@@ -245,36 +250,44 @@ const Quiz = () => {
             {q.question_text}
           </h2>
           <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
-            Select an answer below, then submit
+            {(q as any).question_type === "multiple" ? "Select all correct answers below, then submit" : "Select an answer below, then submit"}
           </p>
           <div className="grid gap-4">
             {q.options.map((opt, i) => {
               const isCorrect = opt.is_correct;
-              const isSelected = selected?.id === opt.id;
+              const isSelected = selected.some(s => s.id === opt.id);
               const percentPicked = Math.floor(0.4 * 70);
 
               return (
                 <button
                   key={opt.id}
-                  onClick={() => setSelected(opt)}
+                  onClick={() => {
+                    if ((q as any).question_type === "multiple") {
+                      setSelected(prev =>
+                        prev.some(o => o.id === opt.id)
+                          ? prev.filter(o => o.id !== opt.id)
+                          : [...prev, opt]
+                      );
+                    } else {
+                      setSelected([opt]);
+                    }
+                  }}
                   className={`relative w-full p-4 sm:p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 sm:gap-5
-                    ${
-                      showAnswer
-                        ? isCorrect
-                          ? "border-green-500 bg-green-50"
-                          : isSelected
-                            ? "border-red-500 bg-red-50"
-                            : "border-[#F3F4F6] opacity-50"
+                    ${showAnswer
+                      ? isCorrect
+                        ? "border-green-500 bg-green-50"
                         : isSelected
-                          ? "border-blue-600 bg-blue-50"
-                          : "border-gray-100 hover:border-blue-400"
+                          ? "border-red-500 bg-red-50"
+                          : "border-[#F3F4F6] opacity-50"
+                      : isSelected
+                        ? "border-blue-600 bg-blue-50"
+                        : "border-gray-100 hover:border-blue-400"
                     }
                 `}
                 >
                   <div
-                    className={`shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${selected === opt ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
-                    ${
-                      showAnswer
+                    className={`shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${isSelected ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
+                    ${showAnswer
                         ? isCorrect
                           ? "bg-green-500 text-white"
                           : isSelected
@@ -283,7 +296,7 @@ const Quiz = () => {
                         : isSelected
                           ? "bg-blue-600 text-white"
                           : "bg-gray-100 text-gray-500"
-                    }
+                      }
                     `}
                   >
                     {String.fromCharCode(65 + i)}
@@ -318,7 +331,7 @@ const Quiz = () => {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
             <button
-              disabled={!selected}
+              disabled={selected.length === 0}
               onClick={handleSubmit}
               className="flex-1 py-3.5 sm:py-4 bg-blue-600 text-white rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
             >
