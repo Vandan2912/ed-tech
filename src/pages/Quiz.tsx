@@ -27,7 +27,6 @@ const Quiz = () => {
   >([]);
   const [showAnswer, setShowAnswer] = useState(false);
 
-  console.log("selected", selected);
   const [timeLeft, setTimeLeft] = useState(120); // 120s per question
   const [isTimeUp, setIsTimeUp] = useState(false);
 
