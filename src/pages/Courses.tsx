@@ -49,7 +49,7 @@ const Courses = () => {
   return (
     <main className="min-h-[50vh]">
       <div className="py-12">
-        <div className="p-6 pb-24 md:pb-6 md:pl-28">
+        <div className="p-6 pb-24 md:pb-6 md:px-28">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             What do you want to learn?
           </h2>

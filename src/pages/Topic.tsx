@@ -54,7 +54,7 @@ const Topic = () => {
     return <h2 className="p-6 min-h-[55vh]">Topic not found</h2>;
 
   return (
-    <div className="min-h-screen bg-[#f9fafb] pb-24 md:pb-12 md:pl-28">
+    <div className="min-h-screen bg-[#f9fafb] pb-24 md:pb-12">
       {!showDifficultyModal && (
         <div className="max-w-5xl mx-auto px-4 pt-8 md:px-8">
           {/* 🎥 Video Container */}
@@ -233,7 +233,7 @@ function DifficultyModal({
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="relative bg-[#f9fafb] w-full max-w-[896px] rounded-[32px] overflow-hidden p-8"
+        className="relative bg-[#f9fafb] w-full max-w-[896px] rounded-[32px] overflow-hidden p-8 mx-auto"
       >
         <button
           onClick={onClose}

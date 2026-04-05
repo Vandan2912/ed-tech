@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { CircleAlert, CircleCheck, X, Flame, Brain } from "lucide-react";
+import { Clock, CircleAlert, CircleCheck, X, Flame, Brain } from "lucide-react";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store/store";
@@ -26,6 +26,19 @@ const Quiz = () => {
     { question_id: number; selected_option_ids: number[] }[]
   >([]);
   const [showAnswer, setShowAnswer] = useState(false);
+
+  console.log("selected", selected);
+  const [timeLeft, setTimeLeft] = useState(120); // 120s per question
+  const [isTimeUp, setIsTimeUp] = useState(false);
+
+  const nextQuestion = () => {
+    setShowAnswer(false);
+    setSelected([]);
+    setIsTimeUp(false);
+    setTimeLeft(120);
+    setCurrent((prev) => prev + 1);
+  };
+
   const [openAbort, setOpenAbort] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [quizResult, setQuizResult] = useState<{
@@ -36,6 +49,54 @@ const Quiz = () => {
     passed: boolean;
     attempts_today: number;
   } | null>(null);
+
+  useEffect(() => {
+    if (timeLeft <= 0 || showResult || showAnswer) {
+      if (timeLeft === 0) setIsTimeUp(true);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsTimeUp(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, showResult, showAnswer, current]);
+
+  const handleAutoSubmit = async () => {
+    // Logic for final quiz submission
+    try {
+      const response = await api.post(
+        `/course/quiz/${(questions[0] as any)?.quiz_id || (questions[current] as any)?.quiz_id}/submit`,
+        {
+          answers: answers,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setQuizResult(response.data);
+      setShowResult(true);
+    } catch (err) {
+      console.error("Failed to submit quiz results", err);
+      navigate(-1);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     if (topicId) {
@@ -90,29 +151,10 @@ const Quiz = () => {
 
     // move to next after 3 sec
     setTimeout(async () => {
-      setShowAnswer(false);
-      setSelected([]);
       if (current < questions.length - 1) {
-        setCurrent((prev) => prev + 1);
+        nextQuestion();
       } else {
-        try {
-          const finalAnswers = [...answers, newAnswer];
-          const response = await api.post(
-            `/course/quiz/${(q as any).quiz_id || (questions[0] as any)?.quiz_id}/submit`,
-            {
-              answers: finalAnswers,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-          setQuizResult(response.data);
-        } catch (err) {
-          console.error("Failed to submit quiz", err);
-        }
-        setShowResult(true);
+        handleAutoSubmit();
       }
     }, 3000);
   };
@@ -244,7 +286,7 @@ const Quiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 md:pb-6 md:pl-28">
+    <div className="min-h-screen bg-gray-50 pb-24 md:pb-6">
       <div className="max-w-4xl mx-auto p-4 md:p-8">
         {/* 📊 Progress */}
         <div className="mb-6 sm:mb-8">
@@ -257,6 +299,13 @@ const Quiz = () => {
               <span className="text-xs sm:text-sm text-gray-400 font-semibold">
                 Question {current + 1} of {questions.length}
               </span>
+
+              <div className="flex bg-[#fef2f2] border border-[#ffe2e2] items-center gap-1.5 h-[30.5px] px-3 rounded-[14px] shrink-0">
+                <Clock size={14} className="text-[#fb2c36]" />
+                <span className="font-black text-[#fb2c36] text-[11px] tracking-[1.1645px]">
+                  {formatTime(timeLeft)}
+                </span>
+              </div>
 
               <button
                 onClick={() => setOpenAbort(true)}
@@ -371,12 +420,26 @@ const Quiz = () => {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
             <button
-              disabled={selected.length === 0}
-              onClick={handleSubmit}
+              disabled={(selected.length === 0 && !isTimeUp) || showAnswer}
+              onClick={() => {
+                if (isTimeUp && !showAnswer) {
+                  if (current < questions.length - 1) {
+                    nextQuestion();
+                  } else {
+                    handleAutoSubmit();
+                  }
+                } else {
+                  handleSubmit();
+                }
+              }}
               className="flex-1 py-3.5 sm:py-4 bg-blue-600 text-white rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
             >
               <CircleCheck size={20} />
-              Submit Answer
+              {showAnswer
+                ? "Checking..."
+                : isTimeUp
+                  ? "Time's Up - Next"
+                  : "Submit Answer"}
             </button>
 
             <button

@@ -50,7 +50,7 @@ const Course = () => {
   return (
     <main className="min-h-[50vh]">
       <div className="py-12">
-        <div className="p-6 pb-24 md:pb-6 md:pl-28">
+        <div className="p-6 pb-24 md:pb-6 md:px-28">
           {/* 🔙 Back Button */}
           <button
             onClick={() => navigate("/courses")}
@@ -81,9 +81,7 @@ const Course = () => {
               <div
                 key={topic.id}
                 className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() =>
-                  navigate(`/courses/${course.id}/${topic.id}`)
-                }
+                onClick={() => navigate(`/courses/${course.id}/${topic.id}`)}
               >
                 <div className="flex items-center gap-4">
                   {/* ▶ Play Icon */}
