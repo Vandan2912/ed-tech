@@ -192,3 +192,12 @@
   -webkit-text-fill-color: rgba(16, 24, 40, 0.5) !important;  /* Ensure text color remains consistent */
 }
 
+
+
+.recharts-wrapper:focus-visible {
+    outline: none !important;
+}
+
+.recharts-wrapper svg:focus {
+    outline: none !important;
+}

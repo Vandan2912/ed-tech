@@ -19,6 +19,7 @@ import Engagement from "./pages/Engagement";
 import Content from "./pages/Content";
 import Ranks from "./pages/Rank";
 import Stats from "./pages/Stats";
+import Progress from "./pages/Progress";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -121,6 +122,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Stats />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/progress"
+                element={
+                  <ProtectedRoute>
+                    <Progress />
                   </ProtectedRoute>
                 }
               />
