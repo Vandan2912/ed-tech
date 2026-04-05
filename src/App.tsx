@@ -18,6 +18,7 @@ import PinMessage from "./pages/PinMessage";
 import Engagement from "./pages/Engagement";
 import Content from "./pages/Content";
 import Ranks from "./pages/Rank";
+import Stats from "./pages/Stats";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -112,6 +113,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Ranks />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/stats"
+                element={
+                  <ProtectedRoute>
+                    <Stats />
                   </ProtectedRoute>
                 }
               />
