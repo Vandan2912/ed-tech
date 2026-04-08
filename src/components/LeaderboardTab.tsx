@@ -23,16 +23,16 @@ interface Student {
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const STUDENTS: Student[] = [
-  { rank: 1,  name: "Arjun Mehta",  subject: "Physics",     level: 24, pts: 2450, xp: 434, trend: "up",     avatar: "AM" },
-  { rank: 2,  name: "Sara Khan",    subject: "Mathematics", level: 22, pts: 2320, xp: 398, trend: "down",   avatar: "SK" },
-  { rank: 3,  name: "Leo Das",      subject: "Chemistry",   level: 21, pts: 2210, xp: 312, trend: "stable", avatar: "LD" },
-  { rank: 4,  name: "Priya Sharma", subject: "Biology",     level: 19, pts: 1940, xp: 281, trend: "up",     avatar: "PS" },
-  { rank: 5,  name: "You",          subject: "Mathematics", level: 18, pts: 1850, xp: 247, trend: "up",     isYou: true, avatar: "YO" },
-  { rank: 6,  name: "Rohan Gupta",  subject: "Physics",     level: 17, pts: 1720, xp: 220, trend: "down",   avatar: "RG" },
-  { rank: 7,  name: "Zoya Ali",     subject: "Biology",     level: 16, pts: 1650, xp: 198, trend: "up",     avatar: "ZA" },
-  { rank: 8,  name: "Kiran Nair",   subject: "Chemistry",   level: 15, pts: 1580, xp: 176, trend: "stable", avatar: "KN" },
-  { rank: 9,  name: "Anjali Singh", subject: "History",     level: 14, pts: 1430, xp: 154, trend: "up",     avatar: "AS" },
-  { rank: 10, name: "Dev Kapoor",   subject: "Geography",   level: 13, pts: 1280, xp: 132, trend: "down",   avatar: "DK" },
+  { rank: 1, name: "Arjun Mehta", subject: "Physics", level: 24, pts: 2450, xp: 434, trend: "up", avatar: "AM" },
+  { rank: 2, name: "Sara Khan", subject: "Mathematics", level: 22, pts: 2320, xp: 398, trend: "down", avatar: "SK" },
+  { rank: 3, name: "Leo Das", subject: "Chemistry", level: 21, pts: 2210, xp: 312, trend: "stable", avatar: "LD" },
+  { rank: 4, name: "Priya Sharma", subject: "Biology", level: 19, pts: 1940, xp: 281, trend: "up", avatar: "PS" },
+  { rank: 5, name: "You", subject: "Mathematics", level: 18, pts: 1850, xp: 247, trend: "up", isYou: true, avatar: "YO" },
+  { rank: 6, name: "Rohan Gupta", subject: "Physics", level: 17, pts: 1720, xp: 220, trend: "down", avatar: "RG" },
+  { rank: 7, name: "Zoya Ali", subject: "Biology", level: 16, pts: 1650, xp: 198, trend: "up", avatar: "ZA" },
+  { rank: 8, name: "Kiran Nair", subject: "Chemistry", level: 15, pts: 1580, xp: 176, trend: "stable", avatar: "KN" },
+  { rank: 9, name: "Anjali Singh", subject: "History", level: 14, pts: 1430, xp: 154, trend: "up", avatar: "AS" },
+  { rank: 10, name: "Dev Kapoor", subject: "Geography", level: 13, pts: 1280, xp: 132, trend: "down", avatar: "DK" },
 ];
 
 const WEEK_STUDENTS: Student[] = STUDENTS.map((s) => ({
@@ -63,14 +63,14 @@ function TrendIcon({ trend }: { trend: Trend }) {
   return <Minus size={12} className="text-gray-400 shrink-0" />;
 }
 
-function Avatar({ initials, size = "md" }: { initials: string; size?: "sm" | "md" | "lg" }) {
-  const sizeClass = size === "lg" ? "w-14 h-14 text-[14px]" : size === "md" ? "w-10 h-10 text-[12px]" : "w-8 h-8 text-[11px]";
-  return (
-    <div className={cn("rounded-full bg-gray-200 flex items-center justify-center font-black text-gray-600 shrink-0 border-2 border-white", sizeClass)}>
-      {initials}
-    </div>
-  );
-}
+// function Avatar({ initials, size = "md" }: { initials: string; size?: "sm" | "md" | "lg" }) {
+//   const sizeClass = size === "lg" ? "w-14 h-14 text-[14px]" : size === "md" ? "w-10 h-10 text-[12px]" : "w-8 h-8 text-[11px]";
+//   return (
+//     <div className={cn("rounded-full bg-gray-200 flex items-center justify-center font-black text-gray-600 shrink-0 border-2 border-white", sizeClass)}>
+//       {initials}
+//     </div>
+//   );
+// }
 
 function PodiumCard({
   student,
@@ -161,7 +161,7 @@ export default function LeaderboardTab() {
   const [period, setPeriod] = useState<Period>("all");
   const students = DATA_BY_PERIOD[period];
   const top3 = students.slice(0, 3);
-  const rest = students.slice(3);
+  // const rest = students.slice(3);
   const you = students.find((s) => s.isYou)!;
 
   const PERIODS: { id: Period; label: string }[] = [
