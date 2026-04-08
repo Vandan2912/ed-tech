@@ -52,7 +52,7 @@ export default function CustomSelect({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#f3f4f6] rounded-[16px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] z-50 overflow-hidden max-h-64 overflow-y-auto py-2">
+        <div className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#f3f4f6] rounded-[16px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] z-50 overflow-hidden max-h-64 overflow-y-auto py-2 hideScrollbar">
           {options.map((option) => (
             <button
               key={option.value}

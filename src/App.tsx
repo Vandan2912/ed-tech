@@ -20,6 +20,8 @@ import Content from "./pages/Content";
 import Ranks from "./pages/Rank";
 import Stats from "./pages/Stats";
 import Progress from "./pages/Progress";
+import Study from "./pages/Study";
+import StudyRoom from "./pages/StudyRoom";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -130,6 +132,24 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Progress />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/study"
+                element={
+                  <ProtectedRoute>
+                    <Study />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/study/:roomId"
+                element={
+                  <ProtectedRoute>
+                    <StudyRoom />
                   </ProtectedRoute>
                 }
               />
