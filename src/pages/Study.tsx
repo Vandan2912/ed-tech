@@ -9,11 +9,12 @@ import {
   Clock,
   Target,
   Plus,
-  BookOpen,
   ClipboardList,
   Trophy,
 } from "lucide-react";
 import HostSessionModal from "@/components/HostSessionModal";
+import HomeworkTab from "@/components/HomeworkTab";
+import LeaderboardTab from "@/components/LeaderboardTab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -407,10 +408,8 @@ export default function Study() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="flex flex-col items-center justify-center py-24 gap-4 text-gray-400"
             >
-              <BookOpen size={40} className="text-gray-300" />
-              <p className="text-[15px] font-bold">Homework coming soon</p>
+              <HomeworkTab />
             </motion.div>
           )}
 
@@ -421,10 +420,8 @@ export default function Study() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="flex flex-col items-center justify-center py-24 gap-4 text-gray-400"
             >
-              <Trophy size={40} className="text-gray-300" />
-              <p className="text-[15px] font-bold">Leaderboard coming soon</p>
+              <LeaderboardTab />
             </motion.div>
           )}
         </AnimatePresence>
