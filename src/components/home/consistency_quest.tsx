@@ -1,5 +1,15 @@
 import { motion } from "motion/react";
-import { Zap, FlaskConical, Dna, ChevronRight, ChartColumn, Atom, Layers, Globe, Flame } from "lucide-react";
+import {
+  Zap,
+  FlaskConical,
+  Dna,
+  ChevronRight,
+  ChartColumn,
+  Atom,
+  Layers,
+  Globe,
+  Flame,
+} from "lucide-react";
 import user from "@/assets/user.svg";
 
 export function ConsistencyQuest() {
@@ -45,7 +55,7 @@ export function ConsistencyQuest() {
       name: "Geography",
       subheading: "Mastery",
       isStreak: false,
-      icon: <Globe size={20} className="text-cyan-600" />,
+      icon: <Globe size={20} className="text-white" />,
       color: "bg-[#009689]",
     },
   ];
@@ -56,7 +66,8 @@ export function ConsistencyQuest() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-white rounded-[2rem] flex flex-col lg:flex-row gap-12 items-center justify-between p-8 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
+        className="bg-white rounded-[2rem] flex flex-col lg:flex-row gap-12 items-center justify-between p-8 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group"
+      >
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50/50 rounded-full blur-3xl -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl -ml-32 -mb-32"></div>
 
@@ -67,13 +78,17 @@ export function ConsistencyQuest() {
           </div>
 
           <h2 className="text-3xl font-black text-gray-900 tracking-tight leading-tight">
-            The 30-Day <span className="text-orange-500">Consistency</span> Quest
+            The 30-Day <span className="text-orange-500">Consistency</span>{" "}
+            Quest
           </h2>
 
           <p className="max-w-md text-[#6A7282] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
-            Build a learning habit that lasts. Maintain your streak for 30 days to unlock the{" "}
-            <span className="font-bold text-[#101828]">Elite Pioneer Badge</span> and{" "}
-            <span className="font-bold text-[#F54900]">5,000 XP</span>.
+            Build a learning habit that lasts. Maintain your streak for 30 days
+            to unlock the{" "}
+            <span className="font-bold text-[#101828]">
+              Elite Pioneer Badge
+            </span>{" "}
+            and <span className="font-bold text-[#F54900]">5,000 XP</span>.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -112,16 +127,21 @@ export function ConsistencyQuest() {
               <motion.div
                 key={idx}
                 whileHover={{ scale: 1.05 }}
-                className="bg-[#F9FAFB80] rounded-2xl p-4.25 flex flex-col items-center justify-center text-center gap-4 border border-[#00000000] transition-all hover:shadow-md cursor-pointer">
+                className="bg-[#F9FAFB80] rounded-2xl p-4.25 flex flex-col items-center justify-center text-center gap-4 border border-[#00000000] transition-all hover:shadow-md cursor-pointer"
+              >
                 <div
-                  className={`shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-9 h-9 justify-center items-center rounded-[14px] ${sub.color}`}>
+                  className={`shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-9 h-9 justify-center items-center rounded-[14px] ${sub.color}`}
+                >
                   {sub.icon}
                 </div>
                 <div>
-                  <div className="text-[#101828] text-center text-xs not-italic font-bold leading-4">{sub.name}</div>
+                  <div className="text-[#101828] text-center text-xs not-italic font-bold leading-4">
+                    {sub.name}
+                  </div>
                   {sub.isStreak ? (
                     <div className="flex items-center justify-center gap-1 text-[#FF6900] text-center text-[8px] not-italic font-black leading-3 tracking-[1.006px] uppercase">
-                      <Flame size={8} className="fill-[#FF6900]" /> {sub.streak} STREAK
+                      <Flame size={8} className="fill-[#FF6900]" /> {sub.streak}{" "}
+                      STREAK
                     </div>
                   ) : (
                     <div className="text-[#99A1AF] text-center text-[8px] not-italic font-bold leading-3 tracking-[1.006px] uppercase">

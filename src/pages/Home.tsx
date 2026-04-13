@@ -3,6 +3,7 @@ import { CognitiveLoad } from "@/components/home/cognitive_load";
 import { ConsistencyQuest } from "@/components/home/consistency_quest";
 import { ContinueLearning } from "@/components/home/continue_learning";
 import { Features } from "@/components/home/features";
+import { ProblemOfTheDay } from "@/components/home/problem_of_the_day";
 import { Hero } from "@/components/home/hero";
 import { Progress } from "@/components/home/progress";
 import { Recommended } from "@/components/home/recommended";
@@ -23,6 +24,7 @@ const Home = () => {
         <Banner />
         <ResumeLearning />
         <ContinueLearning />
+        <ProblemOfTheDay />
         <Features />
         <Progress />
         <Recommended />
