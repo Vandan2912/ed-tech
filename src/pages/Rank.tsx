@@ -10,7 +10,6 @@ import {
   Trophy,
   Flame,
   Star,
-  Globe,
   Zap,
   ChevronRight,
   Lock,
@@ -638,14 +637,14 @@ function TabSwitcher({
     {
       key: "global",
       label: "Global Ranks",
-      icon: <Globe className="h-4 w-4" />,
+      icon: <Trophy className="h-4 w-4" />,
     },
     {
       key: "streak",
       label: "Streak Masters",
       icon: <Flame className="h-4 w-4" />,
     },
-    { key: "best", label: "My Best", icon: <Star className="h-4 w-4" /> },
+    { key: "best", label: "My Best", icon: <Award className="h-4 w-4" /> },
   ];
 
   return (
@@ -657,9 +656,8 @@ function TabSwitcher({
             onClick={() => onChange(t.key)}
             // whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className={`relative flex items-center gap-2 rounded-[14px] px-6 py-2.5 text-xs font-black uppercase tracking-wider transition-colors ${
-              active === t.key ? "text-blue-600" : "text-gray-500"
-            }`}
+            className={`relative flex items-center gap-2 rounded-[14px] px-6 py-2.5 text-xs font-black uppercase tracking-wider transition-colors ${active === t.key ? "text-blue-600" : "text-gray-500"
+              }`}
           >
             {active === t.key && (
               <motion.div
@@ -838,9 +836,8 @@ function PositionBadge({ change }: { change: number }) {
         className={`h-1.5 w-1.5 rounded-full ${positive ? "bg-emerald-400" : "bg-red-400"}`}
       />
       <span
-        className={`text-[9px] font-black uppercase tracking-tight ${
-          positive ? "text-emerald-500" : "text-red-400"
-        }`}
+        className={`text-[9px] font-black uppercase tracking-tight ${positive ? "text-emerald-500" : "text-red-400"
+          }`}
       >
         {positive ? "+" : ""}
         {change} POSITION{Math.abs(change) !== 1 ? "S" : ""}
@@ -874,35 +871,32 @@ function LeaderboardRow({
         ease: [0.22, 1, 0.36, 1],
       }}
       onClick={() => !isMe && onProfileClick?.(user)}
-      className={`flex items-center justify-between px-6 py-5 ${
-        isMe
-          ? "rounded-3xl bg-blue-600 text-white shadow-[0px_25px_50px_0px_#bedbff]"
-          : "border-b border-gray-50 cursor-pointer hover:bg-gray-50/50 transition-colors"
-      }`}
+      className={`flex items-center justify-between px-6 py-5 ${isMe
+        ? "rounded-3xl bg-blue-600 text-white shadow-[0px_25px_50px_0px_#bedbff]"
+        : "border-b border-gray-50 cursor-pointer hover:bg-gray-50/50 transition-colors"
+        }`}
     >
       {/* Left side */}
       <div className="flex items-center gap-5">
         <motion.div
-          className={`flex h-10 w-10 items-center justify-center rounded-[14px] text-base font-black ${
-            isMe ? "bg-white/20 text-white" : "bg-gray-100 text-gray-400"
-          }`}
+          className={`flex h-10 w-10 items-center justify-center rounded-[14px] text-base font-black ${isMe ? "bg-white/20 text-white" : "bg-gray-100 text-gray-400"
+            }`}
         >
           #{user.rank}
         </motion.div>
 
         <motion.div className="relative">
           <div
-            className={`flex h-14 w-14 items-center justify-center rounded-2xl border-2 text-lg font-black ${
-              isMe
-                ? "border-white/40 bg-blue-500 text-white"
-                : "border-gray-100 bg-linear-to-br from-blue-50 to-indigo-50 text-blue-600"
-            }`}
+            className={`flex h-14 w-14 items-center justify-center rounded-2xl border-2 text-lg font-black ${isMe
+              ? "border-white/40 bg-blue-500 text-white"
+              : "border-gray-100 bg-linear-to-br from-blue-50 to-indigo-50 text-blue-600"
+              }`}
           >
             {user.avatar}
           </div>
           <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-[10px] bg-white shadow-sm">
-            <Trophy
-              className={`h-3 w-3 ${isMe ? "text-blue-600" : "text-amber-500"}`}
+            <Star
+              className={`h-3 w-3 text-blue-600 fill-blue-600`}
             />
           </div>
         </motion.div>
@@ -926,9 +920,8 @@ function LeaderboardRow({
           </div>
           <div className="mt-0.5 flex items-center gap-3">
             <span
-              className={`text-[10px] font-bold uppercase tracking-widest ${
-                isMe ? "text-blue-200" : "text-gray-400"
-              }`}
+              className={`text-[10px] font-bold uppercase tracking-widest ${isMe ? "text-blue-200" : "text-gray-400"
+                }`}
             >
               Level {user.level}
             </span>
@@ -945,9 +938,8 @@ function LeaderboardRow({
           {user.xp.toLocaleString()}
         </p>
         <p
-          className={`text-[10px] font-black uppercase tracking-widest ${
-            isMe ? "text-blue-200" : "text-gray-400"
-          }`}
+          className={`text-[10px] font-black uppercase tracking-widest ${isMe ? "text-blue-200" : "text-gray-400"
+            }`}
         >
           Total XP
         </p>
@@ -975,12 +967,7 @@ function MasteryRoadmap() {
         className="flex items-center justify-between"
       >
         <div className="flex items-center gap-2">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-          >
-            <Award className="h-4 w-4 text-white" />
-          </motion.div>
+          <Trophy className="h-4 w-4 text-[#FDC700]" />
           <span className="text-sm font-black uppercase tracking-wider text-white">
             Mastery Roadmap
           </span>
@@ -1004,23 +991,21 @@ function MasteryRoadmap() {
             className="flex flex-col items-center gap-1.5"
           >
             <div
-              className={`flex h-[100px] w-full items-center justify-center rounded-2xl border-2 ${
-                l.status === "achieved"
-                  ? "border-white bg-white shadow-[0px_10px_15px_0px_rgba(28,57,142,0.2)]"
-                  : l.status === "current"
-                    ? "border-white bg-[#2b7fff] shadow-[0px_20px_25px_0px_rgba(81,162,255,0.4)]"
-                    : "border-white/10 bg-blue-800/50"
-              }`}
+              className={`flex h-[100px] w-full items-center justify-center rounded-2xl border-2 ${l.status === "achieved"
+                ? "border-white bg-white shadow-[0px_10px_15px_0px_rgba(28,57,142,0.2)]"
+                : l.status === "current"
+                  ? "border-white bg-[#2b7fff] shadow-[0px_20px_25px_0px_rgba(81,162,255,0.4)]"
+                  : "border-white/10 bg-blue-800/50"
+                }`}
             >
               <div className="flex flex-col items-center gap-1">
                 <span
-                  className={`text-[10px] font-black tracking-wide ${
-                    l.status === "achieved"
-                      ? "text-blue-600"
-                      : l.status === "current"
-                        ? "text-white"
-                        : "text-white/30"
-                  }`}
+                  className={`text-[10px] font-black tracking-wide ${l.status === "achieved"
+                    ? "text-blue-600"
+                    : l.status === "current"
+                      ? "text-white"
+                      : "text-white/30"
+                    }`}
                 >
                   L{l.level}
                 </span>
@@ -1036,7 +1021,7 @@ function MasteryRoadmap() {
                       ease: "linear",
                     }}
                   >
-                    <Star className="h-5 w-5 text-white" />
+                    <Star className="h-5 w-5 text-[#FFDF20] fill-[#FFDF20]" />
                   </motion.div>
                 )}
                 {l.status === "locked" && (
@@ -1045,9 +1030,8 @@ function MasteryRoadmap() {
               </div>
             </div>
             <span
-              className={`text-[7px] font-black uppercase tracking-tight ${
-                l.status === "current" ? "text-white" : "text-blue-200/60"
-              }`}
+              className={`text-[7px] font-black uppercase tracking-tight ${l.status === "current" ? "text-white" : "text-blue-200/60"
+                }`}
             >
               {l.status === "achieved"
                 ? "Achieved"
@@ -1069,7 +1053,7 @@ function MasteryRoadmap() {
             // whileHover={{ rotate: 15, scale: 1.1 }}
             className="flex h-8 w-8 items-center justify-center rounded-[14px] bg-[#fdc700]"
           >
-            <Crown className="h-4 w-4 text-white" />
+            <Zap fill="#1C398E" className="h-4 w-4 text-[#1C398E]" />
           </motion.div>
           <div>
             <p className="text-[11px] font-black uppercase tracking-wider text-white">
@@ -1357,17 +1341,15 @@ function StreakSubjectCard({
     >
       {/* Decorative circle */}
       <div
-        className={`absolute -top-8 right-[-10px] h-24 w-24 rounded-full transition-all duration-300 opacity-5 group-hover:scale-150 group-hover:opacity-10 ${
-          isActive ? "bg-orange-500" : "bg-gray-500"
-        }`}
+        className={`absolute -top-8 right-[-10px] h-24 w-24 rounded-full transition-all duration-300 opacity-5 group-hover:scale-150 group-hover:opacity-10 ${isActive ? "bg-orange-500" : "bg-gray-500"
+          }`}
       />
 
       {/* Icon + Label */}
       <div className="flex items-center gap-4 mb-6">
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg transition-transform duration-300 group-hover:rotate-12 ${
-            isActive ? "bg-orange-500" : "bg-gray-200"
-          }`}
+          className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg transition-transform duration-300 group-hover:rotate-12 ${isActive ? "bg-orange-500" : "bg-gray-200"
+            }`}
         >
           {subject.icon}
         </div>
@@ -1376,11 +1358,10 @@ function StreakSubjectCard({
             {subject.name}
           </p>
           <span
-            className={`inline-block mt-1 rounded-lg px-2 py-0.5 text-[8px] font-black uppercase tracking-wider ${
-              isActive
-                ? "bg-orange-50 text-orange-600"
-                : "bg-gray-100 text-gray-400"
-            }`}
+            className={`inline-block mt-1 rounded-lg px-2 py-0.5 text-[8px] font-black uppercase tracking-wider ${isActive
+              ? "bg-orange-50 text-orange-600"
+              : "bg-gray-100 text-gray-400"
+              }`}
           >
             {subject.status}
           </span>
@@ -1409,9 +1390,8 @@ function StreakSubjectCard({
               duration: 0.8,
               ease: "easeOut",
             }}
-            className={`h-full rounded-full ${
-              isActive ? "bg-orange-500" : "bg-gray-300"
-            }`}
+            className={`h-full rounded-full ${isActive ? "bg-orange-500" : "bg-gray-300"
+              }`}
           />
         </div>
       </div>
@@ -1443,19 +1423,17 @@ function StreakLeaderboardRow({
         duration: 0.5,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className={`flex items-center justify-between px-8 py-7 ${
-        isMe
-          ? "bg-orange-50 border-x-4 border-b border-orange-500 border-b-gray-50"
-          : "border-b border-gray-50"
-      }`}
+      className={`flex items-center justify-between px-8 py-7 ${isMe
+        ? "bg-orange-50 border-x-4 border-b border-orange-500 border-b-gray-50"
+        : "border-b border-gray-50"
+        }`}
     >
       {/* Left side */}
       <div className="flex items-center gap-8">
         {/* Rank number */}
         <span
-          className={`text-lg font-black italic tracking-tight ${
-            isMe ? "text-gray-300" : "text-orange-500"
-          }`}
+          className={`text-lg font-black italic tracking-tight ${isMe ? "text-gray-300" : "text-orange-500"
+            }`}
         >
           {rankStr}
         </span>
@@ -1829,11 +1807,10 @@ function MyBestContent() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               whileHover={{ y: -5 }}
-              className={`relative rounded-[32px] border p-6 shadow-sm transition-all duration-300 group cursor-pointer ${
-                badge.locked
-                  ? "border-gray-100 bg-gray-50/50 opacity-60 grayscale"
-                  : "border-blue-100 bg-white hover:shadow-md"
-              }`}
+              className={`relative rounded-[32px] border p-6 shadow-sm transition-all duration-300 group cursor-pointer ${badge.locked
+                ? "border-gray-100 bg-gray-50/50 opacity-60 grayscale"
+                : "border-blue-100 bg-white hover:shadow-md"
+                }`}
             >
               {badge.locked && (
                 <div className="absolute top-4 right-4">
@@ -1844,16 +1821,14 @@ function MyBestContent() {
               )}
 
               <div
-                className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:rotate-6 ${
-                  badge.locked ? "bg-gray-200 text-gray-400" : "bg-gray-100/80"
-                }`}
+                className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:rotate-6 ${badge.locked ? "bg-gray-200 text-gray-400" : "bg-gray-100/80"
+                  }`}
               >
                 {badge.icon}
               </div>
               <h4
-                className={`text-sm font-black mb-1 ${
-                  badge.locked ? "text-gray-500" : "text-gray-900"
-                }`}
+                className={`text-sm font-black mb-1 ${badge.locked ? "text-gray-500" : "text-gray-900"
+                  }`}
               >
                 {badge.title}
               </h4>
@@ -1886,9 +1861,8 @@ function MyBestContent() {
                     <div
                       className="h-full bg-blue-600 opacity-50"
                       style={{
-                        width: `${
-                          (badge.progress.current / badge.progress.max) * 100
-                        }%`,
+                        width: `${(badge.progress.current / badge.progress.max) * 100
+                          }%`,
                       }}
                     />
                   </div>
@@ -2102,7 +2076,7 @@ const Ranks = () => {
                                     {user.avatar}
                                   </div>
                                   <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-[10px] bg-white shadow-sm">
-                                    <Trophy className="h-3 w-3 text-blue-600" />
+                                    <Star className="h-3 w-3 text-blue-600 fill-blue-600" />
                                   </div>
                                 </motion.div>
                                 <div>
