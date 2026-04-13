@@ -17,10 +17,10 @@ import {
   Sparkles,
   Calendar,
   Zap,
-  BookOpen,
   Share2,
   Medal,
-  Video,
+  Award,
+  Brain,
 } from "lucide-react";
 import {
   BarChart,
@@ -215,7 +215,7 @@ export default function Progress() {
       <div className="max-w-7xl mx-auto px-4 py-12 md:px-8">
         {/* Header Section */}
         <div className="mb-12">
-          <h1 className="text-[32px] font-black text-[#101828] tracking-tight">
+          <h1 className="text-3xl font-bold text-[#101828] tracking-tight">
             My Learning Hub
           </h1>
           <p className="text-[#6a7282] text-[16px]">
@@ -564,7 +564,7 @@ export default function Progress() {
             <div className="p-8 border-b border-[#f9fafb] bg-purple-50/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-[#f3e8ff] rounded-[14px] flex items-center justify-center">
-                  <Play size={20} className="text-[#9810fa]" />
+                  <Sparkles size={24} className="text-[#9810fa]" />
                 </div>
                 <div>
                   <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
@@ -576,7 +576,7 @@ export default function Progress() {
                 </div>
               </div>
               <div className="bg-[#faf5ff] border border-[#f3e8ff] px-3 py-1 rounded-full text-[#9810fa] text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles size={10} />
+                <Brain size={14} />
                 AI Powered
               </div>
             </div>
@@ -625,7 +625,7 @@ export default function Progress() {
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 bg-[#f3e8ff] rounded-[14px] flex items-center justify-center">
-              <Medal size={20} className="text-[#9810fa]" />
+              <Award size={20} className="text-[#9810fa]" />
             </div>
             <div>
               <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
@@ -645,7 +645,7 @@ export default function Progress() {
               date="Feb 15, 2026"
               distinction={true}
               color="#d0fae5"
-              icon={<Medal className="text-[#00bc7d]" />}
+              icon={<Award className="text-[#00bc7d]" />}
             />
             <CertificateCard
               title="Laws of Motion"
@@ -654,7 +654,7 @@ export default function Progress() {
               date="Feb 10, 2026"
               distinction={false}
               color="#dbeafe"
-              icon={<Zap className="text-[#155dfc]" />}
+              icon={<Award className="text-[#155dfc]" />}
             />
             <CertificateCard
               title="Periodic Table"
@@ -663,7 +663,7 @@ export default function Progress() {
               date="Feb 05, 2026"
               distinction={true}
               color="#d0fae5"
-              icon={<Medal className="text-[#00bc7d]" />}
+              icon={<Award className="text-[#00bc7d]" />}
             />
             <CertificateCard
               title="Cell Biology"
@@ -672,7 +672,7 @@ export default function Progress() {
               date="Jan 28, 2026"
               distinction={false}
               color="#fef3c6"
-              icon={<BookOpen className="text-[#fe9a00]" />}
+              icon={<Award className="text-[#fe9a00]" />}
             />
           </div>
         </div>
@@ -706,11 +706,10 @@ function FilterButton({
   return (
     <button
       onClick={onClick}
-      className={`px-5 py-2.5 rounded-full border transition-all flex items-center gap-2 ${
-        active
-          ? "bg-[#101828] border-[#101828] text-white"
-          : "bg-white border-[#e5e7eb] text-[#6a7282] hover:bg-gray-50"
-      }`}
+      className={`px-5 py-2.5 rounded-full border transition-all flex items-center gap-2 ${active
+        ? "bg-[#101828] border-[#101828] text-white"
+        : "bg-white border-[#e5e7eb] text-[#6a7282] hover:bg-gray-50"
+        }`}
     >
       {color && !active && (
         <div
@@ -893,9 +892,9 @@ function SuggestionItem({
           className={`w-14 h-14 rounded-2xl flex items-center justify-center ${type === "video" ? "bg-[#dbeafe]" : "bg-[#d0fae5]"}`}
         >
           {type === "video" ? (
-            <Video size={24} className="text-[#155dfc]" />
+            <Play size={24} className="text-[#155dfc]" fill="currentColor" />
           ) : (
-            <BookOpen size={24} className="text-[#00bc7d]" />
+            <Brain size={24} className="text-[#00bc7d]" />
           )}
         </div>
         <div className="absolute -top-1 -right-1 bg-[#155dfc] text-white text-[8px] font-black px-1.5 py-0.5 rounded-lg border-2 border-white shadow-sm">
@@ -1186,9 +1185,8 @@ function WeeklyActivity() {
                 onClick={() => setActive(t.key as any)}
                 // whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                className={`relative flex items-center gap-2 text-xs   px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                  active === t.key ? "text-blue-600" : "text-gray-500"
-                }`}
+                className={`relative flex items-center gap-2 text-xs   px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${active === t.key ? "text-blue-600" : "text-gray-500"
+                  }`}
               >
                 {active === t.key && (
                   <motion.div
