@@ -54,11 +54,10 @@ export function CoursesDropdown() {
     <DropdownMenu onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <div
-          className={`flex justify-center items-center px-3.75 py-1.5 rounded-full cursor-pointer ${
-            isActive
+          className={`flex justify-center items-center px-3.75 py-1.5 rounded-full cursor-pointer ${isActive
               ? "text-[#1C398E] bg-white shadow-sm text-center "
               : "hover:text-[#1C398E]"
-          }`}
+            }`}
         >
           COURSES
           <ChevronDown
@@ -97,7 +96,7 @@ export function CoursesDropdown() {
                   <span className="capitalize">{course.name}</span>
                 </DropdownMenuSubTrigger>
 
-                <DropdownMenuSubContent className="w-65 p-3 rounded-2xl">
+                <DropdownMenuSubContent className="w-65 p-3 rounded-2xl ml-3">
                   <div className="text-xs text-[#155DFC] mb-0.5 text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase px-3">
                     LEARNING PATH
                   </div>
