@@ -9,6 +9,7 @@ import {
   Share2,
   User,
   PanelLeft,
+  Bot,
 } from "lucide-react";
 
 interface ChatHistoryItem {
@@ -140,7 +141,7 @@ export default function AiChatFullViewModal({
                   <div className="border-b border-[#1e2939] p-4 flex flex-col gap-4 shrink-0">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-[14px] bg-[#155dfc] flex items-center justify-center">
-                        <Sparkles size={16} className="text-white" />
+                        <Bot size={16} className="text-white" />
                       </div>
                       <p className="text-[14px] font-black text-white tracking-tight">
                         SmartLearn AI
@@ -287,7 +288,7 @@ export default function AiChatFullViewModal({
                     ) : (
                       <div key={m.id} className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-[14px] bg-[rgba(21,93,252,0.2)] flex items-center justify-center shrink-0">
-                          <Sparkles size={16} className="text-[#8ec5ff]" />
+                          <Bot size={16} className="text-[#8ec5ff]" />
                         </div>
                         <div className="flex flex-col gap-1 max-w-[80%]">
                           <div className="bg-[#1e2939] border border-[#364153] rounded-2xl rounded-tl-lg px-5 py-4">
