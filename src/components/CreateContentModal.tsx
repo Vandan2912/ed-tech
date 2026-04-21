@@ -156,13 +156,14 @@ export default function CreateContentModal({
             className="fixed inset-0 bg-[#101828]/70 z-50"
           />
 
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 py-8 overflow-y-auto pointer-events-none">
+          {/* <div className="max-h-[80vh] overflow-y-auto"> */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 py-8 overflow-y-auto pointer-events-none hideScrollbar">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white w-full max-w-[672px] rounded-[32px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] p-8 pointer-events-auto"
+              className="bg-white w-full max-w-[672px] max-h-[95vh] hideScrollbar overflow-y-auto rounded-[32px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] p-8 pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {step === "preview" ? (
@@ -608,6 +609,7 @@ export default function CreateContentModal({
               )}
             </motion.div>
           </div>
+          {/* </div> */}
         </>
       )}
     </AnimatePresence>
@@ -811,17 +813,46 @@ function PreviewView({
       {/* Tabs */}
       <div className="bg-[#f3f4f6] rounded-[12px] p-1 flex mb-4">
         {(["easy", "medium", "hard"] as const).map((lvl) => (
+          // <button
+          //   key={lvl}
+          //   onClick={() => setActiveTab(lvl)}
+          //   className={`flex-1 h-9 rounded-[10px] text-[12px] font-black uppercase tracking-[0.8px] transition-colors flex items-center justify-center gap-1.5 ${
+          //     activeTab === lvl
+          //       ? "bg-white shadow text-[#101828]"
+          //       : "text-[#6a7282]"
+          //   }`}
+          // >
+          //   {lvl}
+          //   <span className="text-[10px] font-black">{counts[lvl]}</span>
+          // </button>
+
           <button
             key={lvl}
             onClick={() => setActiveTab(lvl)}
-            className={`flex-1 h-9 rounded-[10px] text-[12px] font-black uppercase tracking-[0.8px] transition-colors flex items-center justify-center gap-1.5 ${
-              activeTab === lvl
-                ? "bg-white shadow text-[#101828]"
-                : "text-[#6a7282]"
-            }`}
+            className={`flex-1 justify-center relative flex items-center gap-2 px-4 py-2 rounded-[14px] cursor-pointer transition-colors text-[#6a7282] hover:bg-white/50`}
           >
-            {lvl}
-            <span className="text-[10px] font-black">{counts[lvl]}</span>
+            {activeTab === lvl && (
+              <motion.div
+                layoutId="teacher-nav"
+                className="absolute inset-0 bg-white shadow-sm rounded-[14px]"
+                initial={false}
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                }}
+              />
+            )}
+            <div className="relative z-10 flex items-center gap-2">
+              <span className="text-[12px] font-black uppercase tracking-[1.2px]">
+                {lvl}
+              </span>
+              {counts[lvl] && (
+                <span className="bg-[#F3F4F6] text-[#0F0F0F] text-[8px] font-black px-1.5 py-0.5 rounded-full -ml-1">
+                  {counts[lvl]}
+                </span>
+              )}
+            </div>
           </button>
         ))}
       </div>
