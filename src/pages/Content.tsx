@@ -55,12 +55,13 @@ const mockContent: ContentItem[] = [
 export default function Content() {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const publishedCount = mockContent.filter((c) => c.status === "PUBLISHED").length;
+  const publishedCount = mockContent.filter(
+    (c) => c.status === "PUBLISHED",
+  ).length;
 
   return (
     <div className="bg-[#f9fafb] w-full min-h-screen font-['Inter']">
       <div className="pt-10 pb-24 relative px-4 md:px-8 max-w-[1129px] mx-auto space-y-10">
-        
         {/* Welcome Banner */}
         <div className="bg-linear-to-r from-[#4f39f6] to-[#1447e6] rounded-[32px] p-8 md:p-10 relative overflow-hidden text-white shadow-sm h-[132px] flex items-center">
           <div className="absolute -top-32 -right-32 w-64 h-64 bg-white/10 blur-3xl rounded-full"></div>
@@ -84,12 +85,12 @@ export default function Content() {
               {mockContent.length} items · {publishedCount} published
             </p>
           </div>
-          <button 
+          <button
             onClick={() => setIsModalOpen(true)}
             className="bg-[#155dfc] text-white px-6 py-3 rounded-[16px] shadow-[0px_10px_15px_0px_#bedbff,0px_4px_6px_0px_#bedbff] font-bold text-[14px] flex items-center gap-2 tracking-[-0.1504px] hover:opacity-90 transition-opacity"
           >
             <Plus size={20} />
-            Create New
+            Create AI Learning Content
           </button>
         </div>
 
@@ -102,9 +103,9 @@ export default function Content() {
       </div>
 
       {/* Modal */}
-      <CreateContentModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <CreateContentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </div>
   );
@@ -143,7 +144,7 @@ function ContentCard({ item }: { item: ContentItem }) {
             </p>
           </div>
         </div>
-        
+
         {/* Status Pill */}
         <div
           className={`px-2 py-1.5 rounded-[10px] ${
