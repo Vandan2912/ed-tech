@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import clsx from "clsx";
 
 export default function CustomSelect({
   value,
@@ -7,12 +8,14 @@ export default function CustomSelect({
   onBlur,
   options,
   placeholder,
+  className,
 }: {
   value: string;
   onChange: (val: string) => void;
   onBlur?: () => void;
   options: { label: string; value: string }[];
   placeholder: string;
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,7 +41,10 @@ export default function CustomSelect({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all text-left"
+        className={clsx(
+          "w-full flex items-center justify-between px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all text-left",
+          className,
+        )}
       >
         <span
           className={`font-bold ${selectedOption ? "text-gray-900" : "text-gray-400"}`}

@@ -5,7 +5,6 @@ import {
   Target,
   CheckCircle2,
   Circle,
-  ChevronDown,
   ChevronRight,
   Zap,
   Brain,
@@ -13,6 +12,7 @@ import {
   Copy,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import CustomSelect from "./CustomSelect";
 
 type Step = 1 | 2 | 3 | "preview";
 
@@ -248,31 +248,23 @@ export default function CreateContentModal({
                             <label className="block text-[10px] font-black uppercase tracking-[1px] text-[#99a1af] mb-1.5">
                               Subject *
                             </label>
-                            <div className="relative">
-                              <select
-                                value={form.subject}
-                                onChange={(e) =>
-                                  setForm((f) => ({
-                                    ...f,
-                                    subject: e.target.value,
-                                  }))
-                                }
-                                className="w-full border border-[#e5e7eb] rounded-[12px] h-[46px] px-4 text-[14px] font-semibold text-[#101828] focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-[#155dfc]/30 appearance-none bg-white"
-                              >
-                                <option value="" disabled>
-                                  Select Subject
-                                </option>
-                                {SUBJECTS.map((s) => (
-                                  <option key={s} value={s}>
-                                    {s}
-                                  </option>
-                                ))}
-                              </select>
-                              <ChevronDown
-                                size={16}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#99a1af] pointer-events-none"
-                              />
-                            </div>
+                            <CustomSelect
+                              value={form.subject}
+                              onChange={(val) =>
+                                setForm((f) => ({
+                                  ...f,
+                                  subject: val,
+                                }))
+                              }
+                              placeholder="Select Subject"
+                              options={SUBJECTS.map((sub) => {
+                                return {
+                                  label: sub,
+                                  value: sub,
+                                };
+                              })}
+                              className="w-full border bg-white border-[#e5e7eb]! rounded-[12px] h-[46px] px-4 text-[14px] font-semibold text-[#101828]! placeholder-[#c0c7d1]! focus:outline-none focus:border-[#155dfc] focus:ring-1 focus:ring-[#155dfc]/30"
+                            />
                           </div>
                         </div>
 
@@ -517,7 +509,7 @@ export default function CreateContentModal({
                                 <p className="text-[10px] font-black uppercase tracking-[1px] text-[#99a1af]">
                                   Question {qIdx + 1}
                                 </p>
-                                <span className="bg-[#eff6ff] text-[#155dfc] text-[9px] font-black uppercase tracking-[0.8px] px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <span className="bg-[#eff6ff] border border-[#dbeafe] text-[#155dfc] text-[9px] font-black uppercase tracking-[1.067px] px-2 py-0.5 rounded-full">
                                   AI Generated
                                 </span>
                               </div>
@@ -868,7 +860,7 @@ function PreviewView({
               <p className="text-[10px] font-black uppercase tracking-[1px] text-[#99a1af]">
                 Question {qIdx + 1}
               </p>
-              <span className="bg-[#eff6ff] text-[#155dfc] text-[9px] font-black uppercase tracking-[0.8px] px-2 py-0.5 rounded-full">
+              <span className="bg-[#eff6ff] border border-[#dbeafe] text-[#155dfc] text-[9px] font-black uppercase tracking-[1.067px] px-2 py-0.5 rounded-full">
                 AI Generated
               </span>
             </div>
