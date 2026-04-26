@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import userImage from "@/assets/user.jpg";
+import { getGlobalRanks } from "@/api/ranks";
+import type { GlobalRankUser } from "@/api/ranks";
 import {
   motion,
   AnimatePresence,
@@ -31,19 +33,7 @@ import {
 // ─── Types ───────────────────────────────────────────
 type TabKey = "global" | "streak" | "best";
 
-interface LeaderboardUser {
-  rank: number;
-  name: string;
-  level: number;
-  xp: number;
-  avatar: string;
-  positionChange: number;
-  isCurrentUser?: boolean;
-  image: string;
-  badges?: number;
-  league?: string;
-  memberType?: string;
-}
+type LeaderboardUser = GlobalRankUser;
 
 interface RoadmapLevel {
   level: number;
@@ -790,15 +780,18 @@ function PodiumCard({
 
 /** Podium section */
 function Podium({
+  topThree: users,
   onProfileClick,
 }: {
+  topThree: LeaderboardUser[];
   onProfileClick?: (user: LeaderboardUser) => void;
 }) {
+  if (users.length < 3) return null;
   return (
     <div className="flex items-end justify-center gap-10 pb-4 pt-8">
       <div className="mt-12">
         <PodiumCard
-          user={topThree[0]}
+          user={users[0]}
           size="sm"
           delay={0.2}
           onProfileClick={onProfileClick}
@@ -806,7 +799,7 @@ function Podium({
       </div>
       <div>
         <PodiumCard
-          user={topThree[1]}
+          user={users[1]}
           size="lg"
           delay={0}
           onProfileClick={onProfileClick}
@@ -814,7 +807,7 @@ function Podium({
       </div>
       <div className="mt-12">
         <PodiumCard
-          user={topThree[2]}
+          user={users[2]}
           size="sm"
           delay={0.4}
           onProfileClick={onProfileClick}
@@ -1970,14 +1963,32 @@ function MyBestContent() {
 
 const Ranks = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("global");
-  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(
-    null,
-  );
+  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(null);
+  const [topThreeData, setTopThreeData] = useState<LeaderboardUser[]>(topThree);
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>(leaderboard);
+  const [loadingGlobal, setLoadingGlobal] = useState(false);
   const leaderboardRef = useRef(null);
   const leaderboardInView = useInView(leaderboardRef, {
     once: true,
     margin: "-40px",
   });
+
+  const fetchGlobalRanks = useCallback(async () => {
+    setLoadingGlobal(true);
+    try {
+      const data = await getGlobalRanks();
+      if (data.topThree?.length) setTopThreeData(data.topThree);
+      if (data.leaderboard?.length) setLeaderboardData(data.leaderboard);
+    } catch {
+      // keep mock data on error
+    } finally {
+      setLoadingGlobal(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchGlobalRanks();
+  }, [fetchGlobalRanks]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -2010,7 +2021,7 @@ const Ranks = () => {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* 3. Podium */}
-              <Podium onProfileClick={setSelectedUser} />
+              <Podium topThree={topThreeData} onProfileClick={setSelectedUser} />
 
               {/* 4. Main content area */}
               <div className="mt-12 flex gap-6">
@@ -2036,8 +2047,14 @@ const Ranks = () => {
                     ref={leaderboardRef}
                     className="mt-4 overflow-hidden rounded-[40px] border border-gray-100 shadow-xl"
                   >
+                    {loadingGlobal && (
+                      <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
+                        Loading...
+                      </div>
+                    )}
+
                     {/* Users above "you" */}
-                    {leaderboard
+                    {!loadingGlobal && leaderboardData
                       .filter((u) => !u.isCurrentUser && u.rank < 5)
                       .map((user, i) => (
                         <LeaderboardRow
@@ -2050,7 +2067,7 @@ const Ranks = () => {
 
                     {/* "Your" blue card with mastery */}
                     <AnimatePresence>
-                      {leaderboard
+                      {!loadingGlobal && leaderboardData
                         .filter((u) => u.isCurrentUser)
                         .map((user) => (
                           <motion.div
@@ -2120,7 +2137,7 @@ const Ranks = () => {
                     </AnimatePresence>
 
                     {/* Users below "you" */}
-                    {leaderboard
+                    {!loadingGlobal && leaderboardData
                       .filter((u) => !u.isCurrentUser && u.rank > 5)
                       .map((user, i) => (
                         <LeaderboardRow
