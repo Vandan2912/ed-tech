@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import userImage from "@/assets/user.jpg";
-import { getGlobalRanks } from "@/api/ranks";
+import { getLeaderboard } from "@/api/ranks";
 import type { GlobalRankUser } from "@/api/ranks";
 import {
   motion,
@@ -66,97 +66,6 @@ const staggerContainer: Variants = {
   visible: { transition: { staggerChildren: 0.08 } },
 };
 
-// ─── Mock Data ───────────────────────────────────────
-const topThree: LeaderboardUser[] = [
-  {
-    rank: 2,
-    name: "Sara Khan",
-    level: 22,
-    xp: 2320,
-    avatar: "SK",
-    positionChange: 1,
-    image: userImage,
-    badges: 18,
-    league: "Diamond League",
-    memberType: "Elite Member",
-  },
-  {
-    rank: 1,
-    name: "Arjun Mehta",
-    level: 24,
-    xp: 2450,
-    avatar: "AM",
-    positionChange: 3,
-    image: userImage,
-    badges: 24,
-    league: "Diamond League",
-    memberType: "Pro Member",
-  },
-  {
-    rank: 3,
-    name: "Leo Das",
-    level: 21,
-    xp: 2210,
-    avatar: "LD",
-    positionChange: -1,
-    image: userImage,
-    badges: 15,
-    league: "Diamond League",
-    memberType: "Rising Star",
-  },
-];
-
-const leaderboard: LeaderboardUser[] = [
-  {
-    rank: 4,
-    name: "Priya Sharma",
-    level: 19,
-    xp: 1940,
-    avatar: "PS",
-    positionChange: 2,
-    image: userImage,
-    badges: 16,
-    league: "Diamond League",
-    memberType: "Active Learner",
-  },
-  {
-    rank: 5,
-    name: "You",
-    level: 18,
-    xp: 1850,
-    avatar: "YO",
-    positionChange: 2,
-    isCurrentUser: true,
-    image: userImage,
-    badges: 12,
-    league: "Diamond League",
-    memberType: "Member",
-  },
-  {
-    rank: 6,
-    name: "Rohan Gupta",
-    level: 17,
-    xp: 1720,
-    avatar: "RG",
-    positionChange: -1,
-    image: userImage,
-    badges: 14,
-    league: "Platinum League",
-    memberType: "Explorer",
-  },
-  {
-    rank: 7,
-    name: "Zoya Ali",
-    level: 16,
-    xp: 1650,
-    avatar: "ZA",
-    positionChange: 2,
-    image: userImage,
-    badges: 10,
-    league: "Platinum League",
-    memberType: "Challenger",
-  },
-];
 
 const roadmapLevels: RoadmapLevel[] = [
   { level: 15, status: "achieved" },
@@ -479,12 +388,16 @@ function ProfileModal({
           <div className="flex flex-col items-center">
             {/* Avatar */}
             <div className="relative mb-4">
-              <div className="w-32 h-32 rounded-[40px] border-[6px] border-white shadow-xl overflow-hidden bg-gray-100">
-                <img
-                  src={user.image}
-                  alt={user.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-32 h-32 rounded-[40px] border-[6px] border-white shadow-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-3xl font-black text-blue-600">{user.avatar}</span>
+                )}
               </div>
               <div
                 className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white ${badgeColor}`}
@@ -726,11 +639,15 @@ function PodiumCard({
             className={`absolute inset-[6px] ${avatarDim} overflow-hidden rounded-full border-4 border-white bg-linear-to-br from-blue-100 to-blue-50 shadow-xl`}
           >
             <div className="flex h-full w-full items-center justify-center text-2xl font-black text-blue-600">
-              <img
-                src={user.image}
-                alt="user"
-                className="w-full h-full object-cover"
-              />
+              {user.image ? (
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span>{user.avatar}</span>
+              )}
             </div>
           </div>
           {/* Rank badge */}
@@ -787,11 +704,14 @@ function Podium({
   onProfileClick?: (user: LeaderboardUser) => void;
 }) {
   if (users.length < 3) return null;
+  const first = users.find((u) => u.rank === 1)!;
+  const second = users.find((u) => u.rank === 2)!;
+  const third = users.find((u) => u.rank === 3)!;
   return (
     <div className="flex items-end justify-center gap-10 pb-4 pt-8">
       <div className="mt-12">
         <PodiumCard
-          user={users[0]}
+          user={second}
           size="sm"
           delay={0.2}
           onProfileClick={onProfileClick}
@@ -799,7 +719,7 @@ function Podium({
       </div>
       <div>
         <PodiumCard
-          user={users[1]}
+          user={first}
           size="lg"
           delay={0}
           onProfileClick={onProfileClick}
@@ -807,7 +727,7 @@ function Podium({
       </div>
       <div className="mt-12">
         <PodiumCard
-          user={users[2]}
+          user={third}
           size="sm"
           delay={0.4}
           onProfileClick={onProfileClick}
@@ -1228,12 +1148,14 @@ function XpOverdriveCard() {
 
 /** Weekly Rival card */
 function WeeklyRivalCard({
+  rival,
   onProfileClick,
 }: {
+  rival: LeaderboardUser | null;
   onProfileClick?: (user: LeaderboardUser) => void;
 }) {
-  const rivalUser =
-    leaderboard.find((u) => u.name === "Priya Sharma") ?? leaderboard[0];
+  if (!rival) return null;
+  const rivalUser = rival;
 
   return (
     <AnimatedSection delay={0.3} variants={fadeRight}>
@@ -1261,18 +1183,22 @@ function WeeklyRivalCard({
         >
           <div className="flex items-center gap-4">
             <motion.div className="relative">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-white bg-linear-to-br from-pink-50 to-rose-50 text-lg font-black text-pink-600 shadow-md">
-                PS
+              <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border-2 border-white bg-linear-to-br from-pink-50 to-rose-50 text-lg font-black text-pink-600 shadow-md">
+                {rivalUser.image ? (
+                  <img src={rivalUser.image} alt={rivalUser.name} className="w-full h-full object-cover" />
+                ) : (
+                  rivalUser.avatar
+                )}
               </div>
               <motion.div className="absolute -left-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-black text-white shadow-lg">
-                #4
+                #{rivalUser.rank}
               </motion.div>
             </motion.div>
 
             <div>
-              <p className="font-bold text-gray-900">Priya Sharma</p>
+              <p className="font-bold text-gray-900">{rivalUser.name}</p>
               <p className="mt-0.5 text-[10px] font-black uppercase tracking-widest text-gray-400">
-                90 XP AHEAD
+                {rivalUser.xp.toLocaleString()} XP
               </p>
               <div className="mt-2 flex gap-1">
                 {[1, 2, 3, 4].map((i) => (
@@ -1964,9 +1890,10 @@ function MyBestContent() {
 const Ranks = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("global");
   const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(null);
-  const [topThreeData, setTopThreeData] = useState<LeaderboardUser[]>(topThree);
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>(leaderboard);
-  const [loadingGlobal, setLoadingGlobal] = useState(false);
+  const [topThreeData, setTopThreeData] = useState<LeaderboardUser[]>([]);
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>([]);
+  const [weeklyRival, setWeeklyRival] = useState<LeaderboardUser | null>(null);
+  const [loadingGlobal, setLoadingGlobal] = useState(true);
   const leaderboardRef = useRef(null);
   const leaderboardInView = useInView(leaderboardRef, {
     once: true,
@@ -1976,9 +1903,10 @@ const Ranks = () => {
   const fetchGlobalRanks = useCallback(async () => {
     setLoadingGlobal(true);
     try {
-      const data = await getGlobalRanks();
-      if (data.topThree?.length) setTopThreeData(data.topThree);
-      if (data.leaderboard?.length) setLeaderboardData(data.leaderboard);
+      const data = await getLeaderboard();
+      setTopThreeData(data.topThree);
+      setLeaderboardData(data.leaderboard);
+      setWeeklyRival(data.weeklyRival);
     } catch {
       // keep mock data on error
     } finally {
@@ -2153,7 +2081,7 @@ const Ranks = () => {
                 {/* Right column — Sidebar */}
                 <div className="w-[304px] shrink-0 space-y-6">
                   <XpOverdriveCard />
-                  <WeeklyRivalCard onProfileClick={setSelectedUser} />
+                  <WeeklyRivalCard rival={weeklyRival} onProfileClick={setSelectedUser} />
                 </div>
               </div>
             </motion.div>
