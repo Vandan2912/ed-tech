@@ -13,10 +13,20 @@ export interface ApiLeaderboardUser {
   is_current_user: boolean;
 }
 
+export interface ApiWeeklyRival {
+  id: string;
+  name: string;
+  profile_image: string | null;
+  rank: string;
+  xp: number;
+  level: number;
+  xp_ahead: number;
+}
+
 export interface LeaderboardResponse {
   success: boolean;
   data: ApiLeaderboardUser[];
-  weekly_rival: ApiLeaderboardUser | null;
+  weekly_rival: ApiWeeklyRival | null;
 }
 
 export interface GlobalRankUser {
@@ -61,21 +71,39 @@ function toGlobalRankUser(u: ApiLeaderboardUser): GlobalRankUser {
   };
 }
 
+function rivalToGlobalRankUser(u: ApiWeeklyRival): GlobalRankUser {
+  return {
+    id: u.id,
+    rank: parseInt(u.rank, 10),
+    name: u.name,
+    level: u.level,
+    xp: u.xp,
+    xpToNextLevel: u.xp_ahead,
+    avatar: u.name.slice(0, 2).toUpperCase(),
+    positionChange: 0,
+    rankColor: "",
+    isCurrentUser: false,
+    image: u.profile_image ?? "",
+  };
+}
+
 export const getLeaderboard = async (): Promise<GlobalRankResponse> => {
   const token = localStorage.getItem("token");
   const res = await api.get("/xp/leaderboard", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  const body: LeaderboardResponse = res.data;
+  const body: LeaderboardResponse = res?.data;
   const sorted = [...body.data].sort(
-    (a, b) => parseInt(a.rank) - parseInt(b.rank)
+    (a, b) => parseInt(a.rank) - parseInt(b.rank),
   );
   const mapped = sorted.map(toGlobalRankUser);
 
   return {
     topThree: mapped.filter((u) => u.rank <= 3),
     leaderboard: mapped.filter((u) => u.rank > 3),
-    weeklyRival: body.weekly_rival ? toGlobalRankUser(body.weekly_rival) : null,
+    weeklyRival: body.weekly_rival
+      ? rivalToGlobalRankUser(body.weekly_rival)
+      : null,
   };
 };
