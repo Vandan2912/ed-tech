@@ -1,6 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { getLeaderboard, getStreaks } from "@/api/ranks";
-import type { GlobalRankUser, StreakUser as ApiStreakUser, StreaksData } from "@/api/ranks";
+import { getLeaderboard, getStreaks, getMyBest } from "@/api/ranks";
+import type {
+  GlobalRankUser,
+  StreakUser as ApiStreakUser,
+  StreaksData,
+  MyBestData,
+} from "@/api/ranks";
 import {
   motion,
   AnimatePresence,
@@ -19,7 +24,6 @@ import {
   BookOpen,
   Award,
   X,
-  Medal,
   Target,
   Users,
   PlayCircle,
@@ -107,7 +111,7 @@ const earnedBadges: Badge[] = [
     id: "early_bird_main",
     title: "Early Bird",
     description: "Jan 12, 2026",
-    icon: <Medal className="h-6 w-6 text-blue-500" />,
+    icon: <Award className="h-6 w-6 text-blue-500" />,
   },
   {
     id: "quiz_master_main",
@@ -1324,9 +1328,10 @@ function StreakMastersContent({
               Loading...
             </div>
           )}
-          {!loading && streaksData?.topStreaks.map((user, i) => (
-            <StreakLeaderboardRow key={user.id} user={user} index={i} />
-          ))}
+          {!loading &&
+            streaksData?.topStreaks.map((user, i) => (
+              <StreakLeaderboardRow key={user.id} user={user} index={i} />
+            ))}
         </div>
 
         {/* Dark footer */}
@@ -1351,7 +1356,7 @@ function StreakMastersContent({
                 />
               ) : (
                 <div key={i} className="h-2 w-10 rounded-full bg-white/10" />
-              )
+              ),
             )}
           </div>
         </motion.div>
@@ -1362,12 +1367,26 @@ function StreakMastersContent({
 
 // ─── My Best Components ──────────────────────────────
 
-function MyBestContent() {
-  const ref = useRef(null);
+function MyBestContent({
+  myBestData,
+  loading,
+}: {
+  myBestData: MyBestData | null;
+  loading: boolean;
+}) {
+  const circumference = 2 * Math.PI * 40; // r=40
+  const pct = myBestData?.progress.percent ?? 0;
+  const dashOffset = circumference - (pct / 100) * circumference;
+
+  // const formatDate = (iso: string) =>
+  //   new Date(iso).toLocaleDateString("en-US", {
+  //     month: "short",
+  //     day: "numeric",
+  //     year: "numeric",
+  //   });
 
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, x: 40 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -40 }}
@@ -1383,83 +1402,150 @@ function MyBestContent() {
           </h2>
         </div>
 
-        <div className="flex gap-6">
-          {/* Level Progress Card */}
-          <div className="flex-1 rounded-[40px] border border-gray-100 bg-white p-10 shadow-sm flex items-center gap-10">
-            <div className="relative h-40 w-40 shrink-0">
-              <svg
-                className="h-full w-full -rotate-90 transform"
-                viewBox="0 0 100 100"
-              >
-                <circle
-                  className="text-gray-100 stroke-current"
-                  strokeWidth="8"
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  fill="transparent"
-                ></circle>
-                <circle
-                  className="text-blue-600 stroke-current"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  fill="transparent"
-                  strokeDasharray="251.2"
-                  strokeDashoffset="87.92" // 65% progress
-                ></circle>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-black tracking-tight text-gray-900">
-                  18
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                  Level
-                </span>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-2xl font-black text-gray-900 mb-2">
-                Intermediate Scholar
-              </h3>
-              <p className="text-sm text-gray-500 mb-4 max-w-sm">
-                You've reached the current peak! Your progress is at{" "}
-                <span className="font-bold text-blue-600">65%</span> towards the
-                next level.
-              </p>
-              <div className="flex gap-3">
-                <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-600 border border-blue-100">
-                  Silver Badge
-                </span>
-                <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-blue-600 border border-blue-100">
-                  Custom Avatar
-                </span>
-              </div>
-            </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
+            Loading...
           </div>
+        ) : (
+          <div className="flex gap-6">
+            {/* Level Progress Card */}
+            <div className="flex-1 rounded-[40px] border border-gray-100 bg-white p-10 shadow-sm flex items-center gap-10">
+              <div className="relative h-40 w-40 shrink-0">
+                <svg
+                  className="h-full w-full -rotate-90 transform"
+                  viewBox="0 0 100 100"
+                >
+                  <circle
+                    className="text-gray-100 stroke-current"
+                    strokeWidth="8"
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="transparent"
+                  />
+                  <motion.circle
+                    className="text-blue-600 stroke-current"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="transparent"
+                    strokeDasharray={circumference}
+                    initial={{ strokeDashoffset: circumference }}
+                    animate={{ strokeDashoffset: dashOffset }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-4xl font-black tracking-tight text-gray-900">
+                    {myBestData?.level ?? 0}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    Level
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="text-3xl font-black text-gray-900">
+                    {myBestData?.totalXp.toLocaleString() ?? 0}
+                  </span>
+                  <span className="text-sm font-bold text-gray-400">
+                    Total XP
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 mb-4 max-w-sm">
+                  {myBestData?.progress.current.toLocaleString()} /{" "}
+                  {myBestData?.progress.required.toLocaleString()} XP to next
+                  level —{" "}
+                  <span className="font-bold text-blue-600">{pct}%</span> there.
+                </p>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full bg-blue-600"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${pct}%` }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  />
+                </div>
+              </div>
+            </div>
 
-          {/* Main Badge Card */}
-          <div className="w-[304px] shrink-0 overflow-hidden rounded-[40px] bg-linear-to-br from-blue-600 to-indigo-700 p-10 text-center relative shadow-[0px_20px_25px_-5px_rgba(190,219,255,0.5)]">
-            <div className="absolute top-[-80px] -right-10 h-40 w-40 rounded-full bg-white/20 blur-3xl mix-blend-overlay" />
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20 shadow-xl border border-white/20 mb-6 backdrop-blur-md">
-              <Star className="h-8 w-8 text-white" />
+            {/* XP Snapshot Card */}
+            <div className="w-[304px] shrink-0 overflow-hidden rounded-[40px] bg-linear-to-br from-blue-600 to-indigo-700 p-10 text-center relative shadow-[0px_20px_25px_-5px_rgba(190,219,255,0.5)]">
+              <div className="absolute top-[-80px] -right-10 h-40 w-40 rounded-full bg-white/20 blur-3xl mix-blend-overlay" />
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20 shadow-xl border border-white/20 mb-6 backdrop-blur-md">
+                <Zap className="h-8 w-8 text-white" />
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">
+                XP Earned
+              </p>
+              <h3 className="text-3xl font-black text-white mb-2">
+                {myBestData?.totalXp.toLocaleString() ?? 0}
+              </h3>
+              <p className="text-xs text-blue-200/80">
+                Keep learning to level up faster!
+              </p>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">
-              Main Badge
-            </p>
-            <h3 className="text-xl font-black text-white mb-2 leading-tight">
-              Consistent Learner
-            </h3>
-            <p className="text-xs text-blue-200/80">
-              Equipped as your primary showcase achievement.
-            </p>
           </div>
-        </div>
+        )}
       </section>
 
-      {/* 2. Mastered History */}
+      {/* 2. Recent XP Activity */}
+      {/* <section>
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-1 w-12 bg-green-500 rounded-full" />
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+            Recent XP Activity
+          </h2>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
+            Loading...
+          </div>
+        ) : myBestData?.recentXp.length === 0 ? (
+          <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold rounded-[32px] border border-gray-100">
+            No XP activity yet — start learning!
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {myBestData?.recentXp.map((entry, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.07 }}
+                className="flex items-center justify-between rounded-[32px] border border-blue-100 bg-blue-50/50 px-6 py-4"
+              >
+                <div className="flex items-center gap-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-blue-600 shadow-md shadow-blue-200">
+                    <Zap className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-800 text-sm">
+                      {entry.label}
+                    </h4>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-0.5">
+                      {formatDate(entry.createdAt)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xl font-black text-blue-600">
+                    +{entry.xp}
+                  </span>
+                  <span className="text-xs font-black text-blue-400">XP</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </section> */}
+
+      {/* 3. Mastered History */}
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-green-500 rounded-full" />
@@ -1535,7 +1621,7 @@ function MyBestContent() {
         </div>
       </section>
 
-      {/* 3. Badge Gallery */}
+      {/* 4. Badge Gallery */}
       <section>
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -1639,7 +1725,7 @@ function MyBestContent() {
         </div>
       </section>
 
-      {/* 4. Next Evolution */}
+      {/* 5. Next Evolution */}
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-orange-500 rounded-full" />
@@ -1745,6 +1831,8 @@ const Ranks = () => {
   const [loadingGlobal, setLoadingGlobal] = useState(true);
   const [streaksData, setStreaksData] = useState<StreaksData | null>(null);
   const [loadingStreaks, setLoadingStreaks] = useState(false);
+  const [myBestData, setMyBestData] = useState<MyBestData | null>(null);
+  const [loadingMyBest, setLoadingMyBest] = useState(false);
   const leaderboardRef = useRef(null);
   const leaderboardInView = useInView(leaderboardRef, {
     once: true,
@@ -1782,9 +1870,23 @@ const Ranks = () => {
     fetchGlobalRanks();
   }, [fetchGlobalRanks]);
 
+  const fetchMyBest = useCallback(async () => {
+    if (myBestData) return;
+    setLoadingMyBest(true);
+    try {
+      const data = await getMyBest();
+      setMyBestData(data);
+    } catch {
+      // keep null on error
+    } finally {
+      setLoadingMyBest(false);
+    }
+  }, [myBestData]);
+
   useEffect(() => {
     if (activeTab === "streak") fetchStreaks();
-  }, [activeTab, fetchStreaks]);
+    if (activeTab === "best") fetchMyBest();
+  }, [activeTab, fetchStreaks, fetchMyBest]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -1974,7 +2076,13 @@ const Ranks = () => {
             />
           )}
 
-          {activeTab === "best" && <MyBestContent key="best" />}
+          {activeTab === "best" && (
+            <MyBestContent
+              key="best"
+              myBestData={myBestData}
+              loading={loadingMyBest}
+            />
+          )}
         </AnimatePresence>
       </main>
 

@@ -146,6 +146,56 @@ export const getStreaks = async (): Promise<StreaksData> => {
   };
 };
 
+export interface ApiMyBestXpEntry {
+  xp: number;
+  label: string;
+  event_type: string;
+  created_at: string;
+}
+
+export interface ApiMyBestResponse {
+  success: boolean;
+  data: {
+    level: number;
+    total_xp: number;
+    progress: {
+      current: number;
+      required: number;
+      percent: number;
+    };
+    recent_xp: ApiMyBestXpEntry[];
+  };
+}
+
+export interface MyBestData {
+  level: number;
+  totalXp: number;
+  progress: { current: number; required: number; percent: number };
+  recentXp: { xp: number; label: string; eventType: string; createdAt: string }[];
+}
+
+export const getMyBest = async (): Promise<MyBestData> => {
+  const token = localStorage.getItem("token");
+  const res = await api.get("/xp/mybest", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const body: ApiMyBestResponse = res?.data;
+  const { level, total_xp, progress, recent_xp } = body.data;
+
+  return {
+    level,
+    totalXp: total_xp,
+    progress,
+    recentXp: recent_xp.map((e) => ({
+      xp: e.xp,
+      label: e.label,
+      eventType: e.event_type,
+      createdAt: e.created_at,
+    })),
+  };
+};
+
 export const getLeaderboard = async (): Promise<GlobalRankResponse> => {
   const token = localStorage.getItem("token");
   const res = await api.get("/xp/leaderboard", {
