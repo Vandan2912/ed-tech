@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import userImage from "@/assets/user.jpg";
-import { getLeaderboard } from "@/api/ranks";
-import type { GlobalRankUser } from "@/api/ranks";
+import { getLeaderboard, getStreaks } from "@/api/ranks";
+import type { GlobalRankUser, StreakUser as ApiStreakUser, StreaksData } from "@/api/ranks";
 import {
   motion,
   AnimatePresence,
@@ -20,9 +19,6 @@ import {
   BookOpen,
   Award,
   X,
-  Atom,
-  FlaskConical,
-  Leaf,
   Medal,
   Target,
   Users,
@@ -80,99 +76,6 @@ const roadmapLevels: RoadmapLevel[] = [
 ];
 
 // ─── Streak Masters Data ─────────────────────────────
-
-interface StreakSubject {
-  name: string;
-  days: number;
-  status: "active" | "frozen";
-  progress: number; // 0-1
-  icon: React.ReactNode;
-}
-
-interface StreakUser {
-  rank: number;
-  name: string;
-  subject: string;
-  tier: string;
-  streakDays: number;
-  image: string;
-  isCurrentUser?: boolean;
-}
-
-const streakSubjects: StreakSubject[] = [
-  {
-    name: "Physics",
-    days: 12,
-    status: "active",
-    progress: 0.65,
-    icon: <Atom className="h-6 w-6 text-white" />,
-  },
-  {
-    name: "Mathematics",
-    days: 7,
-    status: "active",
-    progress: 0.45,
-    icon: <Zap className="h-6 w-6 text-white" />,
-  },
-  {
-    name: "Biology",
-    days: 0,
-    status: "frozen",
-    progress: 0,
-    icon: <Leaf className="h-6 w-6 text-gray-400" />,
-  },
-  {
-    name: "Chemistry",
-    days: 28,
-    status: "active",
-    progress: 0.9,
-    icon: <FlaskConical className="h-6 w-6 text-white" />,
-  },
-];
-
-const streakLeaderboard: StreakUser[] = [
-  {
-    rank: 1,
-    name: "Arjun Mehta",
-    subject: "Mastering Physics",
-    tier: "Elite Tier",
-    streakDays: 42,
-    image: userImage,
-  },
-  {
-    rank: 2,
-    name: "Zoe Chen",
-    subject: "Mastering Mathematics",
-    tier: "Elite Tier",
-    streakDays: 38,
-    image: userImage,
-  },
-  {
-    rank: 3,
-    name: "Sara Khan",
-    subject: "Mastering Biology",
-    tier: "Elite Tier",
-    streakDays: 35,
-    image: userImage,
-  },
-  {
-    rank: 4,
-    name: "You",
-    subject: "Mastering Chemistry",
-    tier: "Elite Tier",
-    streakDays: 28,
-    image: userImage,
-    isCurrentUser: true,
-  },
-  {
-    rank: 5,
-    name: "Leo Rossi",
-    subject: "Mastering History",
-    tier: "Elite Tier",
-    streakDays: 24,
-    image: userImage,
-  },
-];
 
 // ─── My Best Data ──────────────────────────────────────
 
@@ -1246,101 +1149,12 @@ function WeeklyRivalCard({
 
 // ─── Streak Masters Components ───────────────────────
 
-/** Subject streak card */
-function StreakSubjectCard({
-  subject,
-  index = 0,
-}: {
-  subject: StreakSubject;
-  index?: number;
-}) {
-  const isActive = subject.status === "active";
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      whileHover={{ y: -5 }}
-      transition={{
-        delay: index * 0.1,
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="group relative overflow-hidden rounded-[32px] border border-gray-100 bg-white p-6 shadow-sm cursor-pointer"
-    >
-      {/* Decorative circle */}
-      <div
-        className={`absolute -top-8 right-[-10px] h-24 w-24 rounded-full transition-all duration-300 opacity-5 group-hover:scale-150 group-hover:opacity-10 ${
-          isActive ? "bg-orange-500" : "bg-gray-500"
-        }`}
-      />
-
-      {/* Icon + Label */}
-      <div className="flex items-center gap-4 mb-6">
-        <div
-          className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg transition-transform duration-300 group-hover:rotate-12 ${
-            isActive ? "bg-orange-500" : "bg-gray-200"
-          }`}
-        >
-          {subject.icon}
-        </div>
-        <div>
-          <p className="text-sm font-black tracking-tight text-gray-900">
-            {subject.name}
-          </p>
-          <span
-            className={`inline-block mt-1 rounded-lg px-2 py-0.5 text-[8px] font-black uppercase tracking-wider ${
-              isActive
-                ? "bg-orange-50 text-orange-600"
-                : "bg-gray-100 text-gray-400"
-            }`}
-          >
-            {subject.status}
-          </span>
-        </div>
-      </div>
-
-      {/* Days + progress */}
-      <div className="flex items-end justify-between">
-        <div className="flex items-baseline gap-1">
-          <motion.span
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ delay: index * 0.1 + 0.3, duration: 0.4 }}
-            className="text-4xl font-black tracking-tight text-gray-900"
-          >
-            {subject.days}
-          </motion.span>
-          <span className="text-xs font-bold text-gray-400">DAYS</span>
-        </div>
-        <div className="h-1 w-10 overflow-hidden rounded-full bg-gray-100">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={isInView ? { width: `${subject.progress * 100}%` } : {}}
-            transition={{
-              delay: index * 0.1 + 0.4,
-              duration: 0.8,
-              ease: "easeOut",
-            }}
-            className={`h-full rounded-full ${
-              isActive ? "bg-orange-500" : "bg-gray-300"
-            }`}
-          />
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 /** Streak leaderboard row */
 function StreakLeaderboardRow({
   user,
   index = 0,
 }: {
-  user: StreakUser;
+  user: ApiStreakUser;
   index?: number;
 }) {
   const isMe = user.isCurrentUser;
@@ -1378,12 +1192,16 @@ function StreakLeaderboardRow({
 
         {/* Avatar */}
         <div className="relative">
-          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border-2 border-gray-100 shadow-sm">
-            <img
-              src={user.image}
-              alt={user.name}
-              className="h-full w-full object-cover"
-            />
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border-2 border-gray-100 bg-linear-to-br from-orange-50 to-rose-50 text-base font-black text-orange-600 shadow-sm">
+            {user.image ? (
+              <img
+                src={user.image}
+                alt={user.name}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              user.avatar
+            )}
           </div>
           {isFirst && (
             <motion.div
@@ -1415,10 +1233,8 @@ function StreakLeaderboardRow({
           </div>
           <div className="mt-1 flex items-center gap-2">
             <span className="text-xs font-black uppercase tracking-wider text-orange-500">
-              {user.subject}
+              {user.streakDays} Day Streak
             </span>
-            <span className="text-gray-300">•</span>
-            <span className="text-xs font-bold text-gray-400">{user.tier}</span>
           </div>
         </div>
       </div>
@@ -1453,9 +1269,18 @@ function StreakLeaderboardRow({
 }
 
 /** Full Streak Masters tab content */
-function StreakMastersContent() {
+function StreakMastersContent({
+  streaksData,
+  loading,
+}: {
+  streaksData: StreaksData | null;
+  loading: boolean;
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
+
+  const percentile = streaksData?.userPercentile ?? 0;
+  const filledBars = Math.round((percentile / 100) * 7);
 
   return (
     <motion.div
@@ -1466,13 +1291,6 @@ function StreakMastersContent() {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="mt-10"
     >
-      {/* Subject Streak Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-12">
-        {streakSubjects.map((subject, i) => (
-          <StreakSubjectCard key={subject.name} subject={subject} index={i} />
-        ))}
-      </div>
-
       {/* Consistency Champions Card */}
       <div className="overflow-hidden rounded-[40px] border border-gray-100 shadow-2xl">
         {/* Header */}
@@ -1501,8 +1319,13 @@ function StreakMastersContent() {
 
         {/* Leaderboard rows */}
         <div>
-          {streakLeaderboard.map((user, i) => (
-            <StreakLeaderboardRow key={user.rank} user={user} index={i} />
+          {loading && (
+            <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
+              Loading...
+            </div>
+          )}
+          {!loading && streaksData?.topStreaks.map((user, i) => (
+            <StreakLeaderboardRow key={user.id} user={user} index={i} />
           ))}
         </div>
 
@@ -1514,21 +1337,22 @@ function StreakMastersContent() {
           className="bg-gray-900 px-8 py-8"
         >
           <p className="text-center text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
-            You're in the Top 15% of consistent learners
+            You're in the Top {percentile}% of consistent learners
           </p>
           <div className="flex items-center justify-center gap-2">
-            {[1, 2, 3, 4].map((i) => (
-              <motion.div
-                key={i}
-                initial={{ scaleX: 0 }}
-                animate={isInView ? { scaleX: 1 } : {}}
-                transition={{ delay: 0.7 + i * 0.08, duration: 0.3 }}
-                className="h-2 w-10 rounded-full bg-orange-500"
-              />
-            ))}
-            {[5, 6, 7].map((i) => (
-              <div key={i} className="h-2 w-10 rounded-full bg-white/10" />
-            ))}
+            {Array.from({ length: 7 }, (_, i) => i + 1).map((i) =>
+              i <= filledBars ? (
+                <motion.div
+                  key={i}
+                  initial={{ scaleX: 0 }}
+                  animate={isInView ? { scaleX: 1 } : {}}
+                  transition={{ delay: 0.7 + i * 0.08, duration: 0.3 }}
+                  className="h-2 w-10 rounded-full bg-orange-500"
+                />
+              ) : (
+                <div key={i} className="h-2 w-10 rounded-full bg-white/10" />
+              )
+            )}
           </div>
         </motion.div>
       </div>
@@ -1919,6 +1743,8 @@ const Ranks = () => {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>([]);
   const [weeklyRival, setWeeklyRival] = useState<LeaderboardUser | null>(null);
   const [loadingGlobal, setLoadingGlobal] = useState(true);
+  const [streaksData, setStreaksData] = useState<StreaksData | null>(null);
+  const [loadingStreaks, setLoadingStreaks] = useState(false);
   const leaderboardRef = useRef(null);
   const leaderboardInView = useInView(leaderboardRef, {
     once: true,
@@ -1939,9 +1765,26 @@ const Ranks = () => {
     }
   }, []);
 
+  const fetchStreaks = useCallback(async () => {
+    if (streaksData) return;
+    setLoadingStreaks(true);
+    try {
+      const data = await getStreaks();
+      setStreaksData(data);
+    } catch {
+      // keep null on error
+    } finally {
+      setLoadingStreaks(false);
+    }
+  }, [streaksData]);
+
   useEffect(() => {
     fetchGlobalRanks();
   }, [fetchGlobalRanks]);
+
+  useEffect(() => {
+    if (activeTab === "streak") fetchStreaks();
+  }, [activeTab, fetchStreaks]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -2123,7 +1966,13 @@ const Ranks = () => {
             </motion.div>
           )}
 
-          {activeTab === "streak" && <StreakMastersContent key="streak" />}
+          {activeTab === "streak" && (
+            <StreakMastersContent
+              key="streak"
+              streaksData={streaksData}
+              loading={loadingStreaks}
+            />
+          )}
 
           {activeTab === "best" && <MyBestContent key="best" />}
         </AnimatePresence>

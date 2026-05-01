@@ -87,6 +87,65 @@ function rivalToGlobalRankUser(u: ApiWeeklyRival): GlobalRankUser {
   };
 }
 
+export interface ApiStreakUser {
+  id: string;
+  first_name: string;
+  profile_picture: string | null;
+  current_streak: number;
+  rank: string;
+  is_current_user: boolean;
+}
+
+export interface ApiStreaksResponse {
+  success: boolean;
+  data: {
+    global_streak: number;
+    subjects: unknown[];
+    top_streaks: ApiStreakUser[];
+    user_percentile: string;
+  };
+}
+
+export interface StreakUser {
+  id: string;
+  rank: number;
+  name: string;
+  streakDays: number;
+  image: string;
+  avatar: string;
+  isCurrentUser: boolean;
+}
+
+export interface StreaksData {
+  globalStreak: number;
+  topStreaks: StreakUser[];
+  userPercentile: number;
+}
+
+export const getStreaks = async (): Promise<StreaksData> => {
+  const token = localStorage.getItem("token");
+  const res = await api.get("/xp/streaks", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const body: ApiStreaksResponse = res?.data;
+  const { global_streak, top_streaks, user_percentile } = body.data;
+
+  return {
+    globalStreak: global_streak,
+    userPercentile: parseInt(user_percentile, 10),
+    topStreaks: top_streaks.map((u, i) => ({
+      id: u.id,
+      rank: i + 1,
+      name: u.first_name,
+      streakDays: u.current_streak,
+      image: u.profile_picture ?? "",
+      avatar: u.first_name.slice(0, 2).toUpperCase(),
+      isCurrentUser: u.is_current_user,
+    })),
+  };
+};
+
 export const getLeaderboard = async (): Promise<GlobalRankResponse> => {
   const token = localStorage.getItem("token");
   const res = await api.get("/xp/leaderboard", {
