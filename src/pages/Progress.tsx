@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -18,10 +18,22 @@ import {
   Calendar,
   Zap,
   Share2,
-  Medal,
   Award,
   Brain,
+  Loader2,
+  Star,
 } from "lucide-react";
+import {
+  getProgressSummary,
+  getProgressAnalytics,
+  getCertificates,
+} from "@/api/progress";
+import type {
+  ProgressTopic,
+  ProgressSummary,
+  AnalyticsData,
+  Certificate,
+} from "@/api/progress";
 import {
   BarChart,
   Bar,
@@ -32,183 +44,45 @@ import {
   CartesianGrid,
 } from "recharts";
 
-interface Topic {
-  id: string;
-  category: string;
-  title: string;
-  status: "mastered" | "in-progress" | "needs-work" | "not-started";
-  percentage?: number;
-  attempts?: number;
-  lastStudied?: string;
-}
-
-const topics: Topic[] = [
-  {
-    id: "1",
-    category: "Maths",
-    title: "Algebra Basics",
-    status: "mastered",
-    percentage: 92,
-    attempts: 5,
-    lastStudied: "2 days ago",
-  },
-  {
-    id: "2",
-    category: "Maths",
-    title: "Trigonometry",
-    status: "in-progress",
-    percentage: 61,
-    attempts: 3,
-    lastStudied: "3 days ago",
-  },
-  {
-    id: "3",
-    category: "Physics",
-    title: "Laws of Motion",
-    status: "mastered",
-    percentage: 85,
-    attempts: 4,
-    lastStudied: "1 week ago",
-  },
-  {
-    id: "4",
-    category: "Physics",
-    title: "Electromagnetism",
-    status: "needs-work",
-    percentage: 38,
-    attempts: 2,
-    lastStudied: "5 days ago",
-  },
-  {
-    id: "5",
-    category: "Chemistry",
-    title: "Periodic Table",
-    status: "mastered",
-    percentage: 95,
-    attempts: 6,
-    lastStudied: "Yesterday",
-  },
-  {
-    id: "6",
-    category: "Chemistry",
-    title: "Organic Chemistry",
-    status: "needs-work",
-    percentage: 42,
-    attempts: 2,
-    lastStudied: "4 days ago",
-  },
-  {
-    id: "7",
-    category: "Biology",
-    title: "Cell Biology",
-    status: "in-progress",
-    percentage: 78,
-    attempts: 3,
-    lastStudied: "3 days ago",
-  },
-  { id: "8", category: "Biology", title: "Genetics", status: "not-started" },
-  {
-    id: "9",
-    category: "History",
-    title: "World War I",
-    status: "mastered",
-    percentage: 88,
-    attempts: 4,
-    lastStudied: "2 weeks ago",
-  },
-  {
-    id: "10",
-    category: "History",
-    title: "French Revolution",
-    status: "in-progress",
-    percentage: 55,
-    attempts: 2,
-    lastStudied: "1 day ago",
-  },
-  {
-    id: "11",
-    category: "Geography",
-    title: "Plate Tectonics",
-    status: "not-started",
-  },
-  {
-    id: "12",
-    category: "Geography",
-    title: "Climate Change",
-    status: "in-progress",
-    percentage: 72,
-    attempts: 3,
-    lastStudied: "6 days ago",
-  },
-];
-
-const subjectData = [
-  { name: "Maths", mastery: 85 },
-  { name: "Physics", mastery: 72 },
-  { name: "Chemistry", mastery: 90 },
-  { name: "Biology", mastery: 78 },
-  { name: "History", mastery: 95 },
-  { name: "Geography", mastery: 55 },
-];
-
-const xpData = [
-  { week: "Week 1", xp: 40 },
-  { week: "Week 2", xp: 65 },
-  { week: "Week 3", xp: 80 },
-  { week: "Week 4", xp: 100 },
-];
-
-const weeklyData = {
-  minutes: [
-    { day: "Mon", val: 40 },
-    { day: "Tue", val: 65 },
-    { day: "Wed", val: 30 },
-    { day: "Thu", val: 80 },
-    { day: "Fri", val: 50 },
-    { day: "Sat", val: 95 },
-    { day: "Sun", val: 35 },
-  ],
-  score: [
-    { day: "Mon", val: 60 },
-    { day: "Tue", val: 75 },
-    { day: "Wed", val: 55 },
-    { day: "Thu", val: 85 },
-    { day: "Fri", val: 70 },
-    { day: "Sat", val: 90 },
-    { day: "Sun", val: 65 },
-  ],
-  topics: [
-    { day: "Mon", val: 2 },
-    { day: "Tue", val: 3 },
-    { day: "Wed", val: 1 },
-    { day: "Thu", val: 4 },
-    { day: "Fri", val: 2 },
-    { day: "Sat", val: 5 },
-    { day: "Sun", val: 2 },
-  ],
-};
-
-const tabs = [
-  { key: "minutes", label: "STUDY MINUTES" },
-  { key: "score", label: "AVG SCORE" },
-  { key: "topics", label: "TOPICS COVERED" },
-];
+type Topic = ProgressTopic;
 
 export default function Progress() {
   const [filter, setFilter] = useState<Topic["status"] | "all">("all");
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [showExplainer, setShowExplainer] = useState(false);
+  const [summary, setSummary] = useState<ProgressSummary | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      getProgressSummary().catch(() => null),
+      getProgressAnalytics().catch(() => null),
+      getCertificates().catch(() => []),
+    ]).then(([s, a, c]) => {
+      if (s) setSummary(s);
+      if (a) setAnalytics(a);
+      setCertificates(c ?? []);
+      setLoading(false);
+    });
+  }, []);
+
+  const topics = summary?.topics ?? [];
+  const stats = summary?.counts ?? {
+    mastered: 0,
+    inProgress: 0,
+    needsWork: 0,
+    notStarted: 0,
+  };
+  const overallMastery = summary?.overallMastery ?? 0;
 
   const filteredTopics = topics.filter(
     (t) => filter === "all" || t.status === filter,
   );
 
-  const stats = {
-    mastered: topics.filter((t) => t.status === "mastered").length,
-    inProgress: topics.filter((t) => t.status === "in-progress").length,
-    needsWork: topics.filter((t) => t.status === "needs-work").length,
-    notStarted: topics.filter((t) => t.status === "not-started").length,
-  };
+  const subjectData = analytics?.subjectMastery ?? [];
+  const xpData = analytics?.xpGrowth ?? [];
 
   return (
     <div className="min-h-screen bg-white">
@@ -319,64 +193,119 @@ export default function Progress() {
               </FilterButton>
             </div>
 
+            {loading && (
+              <div className="flex items-center justify-center py-8 gap-2 text-gray-400">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="text-sm font-bold">Loading...</span>
+              </div>
+            )}
+
             {/* Progress Overview Bar */}
-            <div className="bg-white border border-[#f3f4f6] rounded-[16px] p-5">
-              <div className="flex gap-2 mb-3">
-                <span className="font-black text-[10px] text-[#99a1af] uppercase tracking-[1.1px]">
-                  Overall Mastery
-                </span>
-                <span className="font-bold text-[10px] text-[#99a1af]">
-                  33% complete
-                </span>
+            {!loading && (
+              <div className="bg-white border border-[#f3f4f6] rounded-[16px] p-5">
+                <div className="flex gap-2 mb-3">
+                  <span className="font-black text-[10px] text-[#99a1af] uppercase tracking-[1.1px]">
+                    Overall Mastery
+                  </span>
+                  <span className="font-bold text-[10px] text-[#99a1af]">
+                    {overallMastery}% complete
+                  </span>
+                </div>
+                {(() => {
+                  const total = topics.length || 1;
+                  const masteredPct = (stats.mastered / total) * 100;
+                  const inProgressPct = (stats.inProgress / total) * 100;
+                  const needsWorkPct = (stats.needsWork / total) * 100;
+                  const notStartedPct = (stats.notStarted / total) * 100;
+                  return (
+                    <>
+                      <div className="h-4 w-full flex gap-[2px] rounded-full overflow-hidden mb-4 bg-gray-100">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${masteredPct}%` }}
+                          transition={{
+                            duration: 1,
+                            ease: "easeOut",
+                            delay: 0.2,
+                          }}
+                          className="bg-[#00bc7d]"
+                        />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${inProgressPct}%` }}
+                          transition={{
+                            duration: 1,
+                            ease: "easeOut",
+                            delay: 0.3,
+                          }}
+                          className="bg-[#ffb900]"
+                        />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${needsWorkPct}%` }}
+                          transition={{
+                            duration: 1,
+                            ease: "easeOut",
+                            delay: 0.4,
+                          }}
+                          className="bg-[#ff6467]"
+                        />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${notStartedPct}%` }}
+                          transition={{
+                            duration: 1,
+                            ease: "easeOut",
+                            delay: 0.5,
+                          }}
+                          className="bg-[#e5e7eb]"
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-4">
+                        <LegendItem
+                          color="#00bc7d"
+                          label={`${stats.mastered} Mastered`}
+                        />
+                        <LegendItem
+                          color="#fe9a00"
+                          label={`${stats.inProgress} In Progress`}
+                        />
+                        <LegendItem
+                          color="#fb2c36"
+                          label={`${stats.needsWork} Needs Work`}
+                        />
+                        <LegendItem
+                          color="#d1d5dc"
+                          label={`${stats.notStarted} Not Started`}
+                        />
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
-              <div className="h-4 w-full flex gap-[2px] rounded-full overflow-hidden mb-4 bg-gray-100">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "32%" }}
-                  transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-                  className="bg-[#00bc7d]"
-                />
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "32%" }}
-                  transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-                  className="bg-[#ffb900]"
-                />
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "18%" }}
-                  transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
-                  className="bg-[#ff6467]"
-                />
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "18%" }}
-                  transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
-                  className="bg-[#e5e7eb]"
-                />
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <LegendItem color="#00bc7d" label="4 Mastered" />
-                <LegendItem color="#fe9a00" label="4 In Progress" />
-                <LegendItem color="#fb2c36" label="2 Needs Work" />
-                <LegendItem color="#d1d5dc" label="2 Not Started" />
-              </div>
-            </div>
+            )}
 
             {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-              {filteredTopics.map((topic) => (
-                <TopicCard
-                  key={topic.id}
-                  topic={topic}
-                  onClick={() => setSelectedTopic(topic)}
-                />
-              ))}
-            </div>
+            {!loading && filteredTopics.length === 0 && (
+              <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold rounded-[16px] border border-gray-100">
+                No topics found for this filter.
+              </div>
+            )}
+            {!loading && filteredTopics.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+                {filteredTopics.map((topic) => (
+                  <TopicCard
+                    key={topic.id}
+                    topic={topic}
+                    onClick={() => setSelectedTopic(topic)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        <WeeklyActivity />
+        <WeeklyActivity weeklyActivity={analytics?.weeklyActivity ?? []} />
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -441,39 +370,33 @@ export default function Progress() {
               {/* <Flame size={20} className="text-[#fe9a00]" /> */}
             </div>
             <div className="h-[250px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={xpData} barCategoryGap={30}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                    stroke="#f3f4f6"
-                  />
-
-                  <XAxis
-                    dataKey="week"
-                    tick={{ fontSize: 10, fill: "#9ca3af", fontWeight: 700 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-
-                  <YAxis hide />
-
-                  <Tooltip
-                    cursor={{ fill: "rgba(0,0,0,0.05)" }}
-                    contentStyle={{ borderRadius: 12, border: "none" }}
-                  />
-
-                  <Bar dataKey="xp" fill="#8B5CF6" radius={[10, 10, 0, 0]} />
-
-                  {/* Gradient */}
-                  <defs>
-                    <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#4f39f6" />
-                      <stop offset="100%" stopColor="#155dfc" />
-                    </linearGradient>
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
+              {xpData.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-sm text-gray-400 font-bold">
+                  No XP data yet — start learning to see growth!
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={xpData} barCategoryGap={30}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f3f4f6"
+                    />
+                    <XAxis
+                      dataKey="week"
+                      tick={{ fontSize: 10, fill: "#9ca3af", fontWeight: 700 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis hide />
+                    <Tooltip
+                      cursor={{ fill: "rgba(0,0,0,0.05)" }}
+                      contentStyle={{ borderRadius: 12, border: "none" }}
+                    />
+                    <Bar dataKey="xp" fill="#8B5CF6" radius={[10, 10, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
         </div>
@@ -637,44 +560,46 @@ export default function Progress() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <CertificateCard
-              title="Algebra Basics"
-              subject="Mathematics"
-              score={92}
-              date="Feb 15, 2026"
-              distinction={true}
-              color="#d0fae5"
-              icon={<Award className="text-[#00bc7d]" />}
-            />
-            <CertificateCard
-              title="Laws of Motion"
-              subject="Physics"
-              score={88}
-              date="Feb 10, 2026"
-              distinction={false}
-              color="#dbeafe"
-              icon={<Award className="text-[#155dfc]" />}
-            />
-            <CertificateCard
-              title="Periodic Table"
-              subject="Chemistry"
-              score={95}
-              date="Feb 05, 2026"
-              distinction={true}
-              color="#d0fae5"
-              icon={<Award className="text-[#00bc7d]" />}
-            />
-            <CertificateCard
-              title="Cell Biology"
-              subject="Biology"
-              score={78}
-              date="Jan 28, 2026"
-              distinction={false}
-              color="#fef3c6"
-              icon={<Award className="text-[#fe9a00]" />}
-            />
-          </div>
+          {certificates.length === 0 && !loading ? (
+            <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold rounded-[32px] border border-gray-100">
+              No certificates yet — complete topics to earn them!
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {certificates.map((cert, i) => {
+                const color = cert.distinction
+                  ? "#d0fae5"
+                  : cert.score >= 70
+                    ? "#dbeafe"
+                    : "#fef3c6";
+                const iconColor = cert.distinction
+                  ? "#00bc7d"
+                  : cert.score >= 70
+                    ? "#155dfc"
+                    : "#fe9a00";
+                const formattedDate = new Date(cert.date).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                );
+                return (
+                  <CertificateCard
+                    key={i}
+                    title={cert.topic}
+                    subject={cert.subject}
+                    score={cert.score}
+                    date={formattedDate}
+                    distinction={cert.distinction}
+                    color={color}
+                    icon={<Award style={{ color: iconColor }} />}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -706,10 +631,11 @@ function FilterButton({
   return (
     <button
       onClick={onClick}
-      className={`px-5 py-2.5 rounded-full border transition-all flex items-center gap-2 ${active
-        ? "bg-[#101828] border-[#101828] text-white"
-        : "bg-white border-[#e5e7eb] text-[#6a7282] hover:bg-gray-50"
-        }`}
+      className={`px-5 py-2.5 rounded-full border transition-all flex items-center gap-2 ${
+        active
+          ? "bg-[#101828] border-[#101828] text-white"
+          : "bg-white border-[#e5e7eb] text-[#6a7282] hover:bg-gray-50"
+      }`}
     >
       {color && !active && (
         <div
@@ -962,7 +888,7 @@ function CertificateCard({
           </div>
           {distinction && (
             <div className="bg-[#ecfdf5] px-3 py-1 rounded-xl text-[10px] font-black text-[#009966] flex items-center gap-1">
-              <Medal size={10} />
+              <Star size={12} fill="currentColor" />
               Distinction
             </div>
           )}
@@ -1149,12 +1075,43 @@ function TopicDetailModal({
   );
 }
 
-function WeeklyActivity() {
+const dummyWeeklyData = {
+  score: [
+    { day: "Mon", val: 60 },
+    { day: "Tue", val: 75 },
+    { day: "Wed", val: 55 },
+    { day: "Thu", val: 85 },
+    { day: "Fri", val: 70 },
+    { day: "Sat", val: 90 },
+    { day: "Sun", val: 65 },
+  ],
+  topics: [
+    { day: "Mon", val: 2 },
+    { day: "Tue", val: 3 },
+    { day: "Wed", val: 1 },
+    { day: "Thu", val: 4 },
+    { day: "Fri", val: 2 },
+    { day: "Sat", val: 5 },
+    { day: "Sun", val: 2 },
+  ],
+};
+
+const weeklyTabs = [
+  { key: "minutes", label: "STUDY MINUTES" },
+  { key: "score", label: "AVG SCORE" },
+  { key: "topics", label: "TOPICS COVERED" },
+];
+
+function WeeklyActivity({
+  weeklyActivity,
+}: {
+  weeklyActivity: { day: string; val: number }[];
+}) {
   const [active, setActive] = useState<"minutes" | "score" | "topics">(
     "minutes",
   );
 
-  const data = weeklyData[active];
+  const data = active === "minutes" ? weeklyActivity : dummyWeeklyData[active];
 
   const fillColor =
     active === "minutes"
@@ -1165,7 +1122,6 @@ function WeeklyActivity() {
 
   return (
     <div className="bg-white border border-[#f3f4f6] rounded-[40px] shadow-xl p-8 mb-12 w-full">
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
@@ -1176,53 +1132,35 @@ function WeeklyActivity() {
           </p>
         </div>
 
-        {/* Tabs */}
         <AnimatedSection className="flex justify-center">
           <div className="inline-flex items-center rounded-2xl bg-gray-100 p-1.5 shadow-inner">
-            {tabs.map((t) => (
+            {weeklyTabs.map((t) => (
               <motion.button
                 key={t.key}
-                onClick={() => setActive(t.key as any)}
-                // whileHover={{ scale: 1.04 }}
+                onClick={() =>
+                  setActive(t.key as "minutes" | "score" | "topics")
+                }
                 whileTap={{ scale: 0.97 }}
-                className={`relative flex items-center gap-2 text-xs   px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${active === t.key ? "text-blue-600" : "text-gray-500"
-                  }`}
+                className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
+                  active === t.key ? "text-blue-600" : "text-gray-500"
+                }`}
               >
                 {active === t.key && (
                   <motion.div
-                    layoutId="activeTab"
+                    layoutId="weeklyActiveTab"
                     className="absolute inset-0 rounded-[14px] bg-white shadow-md"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
-                <span className="relative z-10 flex items-center gap-2">
-                  {t.label}
-                </span>
+                <span className="relative z-10">{t.label}</span>
               </motion.button>
             ))}
           </div>
         </AnimatedSection>
-        {/* <div className="bg-[#f3f4f6] p-1 rounded-full flex gap-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActive(tab.key as any)}
-              className={`px-4 py-2 text-[10px] font-black rounded-full transition-all ${
-                active === tab.key
-                  ? "bg-white text-[#155dfc] shadow"
-                  : "text-[#6a7282]"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div> */}
       </div>
 
-      {/* Chart */}
       <div className="h-[260px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          {/* 🔥 Animate chart switch */}
           <motion.div
             key={active}
             initial={{ opacity: 0, y: 20 }}
@@ -1236,16 +1174,13 @@ function WeeklyActivity() {
                 vertical={false}
                 stroke="#f3f4f6"
               />
-
               <XAxis
                 dataKey="day"
                 tick={{ fontSize: 11, fill: "#9ca3af", fontWeight: 700 }}
                 axisLine={false}
                 tickLine={false}
               />
-
               <YAxis hide />
-
               <Tooltip
                 cursor={{ fill: "rgba(0,0,0,0.04)" }}
                 contentStyle={{
@@ -1254,7 +1189,6 @@ function WeeklyActivity() {
                   fontSize: "12px",
                 }}
               />
-
               <Bar
                 dataKey="val"
                 radius={[12, 12, 0, 0]}
