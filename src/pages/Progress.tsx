@@ -219,7 +219,7 @@ export default function Progress() {
                   const notStartedPct = (stats.notStarted / total) * 100;
                   return (
                     <>
-                      <div className="h-4 w-full flex gap-[2px] rounded-full overflow-hidden mb-4 bg-gray-100">
+                      <div className="h-4 w-full flex rounded-full overflow-hidden mb-4 bg-gray-100">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${masteredPct}%` }}
