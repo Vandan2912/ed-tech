@@ -13,6 +13,7 @@ import {
   UserPlus,
   Maximize2,
 } from "lucide-react";
+import { leaveRoom } from "@/api/room";
 import InviteLearnersModal from "@/components/InviteLearnersModal";
 import AiChatFullViewModal from "@/components/AiChatFullViewModal";
 
@@ -68,7 +69,7 @@ const AI_INSIGHTS: AiInsight[] = [
 
 function LeaveRoomPanel({ onConfirm }: { onConfirm: () => void }) {
   return (
-    <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex flex-col items-center text-center gap-3">
+    <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex flex-col items-center text-center gap-3 h-full">
       <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
         <LogOut size={18} className="text-red-500" />
       </div>
@@ -107,7 +108,16 @@ export default function StudyRoom() {
     learners: { current: 2, max: 4 },
   };
 
-  const handleLeave = () => navigate("/study");
+  const handleLeave = async () => {
+    if (room.id) {
+      try {
+        await leaveRoom(room.id);
+      } catch {
+        // navigate away regardless
+      }
+    }
+    navigate("/study");
+  };
 
   return (
     <main className="min-h-screen bg-[#F9FAFB]">

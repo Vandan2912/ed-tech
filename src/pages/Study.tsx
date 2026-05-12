@@ -1,172 +1,75 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { getRoomDashboard, getRooms, joinRoom, type RoomDashboard, type Room } from "@/api/room";
 import {
   Search,
-  Video,
-  FileText,
   Users,
   Clock,
-  Target,
   Plus,
   ClipboardList,
   Trophy,
+  Lock,
 } from "lucide-react";
 import HostSessionModal from "@/components/HostSessionModal";
 import HomeworkTab from "@/components/HomeworkTab";
 import LeaderboardTab from "@/components/LeaderboardTab";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Subject styles ───────────────────────────────────────────────────────────
 
-type ContentType = "VIDEO" | "TEXT";
-type Subject = "Mathematics" | "Physics" | "Chemistry" | "History" | "Biology";
-
-interface StudyRoom {
-  id: number;
-  subject: Subject;
-  contentType: ContentType;
-  title: string;
-  host: {
-    name: string;
-    avatar: string;
-    level: number;
-    xp: number;
-  };
-  timeAgo: string;
-  goals: string[];
-  tags: string[];
-  grade: string;
-  learners: { current: number; max: number };
-}
-
-// ─── Static Data ──────────────────────────────────────────────────────────────
-
-const SUBJECT_STYLES: Record<Subject, { border: string; label: string }> = {
-  Mathematics: { border: "border-t-blue-500", label: "text-blue-500" },
-  Physics: { border: "border-t-violet-500", label: "text-violet-500" },
-  Chemistry: { border: "border-t-emerald-500", label: "text-emerald-500" },
-  History: { border: "border-t-orange-400", label: "text-orange-400" },
-  Biology: { border: "border-t-pink-500", label: "text-pink-500" },
+const SUBJECT_STYLES: Record<string, { border: string; label: string }> = {
+  mathematics: { border: "border-t-blue-500", label: "text-blue-500" },
+  maths:       { border: "border-t-blue-500", label: "text-blue-500" },
+  physics:     { border: "border-t-violet-500", label: "text-violet-500" },
+  chemistry:   { border: "border-t-emerald-500", label: "text-emerald-500" },
+  history:     { border: "border-t-orange-400", label: "text-orange-400" },
+  biology:     { border: "border-t-pink-500", label: "text-pink-500" },
 };
 
-const ROOMS: StudyRoom[] = [
-  {
-    id: 1,
-    subject: "Mathematics",
-    contentType: "VIDEO",
-    title: "Algebra Basics",
-    host: { name: "Arjun Mehta", avatar: "AM", level: 24, xp: 434 },
-    timeAgo: "13 min ago",
-    goals: [
-      "Solve 5 quadratic equations together",
-      "Review the quadratic formula",
-    ],
-    tags: ["Equations", "Variables", "Grade 10"],
-    grade: "Grade 10",
-    learners: { current: 3, max: 5 },
-  },
-  {
-    id: 2,
-    subject: "Physics",
-    contentType: "TEXT",
-    title: "Laws of Motion",
-    host: { name: "Sara Khan", avatar: "SK", level: 22, xp: 356 },
-    timeAgo: "8 min ago",
-    goals: [
-      "Cover all 3 Newton's Laws",
-      "Solve 5 force problems",
-    ],
-    tags: ["Newton", "Inertia", "Grade 8"],
-    grade: "Grade 8",
-    learners: { current: 2, max: 4 },
-  },
-  {
-    id: 3,
-    subject: "Chemistry",
-    contentType: "VIDEO",
-    title: "Organic Chemistry",
-    host: { name: "Leo Das", avatar: "LD", level: 21, xp: 168 },
-    timeAgo: "Just started",
-    goals: [
-      "Memorise functional groups",
-      "Draw structural formulas",
-    ],
-    tags: ["Carbon", "Functional Groups", "Grade 11"],
-    grade: "Grade 11",
-    learners: { current: 1, max: 3 },
-  },
-  {
-    id: 4,
-    subject: "History",
-    contentType: "TEXT",
-    title: "French Revolution",
-    host: { name: "Priya Sharma", avatar: "PS", level: 19, xp: 192 },
-    timeAgo: "23 min ago",
-    goals: [
-      "List key causes of the Revolution",
-      "Discuss the role of Enlightenment",
-    ],
-    tags: ["Causes", "Impact", "Grade 10"],
-    grade: "Grade 10",
-    learners: { current: 4, max: 6 },
-  },
-  {
-    id: 5,
-    subject: "Biology",
-    contentType: "VIDEO",
-    title: "Genetics",
-    host: { name: "Zoya Ali", avatar: "ZA", level: 21, xp: 314 },
-    timeAgo: "1 hour ago",
-    goals: [
-      "Understand Mendel's laws",
-      "Solve a Punnett square together",
-    ],
-    tags: ["DNA", "Heredity", "Grade 12"],
-    grade: "Grade 12",
-    learners: { current: 2, max: 4 },
-  },
-];
+const DEFAULT_STYLE = { border: "border-t-gray-400", label: "text-gray-500" };
 
-const SUBJECT_FILTERS: (Subject | "ALL")[] = [
-  "ALL",
-  "Mathematics",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "History",
-  "Geography" as any,
-];
+function subjectStyle(subject: string) {
+  return SUBJECT_STYLES[subject.toLowerCase()] ?? DEFAULT_STYLE;
+}
+
+function timeAgo(isoDate: string): string {
+  const diff = Date.now() - new Date(isoDate).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just started";
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hr ago`;
+  return `${Math.floor(hrs / 24)} days ago`;
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function StatCard({ value, label, color }: { value: number; label: string; color: string }) {
+function StatCard({ value, label, color }: { value: number | null; label: string; color: string }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center py-5 bg-white rounded-2xl border border-gray-100 shadow-sm min-w-0">
-      <span className={`text-3xl font-black ${color}`}>{value}</span>
+      <span className={`text-3xl font-black ${color}`}>{value ?? "—"}</span>
       <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">{label}</span>
     </div>
   );
 }
 
-function ContentBadge({ type }: { type: ContentType }) {
-  if (type === "VIDEO") {
-    return (
-      <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full">
-        <Video size={10} /> Video
-      </span>
-    );
-  }
-  return (
-    <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-violet-600 bg-violet-50 border border-violet-100 px-2 py-0.5 rounded-full">
-      <FileText size={10} /> Text
-    </span>
-  );
-}
-
-function RoomCard({ room }: { room: StudyRoom }) {
+function RoomCard({ room }: { room: Room }) {
   const navigate = useNavigate();
-  const styles = SUBJECT_STYLES[room.subject];
-  const pct = Math.round((room.learners.current / room.learners.max) * 100);
+  const [joining, setJoining] = useState(false);
+  const styles = subjectStyle(room.subject);
+  const current = parseInt(room.learners, 10);
+  const pct = Math.round((current / room.max_learners) * 100);
+  const full = current >= room.max_learners;
+
+  const handleJoin = async () => {
+    setJoining(true);
+    try {
+      await joinRoom(room.id);
+      navigate(`/study/${room.id}`, { state: { room } });
+    } finally {
+      setJoining(false);
+    }
+  };
 
   return (
     <motion.div
@@ -178,72 +81,43 @@ function RoomCard({ room }: { room: StudyRoom }) {
       className={`bg-white rounded-2xl border border-gray-100 shadow-sm border-t-4 ${styles.border} flex flex-col overflow-hidden`}
     >
       <div className="p-5 flex flex-col gap-3 flex-1">
-        {/* Subject + content type */}
+        {/* Subject + private badge */}
         <div className="flex items-center justify-between">
           <span className={`text-[10px] font-black uppercase tracking-widest ${styles.label}`}>
             {room.subject}
           </span>
-          <ContentBadge type={room.contentType} />
+          {room.is_private && (
+            <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-full">
+              <Lock size={9} /> Private
+            </span>
+          )}
         </div>
 
         {/* Title */}
-        <h3 className="text-[17px] font-black text-[#101828] leading-tight -mt-1">{room.title}</h3>
+        <h3 className="text-[17px] font-black text-[#101828] leading-tight -mt-1">{room.topic}</h3>
 
-        {/* Host row */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-black text-gray-600 shrink-0">
-              {room.host.avatar}
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-[12px] font-bold text-[#101828]">{room.host.name}</span>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] font-black text-gray-400 uppercase">LVL {room.host.level}</span>
-                <span className="text-[10px] font-black text-amber-500">⚡{room.host.xp}</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-[11px] text-gray-400 font-semibold">
-            <Clock size={11} />
-            {room.timeAgo}
-          </div>
-        </div>
-
-        {/* Goals */}
-        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
-          <div className="flex items-center gap-1.5 mb-2">
-            <Target size={12} className="text-emerald-600" />
-            <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">Goals</span>
-          </div>
-          <ul className="space-y-1">
-            {room.goals.map((g, i) => (
-              <li key={i} className="text-[12px] text-emerald-800 font-medium flex gap-1.5">
-                <span className="mt-0.5 text-emerald-500">•</span>
-                {g}
-              </li>
-            ))}
-            <li className="text-[11px] text-emerald-500 font-semibold">+1 more goal</li>
-          </ul>
-        </div>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5">
-          {room.tags.map((tag) => (
-            <span key={tag} className="text-[11px] font-bold text-gray-500 bg-gray-100 px-2.5 py-0.5 rounded-full">
-              {tag}
-            </span>
-          ))}
+        {/* Time */}
+        <div className="flex items-center gap-1 text-[11px] text-gray-400 font-semibold">
+          <Clock size={11} />
+          {timeAgo(room.created_at)}
         </div>
 
         {/* Learners + progress */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500">
-            <Users size={12} />
-            <span>{room.learners.current}/{room.learners.max} Learners</span>
+        <div className="flex flex-col gap-1.5 mt-auto">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500">
+              <Users size={12} />
+              <span>{current}/{room.max_learners} Learners</span>
+            </div>
+            {full && (
+              <span className="text-[9px] font-black uppercase tracking-wider text-red-500 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
+                Full
+              </span>
+            )}
           </div>
           <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-400 rounded-full"
+              className={`h-full rounded-full ${full ? "bg-red-400" : "bg-emerald-400"}`}
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -253,11 +127,12 @@ function RoomCard({ room }: { room: StudyRoom }) {
       {/* Join button */}
       <div className="px-5 pb-5">
         <button
-          onClick={() => navigate(`/study/${room.id}`, { state: { room } })}
-          className="w-full flex items-center justify-center gap-2 bg-[#101828] hover:bg-[#1C398E] transition-colors text-white text-[13px] font-black uppercase tracking-wider py-3 rounded-xl"
+          disabled={full || joining}
+          onClick={handleJoin}
+          className="w-full flex items-center justify-center gap-2 bg-[#101828] hover:bg-[#1C398E] disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-white text-[13px] font-black uppercase tracking-wider py-3 rounded-xl"
         >
           <Users size={14} />
-          Join Session
+          {joining ? "Joining..." : full ? "Room Full" : "Join Session"}
         </button>
       </div>
     </motion.div>
@@ -279,14 +154,23 @@ type TabId = (typeof TABS)[number]["id"];
 export default function Study() {
   const [activeTab, setActiveTab] = useState<TabId>("study-rooms");
   const [search, setSearch] = useState("");
-  const [subjectFilter, setSubjectFilter] = useState<Subject | "ALL">("ALL");
+  const [subjectFilter, setSubjectFilter] = useState("ALL");
   const [hostModalOpen, setHostModalOpen] = useState(false);
+  const [roomStats, setRoomStats] = useState<RoomDashboard | null>(null);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
-  const filtered = ROOMS.filter((r) => {
+  useEffect(() => {
+    getRoomDashboard().then(setRoomStats).catch(() => {});
+    getRooms().then(setRooms).catch(() => {});
+  }, []);
+
+  const subjectFilters = ["ALL", ...Array.from(new Set(rooms.map((r) => r.subject)))];
+
+  const filtered = rooms.filter((r) => {
     const matchesSubject = subjectFilter === "ALL" || r.subject === subjectFilter;
     const matchesSearch =
       search === "" ||
-      r.title.toLowerCase().includes(search.toLowerCase()) ||
+      r.topic.toLowerCase().includes(search.toLowerCase()) ||
       r.subject.toLowerCase().includes(search.toLowerCase());
     return matchesSubject && matchesSearch;
   });
@@ -352,9 +236,9 @@ export default function Study() {
 
               {/* Stats */}
               <div className="flex gap-4 mb-8">
-                <StatCard value={5} label="Active Rooms" color="text-blue-600" />
-                <StatCard value={12} label="Students Online" color="text-emerald-500" />
-                <StatCard value={5} label="Subjects Active" color="text-orange-500" />
+                <StatCard value={roomStats?.activeRooms ?? null} label="Active Rooms" color="text-blue-600" />
+                <StatCard value={roomStats?.studentsOnline ?? null} label="Students Online" color="text-emerald-500" />
+                <StatCard value={roomStats?.subjectsActive ?? null} label="Subjects Active" color="text-orange-500" />
               </div>
 
               {/* Search + filters */}
@@ -369,10 +253,10 @@ export default function Study() {
                   />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {SUBJECT_FILTERS.map((s) => (
+                  {subjectFilters.map((s) => (
                     <button
                       key={s}
-                      onClick={() => setSubjectFilter(s as any)}
+                      onClick={() => setSubjectFilter(s)}
                       className={`px-3.5 py-2 rounded-full text-[11px] font-black uppercase tracking-wider transition-colors ${
                         subjectFilter === s
                           ? "bg-[#1C398E] text-white"
@@ -392,9 +276,14 @@ export default function Study() {
                     <RoomCard key={room.id} room={room} />
                   ))}
                 </AnimatePresence>
-                {filtered.length === 0 && (
+                {filtered.length === 0 && rooms.length > 0 && (
                   <p className="col-span-3 text-center text-gray-400 font-semibold py-16">
                     No study rooms found.
+                  </p>
+                )}
+                {rooms.length === 0 && (
+                  <p className="col-span-3 text-center text-gray-400 font-semibold py-16">
+                    Loading rooms...
                   </p>
                 )}
               </div>
