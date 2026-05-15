@@ -2,6 +2,8 @@ import { useState } from "react";
 import { X, Users, Target, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import CustomSelect from "./CustomSelect";
+import { createRoom } from "@/api/room";
+import type { Room } from "@/api/room";
 
 const SUBJECT_OPTIONS = [
   { label: "Mathematics", value: "Mathematics" },
@@ -16,15 +18,19 @@ const SUBJECT_OPTIONS = [
 export default function HostSessionModal({
   isOpen,
   onClose,
+  onRoomCreated,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onRoomCreated?: (room: Room) => void;
 }) {
   const [topicName, setTopicName] = useState("");
   const [subject, setSubject] = useState("");
   const [goals, setGoals] = useState<string[]>([]);
   const [goalInput, setGoalInput] = useState("");
   const [maxLearners, setMaxLearners] = useState(4);
+  const [launching, setLaunching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const addGoal = () => {
     const trimmed = goalInput.trim();
@@ -53,7 +59,22 @@ export default function HostSessionModal({
     setGoals([]);
     setGoalInput("");
     setMaxLearners(4);
+    setError(null);
     onClose();
+  };
+
+  const handleLaunch = async () => {
+    setLaunching(true);
+    setError(null);
+    try {
+      const room = await createRoom({ topic: topicName.trim(), subject, goals });
+      onRoomCreated?.(room);
+      handleClose();
+    } catch {
+      setError("Failed to create room. Please try again.");
+    } finally {
+      setLaunching(false);
+    }
   };
 
   return (
@@ -217,13 +238,18 @@ export default function HostSessionModal({
                   </div>
                 </div>
 
+                {error && (
+                  <p className="text-[12px] font-semibold text-red-500 text-center">{error}</p>
+                )}
+
                 {/* Launch button */}
                 <button
                   type="button"
-                  disabled={!canLaunch}
+                  disabled={!canLaunch || launching}
+                  onClick={handleLaunch}
                   className="w-full py-3.5 rounded-2xl bg-[#1C398E] hover:bg-[#162d72] disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white text-[13px] font-black uppercase tracking-widest transition-colors focus-visible:outline-none"
                 >
-                  Launch Study Room 🚀
+                  {launching ? "Launching..." : "Launch Study Room 🚀"}
                 </button>
               </div>
             </motion.div>

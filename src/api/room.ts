@@ -36,3 +36,14 @@ export const joinRoom = async (id: number): Promise<void> => {
 export const leaveRoom = async (id: number): Promise<void> => {
   await api.post(`/room/${id}/leave`);
 };
+
+export interface CreateRoomPayload {
+  topic: string;
+  subject: string;
+  goals: string[];
+}
+
+export const createRoom = async (payload: CreateRoomPayload): Promise<Room> => {
+  const res = await api.post("/room", payload);
+  return res.data;
+};
