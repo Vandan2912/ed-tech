@@ -72,7 +72,7 @@ export interface RoomDetails {
     time_ago: string;
   };
   goals: RoomGoal[];
-  feed: Record<string, unknown>;
+  feed: Record<string, Array<{ id: number; prompt: string; response: string; created_at: string }>>;
 }
 
 export const getRoomDetails = async (id: number | string): Promise<RoomDetails> => {

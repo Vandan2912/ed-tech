@@ -21,8 +21,6 @@ function initials(name: string) {
     .slice(0, 2);
 }
 
-// ─── Leave Room confirm panel ─────────────────────────────────────────────────
-
 function LeaveRoomPanel({ onConfirm }: { onConfirm: () => void }) {
   return (
     <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex flex-col items-center text-center gap-3 h-full">
@@ -47,11 +45,10 @@ function LeaveRoomPanel({ onConfirm }: { onConfirm: () => void }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default function StudyRoom() {
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>();
+
   const [inviteOpen, setInviteOpen] = useState(false);
   const [details, setDetails] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -91,7 +88,8 @@ export default function StudyRoom() {
     );
   }
 
-  const { room, host, learners, participants, session, goals } = details;
+  const { room, host, learners, participants, session, goals, user_role } = details;
+  const isHost = user_role === "host";
 
   return (
     <main className="min-h-screen bg-[#F9FAFB]">
@@ -103,7 +101,6 @@ export default function StudyRoom() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-5">
         {/* Hero + Leave row */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5">
-          {/* Hero banner */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,9 +110,9 @@ export default function StudyRoom() {
             <div className="absolute -bottom-8 left-1/3 w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-5">
+              <div className="mb-5">
                 {session.is_live ? (
-                  <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 px-3 py-1 rounded-full">
+                  <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 px-3 py-1 rounded-full w-fit">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     Live Session
                   </span>
@@ -149,7 +146,6 @@ export default function StudyRoom() {
             </div>
           </motion.div>
 
-          {/* Leave panel */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -161,7 +157,6 @@ export default function StudyRoom() {
 
         {/* In Room + Session Goals row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* In Room */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -217,7 +212,6 @@ export default function StudyRoom() {
             </div>
           </motion.div>
 
-          {/* Session Goals */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -254,12 +248,11 @@ export default function StudyRoom() {
 
         {/* Shared AI Insights + Invite Learners row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* Shared AI Insights */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.13 }}
-            className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm"
+            className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col"
           >
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2.5">
@@ -271,7 +264,7 @@ export default function StudyRoom() {
                     Shared AI Insights
                   </p>
                   <p className="text-[11px] text-gray-400 font-medium">
-                    AI chats from everyone · visible to all members
+                    AI chats from host · visible to all members
                   </p>
                 </div>
               </div>
@@ -282,12 +275,30 @@ export default function StudyRoom() {
                 </span>
               )}
             </div>
-            <p className="text-[12px] text-gray-400 font-medium mt-4 text-center py-8">
-              No AI insights yet. Start chatting!
-            </p>
+
+            {isHost ? (
+              <div className="mt-4">
+                <button
+                  onClick={() => navigate(`/study/${roomId}/chat`)}
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-violet-600 hover:bg-violet-700 text-white text-[12px] font-black uppercase tracking-wider rounded-xl transition-colors focus-visible:outline-none"
+                >
+                  <Brain size={14} />
+                  Start AI Chat
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4">
+                <button
+                  onClick={() => navigate(`/study/${roomId}/chat`)}
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[12px] font-black uppercase tracking-wider rounded-xl transition-colors border border-violet-200 focus-visible:outline-none"
+                >
+                  <Brain size={14} />
+                  View AI Insights
+                </button>
+              </div>
+            )}
           </motion.div>
 
-          {/* Invite Learners */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

@@ -22,6 +22,7 @@ import Stats from "./pages/Stats";
 import Progress from "./pages/Progress";
 import Study from "./pages/Study";
 import StudyRoom from "./pages/StudyRoom";
+import StudyRoomChat from "./pages/StudyRoomChat";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -150,6 +151,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <StudyRoom />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/study/:roomId/chat"
+                element={
+                  <ProtectedRoute header={false} footer={false}>
+                    <StudyRoomChat />
                   </ProtectedRoute>
                 }
               />
