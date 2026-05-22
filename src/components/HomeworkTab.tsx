@@ -1,15 +1,20 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
   Calendar,
   Clock,
   CheckCircle2,
-  ChevronLeft,
   AlertCircle,
   Star,
   FileText,
   Zap,
+  Mic,
+  Paperclip,
+  Link2,
+  ChevronRight,
+  Send,
+  Hourglass,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -23,10 +28,6 @@ import {
   type SubmitResult,
 } from "@/api/homework";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type PastStatus = "Evaluated" | "Late" | "Pending";
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function fmtDate(iso: string) {
@@ -37,82 +38,164 @@ function fmtDate(iso: string) {
   });
 }
 
-function homeworkStatus(hw: Homework): PastStatus {
+function fmtDateTime(iso: string) {
+  const d = new Date(iso);
+  const date = d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+  const time = d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  return `${date} · ${time}`;
+}
+
+type PastStatus = "Evaluated" | "Late" | "Waiting" | "Pending";
+
+function pastStatusOf(hw: Homework): PastStatus {
   if (hw.evaluation_status === "COMPLETED") return "Evaluated";
+  if (hw.evaluation_status === "PENDING") return "Waiting";
   if (hw.status === "LATE") return "Late";
   return "Pending";
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// Subject -> color palette for chips
+function subjectPalette(subject: string | null | undefined) {
+  const s = (subject ?? "").toLowerCase();
+  if (s.includes("math"))
+    return {
+      text: "text-blue-600",
+      bg: "bg-blue-50",
+      border: "border-blue-100",
+    };
+  if (s.includes("phys"))
+    return {
+      text: "text-violet-600",
+      bg: "bg-violet-50",
+      border: "border-violet-100",
+    };
+  if (s.includes("chem"))
+    return {
+      text: "text-emerald-600",
+      bg: "bg-emerald-50",
+      border: "border-emerald-100",
+    };
+  if (s.includes("bio"))
+    return {
+      text: "text-teal-600",
+      bg: "bg-teal-50",
+      border: "border-teal-100",
+    };
+  if (s.includes("eng") || s.includes("lit"))
+    return {
+      text: "text-rose-600",
+      bg: "bg-rose-50",
+      border: "border-rose-100",
+    };
+  if (s.includes("hist") || s.includes("social"))
+    return {
+      text: "text-amber-600",
+      bg: "bg-amber-50",
+      border: "border-amber-100",
+    };
+  return {
+    text: "text-slate-600",
+    bg: "bg-slate-50",
+    border: "border-slate-100",
+  };
+}
 
-function StatusBadge({ status }: { status: PastStatus }) {
+// ─── Past-homework status chip ────────────────────────────────────────────────
+
+function PastStatusChip({ status }: { status: PastStatus }) {
   if (status === "Evaluated")
     return (
-      <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+      <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
         <CheckCircle2 size={10} /> Evaluated
       </span>
     );
   if (status === "Late")
     return (
-      <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-0.5 rounded-full">
+      <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-0.5 rounded-full">
         <AlertCircle size={10} /> Late
       </span>
     );
+  if (status === "Waiting")
+    return (
+      <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-violet-600 bg-violet-50 border border-violet-200 px-2.5 py-0.5 rounded-full">
+        <Hourglass size={10} /> Waiting for Evaluation
+      </span>
+    );
   return (
-    <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
+    <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
       <Clock size={10} /> Pending
     </span>
   );
 }
 
-function HomeworkCard({
-  hw,
-  onOpen,
-}: {
-  hw: Homework;
-  onOpen: () => void;
-}) {
-  const status = homeworkStatus(hw);
-  const isLate = status === "Late";
+// ─── Question cards ───────────────────────────────────────────────────────────
 
+function QuestionAttachmentBar() {
   return (
-    <button
-      onClick={onOpen}
-      className={cn(
-        "w-full bg-white border rounded-2xl overflow-hidden shadow-sm text-left hover:shadow-md transition-shadow",
-        isLate ? "border-orange-200" : "border-gray-100"
-      )}
-    >
-      {isLate && <div className="h-1 bg-orange-400 w-full" />}
-      <div className="flex items-center gap-4 px-5 py-4">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[14px] font-black text-[#101828]">{hw.title}</span>
-            <StatusBadge status={status} />
-          </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-400 font-medium">
-            <span className="flex items-center gap-1">
-              <FileText size={10} />
-              {hw.subject} · Class {hw.class}
-            </span>
-            <span className="flex items-center gap-1">
-              <Calendar size={10} />
-              Due: {fmtDate(hw.due_date)}
-            </span>
-            <span className="flex items-center gap-1">
-              <CheckCircle2 size={10} />
-              {hw.total_questions} question{hw.total_questions !== 1 ? "s" : ""}
-            </span>
-          </div>
-        </div>
-        <div className="text-right shrink-0">
-          <p className="text-[20px] font-black text-[#101828] leading-none">
-            {hw.score !== null ? hw.score : "—"}
-          </p>
-          <p className="text-[11px] text-gray-400 font-medium">/ {hw.total_points} pts</p>
-        </div>
+    <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-gray-100">
+      <button
+        type="button"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors"
+      >
+        <Mic size={12} /> Voice Note
+      </button>
+      <button
+        type="button"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors"
+      >
+        <Paperclip size={12} /> Attach File
+      </button>
+      <button
+        type="button"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors"
+      >
+        <Link2 size={12} /> Add Link
+      </button>
+    </div>
+  );
+}
+
+function QuestionHeader({ q, index }: { q: HomeworkQuestion; index: number }) {
+  const palette = subjectPalette(q.subject);
+  return (
+    <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100">
+      <div className="w-7 h-7 rounded-full bg-[#1C398E] flex items-center justify-center text-white text-[12px] font-black shrink-0">
+        {index}
       </div>
-    </button>
+      {q.subject && (
+        <span
+          className={cn(
+            "text-[11px] font-black uppercase tracking-wider border px-2.5 py-0.5 rounded-full",
+            palette.text,
+            palette.bg,
+            palette.border,
+          )}
+        >
+          {q.subject}
+        </span>
+      )}
+      <span className="ml-auto text-[12px] font-bold text-gray-500">
+        {q.points} pts
+      </span>
+      <span
+        className={cn(
+          "text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border",
+          q.type === "MCQ"
+            ? "text-blue-600 bg-blue-50 border-blue-100"
+            : "text-violet-600 bg-violet-50 border-violet-100",
+        )}
+      >
+        {q.type === "MCQ" ? "MCQ" : "Written"}
+      </span>
+    </div>
   );
 }
 
@@ -127,26 +210,19 @@ function MCQCard({
   selected: number | null;
   onSelect: (optId: number) => void;
 }) {
-  const opts = q.options.filter(Boolean) as NonNullable<HomeworkQuestion["options"][number]>[];
+  const opts = q.options.filter(Boolean) as NonNullable<
+    HomeworkQuestion["options"][number]
+  >[];
   return (
     <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100">
-        <div className="w-7 h-7 rounded-full bg-[#1C398E] flex items-center justify-center text-white text-[12px] font-black shrink-0">
-          {index}
-        </div>
-        {q.subject && (
-          <span className="text-[11px] font-black uppercase tracking-wider border px-2.5 py-0.5 rounded-full text-blue-600 bg-blue-50 border-blue-100">
-            {q.subject}
-          </span>
-        )}
-        <span className="ml-auto text-[12px] font-bold text-gray-500">{q.points} pts</span>
-        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border text-blue-600 bg-blue-50 border-blue-100">
-          MCQ
-        </span>
-      </div>
+      <QuestionHeader q={q} index={index} />
       <div className="px-5 py-4">
-        <p className="text-[14px] font-semibold text-[#101828] mb-1">{q.question}</p>
-        <p className="text-[12px] text-gray-400 font-medium mb-4">Select the correct answer</p>
+        <p className="text-[14px] font-semibold text-[#101828] mb-1">
+          {q.question}
+        </p>
+        <p className="text-[12px] text-gray-400 font-medium mb-4">
+          Select the correct answer
+        </p>
         <div className="space-y-2.5">
           {opts.map((opt, i) => {
             const label = String.fromCharCode(65 + i);
@@ -159,7 +235,7 @@ function MCQCard({
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all",
                   isSelected
                     ? "border-[#1C398E] bg-blue-50 text-[#1C398E]"
-                    : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/40 text-[#101828]"
+                    : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/40 text-[#101828]",
                 )}
               >
                 <span
@@ -167,15 +243,20 @@ function MCQCard({
                     "w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] font-black shrink-0 transition-colors",
                     isSelected
                       ? "border-[#1C398E] bg-[#1C398E] text-white"
-                      : "border-gray-300 text-gray-500"
+                      : "border-gray-300 text-gray-500",
                   )}
                 >
                   {label}
                 </span>
-                <span className="text-[13px] font-medium">{opt.option_text}</span>
+                <span className="text-[13px] font-medium">
+                  {opt.option_text}
+                </span>
               </button>
             );
           })}
+        </div>
+        <div className="mt-4">
+          <QuestionAttachmentBar />
         </div>
       </div>
     </div>
@@ -195,24 +276,15 @@ function WrittenCard({
 }) {
   return (
     <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100">
-        <div className="w-7 h-7 rounded-full bg-[#1C398E] flex items-center justify-center text-white text-[12px] font-black shrink-0">
-          {index}
-        </div>
-        {q.subject && (
-          <span className="text-[11px] font-black uppercase tracking-wider border px-2.5 py-0.5 rounded-full text-violet-600 bg-violet-50 border-violet-100">
-            {q.subject}
-          </span>
-        )}
-        <span className="ml-auto text-[12px] font-bold text-gray-500">{q.points} pts</span>
-        <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border text-violet-600 bg-violet-50 border-violet-100">
-          Written
-        </span>
-      </div>
+      <QuestionHeader q={q} index={index} />
       <div className="px-5 py-4">
-        <p className="text-[14px] font-semibold text-[#101828] mb-4">{q.question}</p>
+        <p className="text-[14px] font-semibold text-[#101828] mb-4">
+          {q.question}
+        </p>
         <div className="space-y-1.5">
-          <p className="text-[12px] font-bold text-gray-500">Write your answer</p>
+          <p className="text-[12px] font-bold text-gray-500">
+            Write your answer
+          </p>
           <textarea
             value={answer}
             onChange={(e) => onAnswer(e.target.value)}
@@ -220,7 +292,12 @@ function WrittenCard({
             rows={4}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[13px] text-[#101828] placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-200 resize-none font-medium"
           />
-          <p className="text-[11px] text-gray-400 text-right">{answer.length} chars</p>
+          <p className="text-[11px] text-gray-400 text-right">
+            {answer.length} chars
+          </p>
+        </div>
+        <div className="mt-2">
+          <QuestionAttachmentBar />
         </div>
       </div>
     </div>
@@ -250,20 +327,28 @@ function SubmitResultScreen({
         </div>
         <div>
           <h3 className="text-[18px] font-black text-[#101828]">Submitted!</h3>
-          <p className="text-[13px] text-gray-400 font-medium mt-1">{hw.title}</p>
+          <p className="text-[13px] text-gray-400 font-medium mt-1">
+            {hw.title}
+          </p>
         </div>
 
         <div className="flex items-center gap-6 mt-2">
           <div className="text-center">
-            <p className="text-[28px] font-black text-[#101828] leading-none">{result.mcq_score}</p>
-            <p className="text-[11px] text-gray-400 font-medium mt-0.5">MCQ score</p>
+            <p className="text-[28px] font-black text-[#101828] leading-none">
+              {result.mcq_score}
+            </p>
+            <p className="text-[11px] text-gray-400 font-medium mt-0.5">
+              MCQ score
+            </p>
           </div>
           <div className="w-px h-10 bg-gray-100" />
           <div className="text-center">
             <p className="text-[28px] font-black text-[#101828] leading-none">
               {result.final_score !== null ? result.final_score : "—"}
             </p>
-            <p className="text-[11px] text-gray-400 font-medium mt-0.5">Final score</p>
+            <p className="text-[11px] text-gray-400 font-medium mt-0.5">
+              Final score
+            </p>
           </div>
           {result.xp.awarded && (
             <>
@@ -272,7 +357,9 @@ function SubmitResultScreen({
                 <p className="text-[28px] font-black text-amber-500 leading-none flex items-center gap-1">
                   <Zap size={20} className="inline" />+{result.xp.xp}
                 </p>
-                <p className="text-[11px] text-gray-400 font-medium mt-0.5">XP earned</p>
+                <p className="text-[11px] text-gray-400 font-medium mt-0.5">
+                  XP earned
+                </p>
               </div>
             </>
           )}
@@ -295,34 +382,42 @@ function SubmitResultScreen({
   );
 }
 
-// ─── Detail View ──────────────────────────────────────────────────────────────
+// ─── Active Homework (expanded inline) ────────────────────────────────────────
 
-function HomeworkDetailView({
+function ActiveHomeworkCard({
   hw,
   detail,
-  onBack,
+  loading,
+  onSubmitted,
 }: {
   hw: Homework;
-  detail: HomeworkDetail;
-  onBack: () => void;
+  detail: HomeworkDetail | null;
+  loading: boolean;
+  onSubmitted: () => void;
 }) {
   const [mcqAnswers, setMcqAnswers] = useState<Record<number, number>>({});
-  const [writtenAnswers, setWrittenAnswers] = useState<Record<number, string>>({});
+  const [writtenAnswers, setWrittenAnswers] = useState<Record<number, string>>(
+    {},
+  );
   const [submitting, setSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
-  const debounceTimers = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
+  const debounceTimers = useRef<Record<number, ReturnType<typeof setTimeout>>>(
+    {},
+  );
 
-  const questions = detail.questions;
-  const answeredCount =
-    Object.keys(mcqAnswers).filter((k) => mcqAnswers[Number(k)] !== undefined).length +
-    Object.values(writtenAnswers).filter((v) => v.trim().length > 0).length;
+  const questions = detail?.questions ?? [];
   const totalQ = questions.length;
+  const answeredCount =
+    Object.keys(mcqAnswers).filter((k) => mcqAnswers[Number(k)] !== undefined)
+      .length +
+    Object.values(writtenAnswers).filter((v) => v.trim().length > 0).length;
 
   const handleMcqSelect = (q: HomeworkQuestion, optId: number) => {
     setMcqAnswers((prev) => {
-      const next = prev[q.id] === optId
-        ? { ...prev, [q.id]: undefined as unknown as number }
-        : { ...prev, [q.id]: optId };
+      const next =
+        prev[q.id] === optId
+          ? { ...prev, [q.id]: undefined as unknown as number }
+          : { ...prev, [q.id]: optId };
       if (next[q.id] !== undefined) {
         saveAnswer(hw.id, {
           question_id: q.id,
@@ -357,56 +452,78 @@ function HomeworkDetailView({
   };
 
   if (submitResult) {
-    return <SubmitResultScreen hw={hw} result={submitResult} onBack={onBack} />;
+    return (
+      <SubmitResultScreen hw={hw} result={submitResult} onBack={onSubmitted} />
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <button
-        onClick={onBack}
-        className="flex items-center gap-1.5 text-[13px] font-bold text-gray-500 hover:text-[#1C398E] transition-colors"
-      >
-        <ChevronLeft size={16} /> Back to homework list
-      </button>
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+      {/* Top gradient stripe — matches Figma's accent bar */}
+      <div className="h-1.5 bg-linear-to-r from-rose-400 via-fuchsia-500 to-blue-500" />
 
-      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
+      {/* Header */}
+      <div className="px-6 py-5 border-b border-gray-100">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+              <FileText size={16} className="text-[#1C398E]" />
+            </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-[15px] font-black text-[#101828]">{hw.title}</h3>
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h3 className="text-[15px] font-black text-[#101828]">
+                  {hw.title}
+                </h3>
                 <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full">
-                  {totalQ} Question{totalQ !== 1 ? "s" : ""}
+                  {hw.total_questions} Question
+                  {hw.total_questions !== 1 ? "s" : ""}
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-400 font-medium">
                 <span className="flex items-center gap-1">
-                  <FileText size={10} /> {hw.subject} · Class {hw.class}
+                  <Calendar size={10} /> Given: {fmtDate(hw.created_at)}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Clock size={10} /> Due: {fmtDate(hw.due_date)}
+                  <Clock size={10} /> Due: {fmtDateTime(hw.due_date)}
+                </span>
+                <span className="flex items-center gap-1">
+                  <FileText size={10} /> {hw.subject} · Class {hw.class}
                 </span>
               </div>
             </div>
-            <div className="text-right shrink-0">
-              <p className="text-[20px] font-black text-[#101828] leading-none">
-                {answeredCount}/{totalQ}
-              </p>
-              <p className="text-[11px] text-gray-400 font-medium">answered</p>
-            </div>
           </div>
-
-          <div className="mt-3 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-blue-500 rounded-full"
-              animate={{ width: totalQ > 0 ? `${(answeredCount / totalQ) * 100}%` : "0%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            />
+          <div className="text-right shrink-0">
+            <p className="text-[20px] font-black text-[#101828] leading-none">
+              {answeredCount}/{totalQ}
+            </p>
+            <p className="text-[11px] text-gray-400 font-medium">answered</p>
           </div>
         </div>
 
-        <div className="p-6 space-y-4">
-          {questions.map((q, i) =>
+        <div className="mt-4 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-blue-500 rounded-full"
+            animate={{
+              width: totalQ > 0 ? `${(answeredCount / totalQ) * 100}%` : "0%",
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          />
+        </div>
+      </div>
+
+      {/* Question list */}
+      <div className="p-6 space-y-4 bg-gray-50/50">
+        {loading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-40 bg-gray-100 rounded-2xl animate-pulse"
+              />
+            ))}
+          </div>
+        ) : (
+          questions.map((q, i) =>
             q.type === "MCQ" ? (
               <MCQCard
                 key={q.id}
@@ -423,29 +540,79 @@ function HomeworkDetailView({
                 answer={writtenAnswers[q.id] ?? ""}
                 onAnswer={(val) => handleWrittenChange(q, val)}
               />
-            )
-          )}
-        </div>
+            ),
+          )
+        )}
+      </div>
 
-        <div className="px-6 pb-6">
-          <button
-            onClick={handleSubmit}
-            disabled={answeredCount < totalQ || submitting}
-            className={cn(
-              "w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[14px] font-black uppercase tracking-wider transition-all",
-              answeredCount === totalQ && !submitting
-                ? "bg-[#1C398E] hover:bg-[#162d72] text-white shadow-lg shadow-blue-200"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            )}
-          >
-            <CheckCircle2 size={16} />
-            {submitting
-              ? "Submitting…"
-              : `Submit Homework (${answeredCount}/${totalQ} answered)`}
-          </button>
-        </div>
+      {/* Submit */}
+      <div className="px-6 pb-6 pt-2">
+        <button
+          onClick={handleSubmit}
+          disabled={answeredCount < totalQ || submitting || totalQ === 0}
+          className={cn(
+            "w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[14px] font-black uppercase tracking-wider transition-all",
+            answeredCount === totalQ && totalQ > 0 && !submitting
+              ? "bg-linear-to-r from-[#1C398E] via-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-200 hover:shadow-xl"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed",
+          )}
+        >
+          <Send size={16} />
+          {submitting
+            ? "Submitting…"
+            : `Submit All Questions (${answeredCount}/${totalQ} answered)`}
+        </button>
       </div>
     </div>
+  );
+}
+
+// ─── Past homework row ────────────────────────────────────────────────────────
+
+function PastHomeworkRow({ hw }: { hw: Homework }) {
+  const status = pastStatusOf(hw);
+  const isLate = hw.status === "LATE";
+  return (
+    <button
+      type="button"
+      className="w-full bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-left overflow-hidden"
+    >
+      <div className="flex items-center gap-4 px-5 py-4">
+        <div className="w-2.5 h-2.5 rounded-full bg-gray-300 shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="text-[14px] font-black text-[#101828]">
+              {hw.title}
+            </span>
+            {isLate && status !== "Late" && <PastStatusChip status="Late" />}
+            <PastStatusChip status={status} />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-400 font-medium">
+            <span className="flex items-center gap-1">
+              <Calendar size={10} /> Given: {fmtDate(hw.created_at)}
+            </span>
+            {hw.evaluated_at && (
+              <span className="flex items-center gap-1">
+                <CheckCircle2 size={10} /> Submitted: {fmtDate(hw.evaluated_at)}
+              </span>
+            )}
+            <span className="flex items-center gap-1">
+              <Clock size={10} /> {status === "Late" ? "Due was" : "Due"}:{" "}
+              {fmtDate(hw.due_date)}
+            </span>
+          </div>
+        </div>
+        <div className="text-right shrink-0">
+          <p className="text-[18px] font-black text-[#101828] leading-none">
+            {hw.score !== null ? hw.score : "—"}
+          </p>
+          <p className="text-[11px] text-gray-400 font-medium mt-0.5">
+            / {hw.total_points} pts
+          </p>
+        </div>
+        <ChevronRight size={16} className="text-gray-300 shrink-0" />
+      </div>
+    </button>
   );
 }
 
@@ -454,7 +621,6 @@ function HomeworkDetailView({
 export default function HomeworkTab() {
   const [homeworks, setHomeworks] = useState<Homework[]>([]);
   const [loadingList, setLoadingList] = useState(true);
-  const [selected, setSelected] = useState<Homework | null>(null);
   const [detail, setDetail] = useState<HomeworkDetail | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
@@ -464,24 +630,56 @@ export default function HomeworkTab() {
       .finally(() => setLoadingList(false));
   }, []);
 
-  const handleOpen = (hw: Homework) => {
-    setSelected(hw);
+  // Partition into active (next due, not yet submitted) and past (everything else)
+  const { active, past } = useMemo(() => {
+    const open = homeworks.filter(
+      (hw) =>
+        hw.evaluation_status === "NOT_STARTED" ||
+        hw.evaluation_status === "IN_PROGRESS",
+    );
+    open.sort(
+      (a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
+    );
+    const active = open[0] ?? null;
+    const past = homeworks
+      .filter((hw) => hw.id !== active?.id)
+      .sort(
+        (a, b) =>
+          new Date(b.due_date).getTime() - new Date(a.due_date).getTime(),
+      );
+    return { active, past };
+  }, [homeworks]);
+
+  // Auto-fetch the active homework's questions
+  useEffect(() => {
+    if (!active) {
+      setDetail(null);
+      return;
+    }
     setDetail(null);
     setLoadingDetail(true);
-    getHomeworkDetail(hw.id)
+    getHomeworkDetail(active.id)
       .then(setDetail)
       .finally(() => setLoadingDetail(false));
-  };
+  }, [active?.id]);
 
-  const handleBack = () => {
-    setSelected(null);
-    setDetail(null);
+  const handleSubmitted = () => {
+    // Refresh list after a submission
+    setLoadingList(true);
+    getHomeworks()
+      .then(setHomeworks)
+      .finally(() => setLoadingList(false));
   };
 
   const dueCount = homeworks.filter(
-    (hw) => hw.evaluation_status === "NOT_STARTED"
+    (hw) =>
+      hw.evaluation_status === "NOT_STARTED" ||
+      hw.evaluation_status === "IN_PROGRESS",
   ).length;
-  const totalEarnedPts = homeworks.reduce((sum, hw) => sum + (hw.score ?? 0), 0);
+  const totalEarnedPts = homeworks.reduce(
+    (sum, hw) => sum + (hw.score ?? 0),
+    0,
+  );
 
   return (
     <div className="space-y-8">
@@ -492,7 +690,9 @@ export default function HomeworkTab() {
             <BookOpen size={20} className="text-blue-600" />
           </div>
           <div>
-            <h2 className="text-[16px] font-black text-[#101828] tracking-tight">Homework</h2>
+            <h2 className="text-[16px] font-black text-[#101828] tracking-tight">
+              Daily Homework
+            </h2>
             <p className="text-[12px] text-gray-400 font-medium">
               Assigned by your teachers · Complete on time for full marks
             </p>
@@ -503,7 +703,7 @@ export default function HomeworkTab() {
           {dueCount > 0 && (
             <span className="flex items-center gap-1.5 text-[12px] font-black text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-full">
               <AlertCircle size={12} />
-              {dueCount} Pending
+              {dueCount} Due
             </span>
           )}
           {totalEarnedPts > 0 && (
@@ -515,54 +715,66 @@ export default function HomeworkTab() {
         </div>
       </div>
 
-      {/* ── Content ── */}
+      {/* ── Active homework ── */}
       <AnimatePresence mode="wait">
-        {selected ? (
+        {loadingList ? (
+          <motion.div key="loading" className="space-y-3">
+            <div className="h-40 bg-gray-100 rounded-2xl animate-pulse" />
+          </motion.div>
+        ) : active ? (
           <motion.div
-            key="detail"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
+            key={`active-${active.id}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
           >
-            {loadingDetail ? (
-              <div className="space-y-4">
-                {[1, 2].map((i) => (
-                  <div key={i} className="h-40 bg-gray-100 rounded-2xl animate-pulse" />
-                ))}
-              </div>
-            ) : detail ? (
-              <HomeworkDetailView hw={selected} detail={detail} onBack={handleBack} />
-            ) : null}
+            <ActiveHomeworkCard
+              hw={active}
+              detail={detail}
+              loading={loadingDetail}
+              onSubmitted={handleSubmitted}
+            />
           </motion.div>
         ) : (
           <motion.div
-            key="list"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
+            key="empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white border border-gray-100 rounded-2xl shadow-sm px-6 py-10 text-center"
           >
-            {loadingList ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-20 bg-gray-100 rounded-2xl animate-pulse" />
-                ))}
-              </div>
-            ) : homeworks.length === 0 ? (
-              <p className="text-[13px] text-gray-400 font-medium text-center py-8">
-                No homework assigned yet.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {homeworks.map((hw) => (
-                  <HomeworkCard key={hw.id} hw={hw} onOpen={() => handleOpen(hw)} />
-                ))}
-              </div>
-            )}
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-3">
+              <CheckCircle2 size={24} className="text-emerald-500" />
+            </div>
+            <p className="text-[14px] font-black text-[#101828]">
+              You're all caught up!
+            </p>
+            <p className="text-[12px] text-gray-400 font-medium mt-1">
+              No homework due right now.
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Past homework ── */}
+      {past.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2">
+              <h3 className="text-[14px] font-black text-[#101828]">
+                Past Homework
+              </h3>
+              <span className="text-[10px] font-black uppercase tracking-wider text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-full">
+                {past.length}
+              </span>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {past.map((hw) => (
+              <PastHomeworkRow key={hw.id} hw={hw} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
