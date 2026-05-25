@@ -22,6 +22,7 @@ import Stats from "./pages/Stats";
 import Progress from "./pages/Progress";
 import Study from "./pages/Study";
 import Profile from "./pages/Profile";
+import Certificates from "./pages/Certificates";
 import StudyRoom from "./pages/StudyRoom";
 import StudyRoomChat from "./pages/StudyRoomChat";
 // import PublicRoute from "./auth/PublicRoute";
@@ -143,6 +144,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Profile />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/certificates"
+                element={
+                  <ProtectedRoute>
+                    <Certificates />
                   </ProtectedRoute>
                 }
               />
