@@ -1,26 +1,17 @@
 import {
-  Atom,
   Award,
   BarChart3,
   Bell,
   BookOpen,
   Brain,
-  ChartColumn,
-  ChevronRight,
-  Dna,
   Flame,
-  FlaskConical,
-  Home,
   LogOut,
-  Menu,
+  Search,
   Settings,
-  Target,
-  Trophy,
   User,
   Users,
   Pin,
   Zap,
-  X,
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -38,7 +29,6 @@ export function Header() {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [imgError, setImgError] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const teacherTabs = [
     { id: "alerts", label: "Alerts", path: "/", icon: Bell, badge: 5 },
@@ -49,7 +39,7 @@ export function Header() {
 
   return (
     <header className="border-b border-gray-100 bg-white sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-5 md:px-8">
         <div
           className="flex items-center gap-2.5 cursor-pointer"
           onClick={() => {
@@ -69,11 +59,16 @@ export function Header() {
               </span>
             </div>
           ) : (
-            <div className="text-[#101828] text-center text-base not-italic font-black leading-6 tracking-[-0.712px] flex items-center gap-1.5">
-              SmartLearn
-              <div className="bg-[#DBEAFE] px-1.5 py-0.5 text-[#1447E6] text-center text-[9px] not-italic font-black leading-[13.5px] tracking-[1.067px] uppercase rounded-[8px]">
-                AI
-              </div>
+            <div className="flex flex-col">
+              <span className="text-[#101828] text-base not-italic font-black leading-5 tracking-[-0.712px] flex items-center gap-1.5">
+                SmartLearn
+                <span className="bg-[#DBEAFE] px-1.5 py-0.5 text-[#1447E6] text-[9px] not-italic font-black leading-[13.5px] tracking-[1.067px] uppercase rounded-[8px]">
+                  AI
+                </span>
+              </span>
+              <span className="text-[#6A7282] text-[11px] font-medium leading-tight mt-0.5">
+                Your Learning Journey
+              </span>
             </div>
           )}
         </div>
@@ -202,6 +197,20 @@ export function Header() {
                 </div>
               </div>
               <div className="hidden md:block w-px h-5 bg-[#E5E7EB] rounded-full"></div>
+
+              <button
+                aria-label="Search"
+                className="md:hidden w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors"
+              >
+                <Search size={18} />
+              </button>
+              <button
+                aria-label="Notifications"
+                className="md:hidden relative w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors"
+              >
+                <Bell size={18} />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FB2C36] rounded-full ring-2 ring-white" />
+              </button>
             </>
           )}
 
@@ -283,97 +292,8 @@ export function Header() {
               </button>
             )
           }
-
-          <button
-            onClick={() => setMenuOpen((prev) => !prev)}
-            className="md:hidden w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-600 transition-colors"
-          >
-            {menuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
-          </button>
-        </div>
-      </div>
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${menuOpen
-          ? "max-h-175 opacity-100 translate-y-0"
-          : "max-h-0 opacity-0 -translate-y-2"
-          } border-t border-gray-100 bg-white shadow-xl`}
-      >
-        <div className="px-4 py-6 space-y-4 bg-white">
-          {/* GRID MENU */}
-          <div className="grid grid-cols-2 gap-4">
-            <MenuCard icon={<Home />} label="Home" active />
-            <MenuCard icon={<BookOpen />} label="Courses" />
-            <MenuCard icon={<Trophy />} label="Leaderboard" />
-            <MenuCard icon={<BarChart3 />} label="Analytics" />
-            <MenuCard icon={<Target />} label="Progress" />
-            <MenuCard icon={<Users />} label="Study Room" />
-          </div>
-
-          {/* SUBJECT LIST */}
-          <div className="pt-4">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 px-2">
-              POPULAR SUBJECTS
-            </p>
-
-            <div className="space-y-2">
-              <SubjectItem
-                label="Maths"
-                icon={<ChartColumn className="size-6" />}
-              />
-              <SubjectItem label="Physics" icon={<Atom className="size-6" />} />
-              <SubjectItem
-                label="Chemistry"
-                icon={<FlaskConical className="size-6" />}
-              />
-              <SubjectItem label="Biology" icon={<Dna className="size-6" />} />
-            </div>
-          </div>
         </div>
       </div>
     </header>
-  );
-}
-
-function MenuCard({
-  icon,
-  label,
-  active,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
-}) {
-  return (
-    <div
-      className={`flex flex-col items-center justify-center rounded-2xl border ${active
-        ? "bg-blue-50 text-blue-600 border-blue-100"
-        : "bg-gray-50 text-gray-500 border-0"
-        } p-4 transition-all`}
-    >
-      <div className="mb-2 size-6">{icon}</div>
-      <span className="text-xs font-black tracking-widest uppercase">
-        {label}
-      </span>
-    </div>
-  );
-}
-
-function SubjectItem({
-  icon,
-  label,
-}: {
-  icon: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <div className="w-full flex items-center justify-between p-3 bg-gray-50/50 hover:bg-gray-50 rounded-2xl transition-all group">
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
-          {icon}
-        </div>
-        <span className="font-semibold text-gray-700">{label}</span>
-      </div>
-      <ChevronRight className="size-4 text-gray-300" />
-    </div>
   );
 }

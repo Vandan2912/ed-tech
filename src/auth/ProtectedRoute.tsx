@@ -3,6 +3,7 @@ import type { JSX } from "react";
 import { useAuth } from "./useAuth";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { MobileBottomBar } from "@/components/MobileBottomBar";
 
 export default function ProtectedRoute({
   children,
@@ -33,8 +34,9 @@ export default function ProtectedRoute({
   return (
     <>
       {header && <Header />}
-      {children}
+      <div className={header ? "pb-20 md:pb-0" : undefined}>{children}</div>
       {footer && <Footer />}
+      {header && <MobileBottomBar />}
     </>
   );
 }
