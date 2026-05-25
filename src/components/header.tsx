@@ -23,12 +23,14 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 import { CoursesDropdown } from "./courses_drawer";
+import { UpgradeModal } from "./UpgradeModal";
 
 export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const [imgError, setImgError] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   const teacherTabs = [
     { id: "alerts", label: "Alerts", path: "/", icon: Bell, badge: 5 },
@@ -255,7 +257,10 @@ export function Header() {
                 </div>
               </div>
               <div className="px-2 space-y-0.5">
-                <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-2xl transition-all mb-1 group/upgrade focus-visible:outline-none">
+                <button
+                  onClick={() => setUpgradeOpen(true)}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-2xl transition-all mb-1 group/upgrade focus-visible:outline-none"
+                >
                   <Zap fill="currentColor" className="size-4" />
                   <span className="shrink-0">Upgrade to Unlimited</span>
                 </button>
@@ -294,6 +299,8 @@ export function Header() {
           }
         </div>
       </div>
+
+      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} />
     </header>
   );
 }
