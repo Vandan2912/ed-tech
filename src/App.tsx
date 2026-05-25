@@ -21,6 +21,7 @@ import Ranks from "./pages/Rank";
 import Stats from "./pages/Stats";
 import Progress from "./pages/Progress";
 import Study from "./pages/Study";
+import Profile from "./pages/Profile";
 import StudyRoom from "./pages/StudyRoom";
 import StudyRoomChat from "./pages/StudyRoomChat";
 // import PublicRoute from "./auth/PublicRoute";
@@ -133,6 +134,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Progress />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
                   </ProtectedRoute>
                 }
               />

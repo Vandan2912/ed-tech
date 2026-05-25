@@ -13,6 +13,8 @@ export type User = {
   role: string;
   isOnboarded: boolean;
   school_name: string;
+  std: string;
+  pincode: string;
   district: string;
   state: string;
   country: string;

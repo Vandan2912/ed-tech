@@ -4,6 +4,7 @@ export const saveAcademicDetails = async (data:  {
     id: string | undefined;
     first_name: string;
     last_name: string;
+    email?: string;
     school_name: string;
     std?: string;
     pincode?: string;
