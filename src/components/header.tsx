@@ -16,11 +16,7 @@ import {
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/useAuth";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
 import { CoursesDropdown } from "./courses_drawer";
 import { UpgradeModal } from "./UpgradeModal";
@@ -47,14 +43,13 @@ export function Header() {
           className="flex items-center gap-2.5 cursor-pointer"
           onClick={() => {
             navigate("/");
-          }}
-        >
+          }}>
           <div className="bg-[#1C398E] p-2 rounded-xl text-white">
             <Brain size={20} />
           </div>
           {user?.role === "teacher" ? (
             <div className="flex flex-col">
-              <span className="text-[#101828] text-[18px] font-black leading-[18px] tracking-[-0.4395px] -mt-0.5">
+              <span className="text-[#101828] text-[18px] font-black leading-4.5 tracking-[-0.4395px] -mt-0.5">
                 SmartLearn
               </span>
               <span className="text-[#4f39f6] text-[10px] font-black uppercase tracking-[1.1172px]">
@@ -69,9 +64,7 @@ export function Header() {
                   AI
                 </span>
               </span>
-              <span className="text-[#6A7282] text-[11px] font-medium leading-tight mt-0.5">
-                Your Learning Journey
-              </span>
+              <span className="text-[#6A7282] text-[11px] font-medium leading-tight mt-0.5">Your Learning Journey</span>
             </div>
           )}
         </div>
@@ -86,13 +79,13 @@ export function Header() {
                 <div
                   key={tab.id}
                   onClick={() => navigate(tab.path)}
-                  className={`relative flex items-center gap-2 px-4 py-2 rounded-[14px] cursor-pointer transition-colors ${isActive
-                    ? tab.id === "alerts"
-                      ? "text-[#e7000b]"
-                      : "text-[#312c85]"
-                    : "text-[#6a7282] hover:bg-white/50"
-                    }`}
-                >
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-[14px] cursor-pointer transition-colors ${
+                    isActive
+                      ? tab.id === "alerts"
+                        ? "text-[#e7000b]"
+                        : "text-[#312c85]"
+                      : "text-[#6a7282] hover:bg-white/50"
+                  }`}>
                   {isActive && (
                     <motion.div
                       layoutId="teacher-nav"
@@ -103,9 +96,7 @@ export function Header() {
                   )}
                   <div className="relative z-10 flex items-center gap-2">
                     <Icon size={16} />
-                    <span className="text-[12px] font-black uppercase tracking-[1.2px]">
-                      {tab.label}
-                    </span>
+                    <span className="text-[12px] font-black uppercase tracking-[1.2px]">{tab.label}</span>
                     {tab.badge && (
                       <span className="bg-[#fb2c36] text-white text-[8px] font-black px-1.5 py-0.5 rounded-full -ml-1">
                         {tab.badge}
@@ -121,12 +112,10 @@ export function Header() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
                 }`
-              }
-            >
+              }>
               HOME
             </NavLink>
             <CoursesDropdown />
@@ -134,45 +123,37 @@ export function Header() {
             <NavLink
               to="/ranks"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
                 }`
-              }
-            >
+              }>
               RANKS
             </NavLink>
             <NavLink
               to="/stats"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
                 }`
-              }
-            >
+              }>
               STATS
             </NavLink>
             <NavLink
               to="/progress"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
                 }`
-              }
-            >
+              }>
               PROGRESS
             </NavLink>
             <NavLink
               to="/study"
               className={({ isActive }) =>
-                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${isActive
-                  ? "text-[#1C398E] bg-white shadow-sm text-center "
-                  : "hover:text-[#1C398E]"
+                `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
+                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
                 }`
-              }
-            >
+              }>
               <Users size={16} className="me-1.75" /> STUDY
             </NavLink>
           </nav>
@@ -185,20 +166,14 @@ export function Header() {
                 <Flame size={16} className="group-hover:scale-110" /> 7
               </div>
               <div className="hidden md:flex items-center gap-1 bg-blue-50 text-[#155DFC] px-3 py-1.5 rounded-full text-sm border border-[#A9C8FFCC] group text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[0.064px]">
-                <Zap
-                  size={16}
-                  fill="#155DFC"
-                  className="group-hover:scale-110"
-                />{" "}
-                4
+                <Zap size={16} fill="#155DFC" className="group-hover:scale-110" /> 4
               </div>
 
               <NotificationBell
                 trigger={
                   <button
                     aria-label="Notifications"
-                    className="relative w-9 h-9 flex-col shrink-0 p-0.5 rounded-full bg-[#F3F4F6] hover:bg-gray-200 transition-colors hidden md:flex justify-center items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc]"
-                  >
+                    className="relative w-9 h-9 flex-col shrink-0 p-0.5 rounded-full bg-[#F3F4F6] hover:bg-gray-200 transition-colors hidden md:flex justify-center items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc]">
                     <Bell size={16} className="text-black" />
                     <div className="absolute -top-1 -right-1 bg-[#FB2C36] shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-4 h-4 justify-center items-center rounded-full text-white text-center text-[8px] not-italic font-black leading-3 tracking-[0.206px]">
                       3
@@ -210,16 +185,14 @@ export function Header() {
 
               <button
                 aria-label="Search"
-                className="md:hidden w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors"
-              >
+                className="md:hidden w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors">
                 <Search size={18} />
               </button>
               <NotificationBell
                 trigger={
                   <button
                     aria-label="Notifications"
-                    className="md:hidden relative w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors"
-                  >
+                    className="md:hidden relative w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors">
                     <Bell size={18} />
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FB2C36] rounded-full ring-2 ring-white" />
                   </button>
@@ -244,9 +217,7 @@ export function Header() {
               <button className="w-8 h-8 flex-col shrink-0 shadow-[0_0_0_2px_#E5E7EB,0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] rounded-full border-2 border-solid border-white flex justify-center items-center group focus-visible:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 {user?.profile_picture ? (
                   <img
-                    src={
-                      !imgError ? user.profile_picture : "/default-avatar.png"
-                    }
+                    src={!imgError ? user.profile_picture : "/default-avatar.png"}
                     onError={() => setImgError(true)}
                     alt="profile"
                     className="w-8 h-8 rounded-full"
@@ -260,9 +231,7 @@ export function Header() {
             <PopoverContent className="w-60 bg-white rounded-3xl shadow-2xl border border-gray-100 py-3 px-0 overflow-hidden z-50">
               <div className="px-5 py-3 border-b border-gray-50 mb-2 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
-                    Active {user?.role}
-                  </p>
+                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Active {user?.role}</p>
                   <p className="font-bold text-gray-900">
                     {user?.first_name} {user?.last_name}
                   </p>
@@ -271,8 +240,7 @@ export function Header() {
               <div className="px-2 space-y-0.5">
                 <button
                   onClick={() => setUpgradeOpen(true)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-2xl transition-all mb-1 group/upgrade focus-visible:outline-none"
-                >
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-2xl transition-all mb-1 group/upgrade focus-visible:outline-none">
                   <Zap fill="currentColor" className="size-4" />
                   <span className="shrink-0">Upgrade to Unlimited</span>
                 </button>
@@ -293,8 +261,7 @@ export function Header() {
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all focus-visible:outline-none"
                     onClick={() => {
                       logout();
-                    }}
-                  >
+                    }}>
                     <LogOut stroke="currentColor" className="size-4" />
                     Logout
                   </button>
@@ -303,16 +270,15 @@ export function Header() {
             </PopoverContent>
           </Popover>
 
-          {
-            user?.role === "teacher" && (
-              <button className="flex w-10 h-10 items-center justify-center px-2.5 py-0 relative bg-red-50 rounded-[14px] cursor-pointer"
-                onClick={() => {
-                  logout();
-                }}>
-                <LogOut size={20} stroke="#FB2C36" />
-              </button>
-            )
-          }
+          {user?.role === "teacher" && (
+            <button
+              className="flex w-10 h-10 items-center justify-center px-2.5 py-0 relative bg-red-50 rounded-[14px] cursor-pointer"
+              onClick={() => {
+                logout();
+              }}>
+              <LogOut size={20} stroke="#FB2C36" />
+            </button>
+          )}
         </div>
       </div>
 

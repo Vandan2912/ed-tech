@@ -1,17 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getLeaderboard, getStreaks, getMyBest } from "@/api/ranks";
-import type {
-  GlobalRankUser,
-  StreakUser as ApiStreakUser,
-  StreaksData,
-  MyBestData,
-} from "@/api/ranks";
-import {
-  motion,
-  AnimatePresence,
-  useInView,
-  type Variants,
-} from "motion/react";
+import type { GlobalRankUser, StreakUser as ApiStreakUser, StreaksData, MyBestData } from "@/api/ranks";
+import { motion, AnimatePresence, useInView, type Variants } from "motion/react";
 import {
   Trophy,
   Flame,
@@ -207,8 +197,7 @@ function AnimatedSection({
       animate={isInView ? "visible" : "hidden"}
       variants={variants}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay }}
-      className={className}
-    >
+      className={className}>
       {children}
     </motion.div>
   );
@@ -216,13 +205,7 @@ function AnimatedSection({
 
 // ─── Profile Modal ───────────────────────────────────
 
-function ProfileModal({
-  user,
-  onClose,
-}: {
-  user: LeaderboardUser;
-  onClose: () => void;
-}) {
+function ProfileModal({ user, onClose }: { user: LeaderboardUser; onClose: () => void }) {
   // Close on Escape
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -257,8 +240,7 @@ function ProfileModal({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
+      onClick={onClose}>
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
@@ -269,22 +251,19 @@ function ProfileModal({
         exit={{ opacity: 0, scale: 0.9, y: 30 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full max-w-lg bg-white rounded-[48px] overflow-hidden shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+        onClick={(e) => e.stopPropagation()}>
         {/* Gradient header */}
         <div className={`h-40 bg-linear-to-br ${gradientFrom} relative`}>
           <div
             className="absolute inset-0 opacity-20"
             style={{
-              backgroundImage:
-                "radial-gradient(circle at 2px 2px, white 1px, transparent 0px)",
+              backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0px)",
               backgroundSize: "24px 24px",
             }}
           />
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 w-10 h-10 bg-black/10 hover:bg-black/20 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm cursor-pointer"
-          >
+            className="absolute top-6 right-6 w-10 h-10 bg-black/10 hover:bg-black/20 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -296,30 +275,19 @@ function ProfileModal({
             <div className="relative mb-4">
               <div className="w-32 h-32 rounded-[40px] border-[6px] border-white shadow-xl overflow-hidden bg-gray-100 flex items-center justify-center">
                 {user.image ? (
-                  <img
-                    src={user.image}
-                    alt={user.name}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-3xl font-black text-blue-600">
-                    {user.avatar}
-                  </span>
+                  <span className="text-3xl font-black text-blue-600">{user.avatar}</span>
                 )}
               </div>
               <div
-                className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white ${badgeColor}`}
-              >
-                <span className="font-black text-white text-sm">
-                  #{user.rank}
-                </span>
+                className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white ${badgeColor}`}>
+                <span className="font-black text-white text-sm">#{user.rank}</span>
               </div>
             </div>
 
             {/* Name */}
-            <h3 className="text-3xl font-black text-gray-900 mb-1">
-              {user.name}
-            </h3>
+            <h3 className="text-3xl font-black text-gray-900 mb-1">{user.name}</h3>
 
             {/* Tags */}
             <div className="flex items-center gap-2 mb-8">
@@ -334,34 +302,22 @@ function ProfileModal({
             {/* Stats grid */}
             <div className="grid grid-cols-3 gap-4 w-full mb-10">
               <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                  Level
-                </p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Level</p>
                 <p className="text-xl font-black text-gray-900">{user.level}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                  Total XP
-                </p>
-                <p className="text-xl font-black text-gray-900">
-                  {user.xp.toLocaleString()}
-                </p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total XP</p>
+                <p className="text-xl font-black text-gray-900">{user.xp.toLocaleString()}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                  Badges
-                </p>
-                <p className="text-xl font-black text-gray-900">
-                  {user.badges ?? 0}
-                </p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Badges</p>
+                <p className="text-xl font-black text-gray-900">{user.badges ?? 0}</p>
               </div>
             </div>
 
             {/* Top Achievements */}
             <div className="w-full space-y-4">
-              <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2">
-                Top Achievements
-              </h4>
+              <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2">Top Achievements</h4>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                 {[Zap, Star, Trophy, Award].map((Icon, i) => (
                   <motion.div
@@ -369,8 +325,7 @@ function ProfileModal({
                     initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.3 + i * 0.08 }}
-                    className="shrink-0 w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100"
-                  >
+                    className="shrink-0 w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100">
                     <Icon className="w-6 h-6 text-yellow-500 fill-current" />
                   </motion.div>
                 ))}
@@ -399,22 +354,15 @@ function HeroBanner() {
           </div>
           <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight leading-none">
             The Arena of{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
-              Champions
-            </span>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">Champions</span>
           </h2>
           <p className="text-gray-400 max-w-md text-sm leading-relaxed">
             Top 10 players this week will be promoted to the{" "}
-            <span className="text-purple-400 font-bold italic">
-              Legendary Tier
-            </span>
-            . Keep learning to secure your spot!
+            <span className="text-purple-400 font-bold italic">Legendary Tier</span>. Keep learning to secure your spot!
           </p>
         </div>
         <div className="flex flex-col items-center p-6 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm">
-          <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">
-            Promotion Zone
-          </p>
+          <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Promotion Zone</p>
           <div className="flex items-end gap-1 mb-1">
             <span className="text-4xl font-black text-white">#5</span>
             <span className="text-sm font-bold text-gray-500 mb-1">/ 250</span>
@@ -427,9 +375,7 @@ function HeroBanner() {
               className="h-full rounded-full bg-linear-to-r from-[#2b7fff] to-[#00d3f3]"
             />
           </div>
-          <p className="text-[9px] font-bold text-green-400 mt-2">
-            ↑ 3 RANKS THIS WEEK
-          </p>
+          <p className="text-[9px] font-bold text-green-400 mt-2">↑ 3 RANKS THIS WEEK</p>
         </div>
       </div>
     </div>
@@ -437,13 +383,7 @@ function HeroBanner() {
 }
 
 /** Tab switcher */
-function TabSwitcher({
-  active,
-  onChange,
-}: {
-  active: TabKey;
-  onChange: (t: TabKey) => void;
-}) {
+function TabSwitcher({ active, onChange }: { active: TabKey; onChange: (t: TabKey) => void }) {
   const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
     {
       key: "global",
@@ -469,8 +409,7 @@ function TabSwitcher({
             whileTap={{ scale: 0.97 }}
             className={`relative flex items-center gap-2 rounded-[14px] px-6 py-2.5 text-xs font-black uppercase tracking-wider transition-colors ${
               active === t.key ? "text-blue-600" : "text-gray-500"
-            }`}
-          >
+            }`}>
             {active === t.key && (
               <motion.div
                 layoutId="activeTab"
@@ -479,10 +418,7 @@ function TabSwitcher({
               />
             )}
             <span className="relative z-10 flex items-center gap-2">
-              <motion.span
-                animate={active === t.key ? { rotate: [0, -10, 10, 0] } : {}}
-                transition={{ duration: 0.5 }}
-              >
+              <motion.span animate={active === t.key ? { rotate: [0, -10, 10, 0] } : {}} transition={{ duration: 0.5 }}>
                 {t.icon}
               </motion.span>
               {t.label}
@@ -508,15 +444,9 @@ function PodiumCard({
 }) {
   const isFirst = user.rank === 1;
   const dim = size === "lg" ? "w-44 h-44" : "w-32 h-32";
-  const avatarDim =
-    size === "lg" ? "w-[162px] h-[162px]" : "w-[116px] h-[116px]";
+  const avatarDim = size === "lg" ? "w-[162px] h-[162px]" : "w-[116px] h-[116px]";
   const badgeSize = "w-10 h-10";
-  const badgeColor =
-    user.rank === 1
-      ? "bg-[#fdc700]"
-      : user.rank === 2
-        ? "bg-[#99a1af]"
-        : "bg-[#ff6900]";
+  const badgeColor = user.rank === 1 ? "bg-[#fdc700]" : user.rank === 2 ? "bg-[#99a1af]" : "bg-[#ff6900]";
   const glowColor = "from-[#fdc700] to-[#e17100]";
 
   const ref = useRef(null);
@@ -528,32 +458,21 @@ function PodiumCard({
       initial={{ opacity: 0, y: 50, scale: 0.8 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ delay, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="flex flex-col items-center gap-1"
-    >
+      className="flex flex-col items-center gap-1">
       {/* Avatar */}
       <motion.div
         // whileHover={{ scale: 1.08 }}
         className="group relative cursor-pointer"
-        onClick={() => onProfileClick?.(user)}
-      >
+        onClick={() => onProfileClick?.(user)}>
         {/* Glow */}
-        <div
-          className={`absolute inset-1 rounded-full bg-linear-to-t ${glowColor} blur-[20px]`}
-        />
+        <div className={`absolute inset-1 rounded-full bg-linear-to-t ${glowColor} blur-[20px]`} />
         {/* Ring */}
-        <div
-          className={`relative ${dim} rounded-full bg-linear-to-t ${glowColor}`}
-        >
+        <div className={`relative ${dim} rounded-full bg-linear-to-t ${glowColor}`}>
           <div
-            className={`absolute inset-[6px] ${avatarDim} overflow-hidden rounded-full border-4 border-white bg-linear-to-br from-blue-100 to-blue-50 shadow-xl`}
-          >
+            className={`absolute inset-1.5 ${avatarDim} overflow-hidden rounded-full border-4 border-white bg-linear-to-br from-blue-100 to-blue-50 shadow-xl`}>
             <div className="flex h-full w-full items-center justify-center text-2xl font-black text-blue-600">
               {user.image ? (
-                <img
-                  src={user.image}
-                  alt={user.name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
               ) : (
                 <span>{user.avatar}</span>
               )}
@@ -570,11 +489,8 @@ function PodiumCard({
               damping: 15,
             }}
             // whileHover={{ scale: 1.15 }}
-            className={`absolute -bottom-2 left-1/2 -translate-x-1/2 ${badgeSize} flex items-center justify-center rounded-xl ${badgeColor} shadow-xl`}
-          >
-            <span className="-rotate-45 text-lg font-black text-white">
-              {user.rank}
-            </span>
+            className={`absolute -bottom-2 left-1/2 -translate-x-1/2 ${badgeSize} flex items-center justify-center rounded-xl ${badgeColor} shadow-xl`}>
+            <span className="-rotate-45 text-lg font-black text-white">{user.rank}</span>
           </motion.div>
         </div>
       </motion.div>
@@ -584,20 +500,13 @@ function PodiumCard({
         initial={{ opacity: 0, y: 10 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ delay: delay + 0.4, duration: 0.5 }}
-        className="mt-4 text-center"
-      >
-        <p
-          className={`font-black tracking-tight text-gray-900 ${isFirst ? "text-xl" : "text-base"}`}
-        >
-          {user.name}
-        </p>
+        className="mt-4 text-center">
+        <p className={`font-black tracking-tight text-gray-900 ${isFirst ? "text-xl" : "text-base"}`}>{user.name}</p>
         <div className="mt-1 flex items-center justify-center gap-1.5">
           <span className="rounded bg-blue-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-blue-600">
             LVL {user.level}
           </span>
-          <span className="text-xs font-black text-gray-400">
-            {user.xp.toLocaleString()} XP
-          </span>
+          <span className="text-xs font-black text-gray-400">{user.xp.toLocaleString()} XP</span>
         </div>
       </motion.div>
     </motion.div>
@@ -619,28 +528,13 @@ function Podium({
   return (
     <div className="flex items-end justify-center gap-10 pb-4 pt-8">
       <div className="mt-12">
-        <PodiumCard
-          user={second}
-          size="sm"
-          delay={0.2}
-          onProfileClick={onProfileClick}
-        />
+        <PodiumCard user={second} size="sm" delay={0.2} onProfileClick={onProfileClick} />
       </div>
       <div>
-        <PodiumCard
-          user={first}
-          size="lg"
-          delay={0}
-          onProfileClick={onProfileClick}
-        />
+        <PodiumCard user={first} size="lg" delay={0} onProfileClick={onProfileClick} />
       </div>
       <div className="mt-12">
-        <PodiumCard
-          user={third}
-          size="sm"
-          delay={0.4}
-          onProfileClick={onProfileClick}
-        />
+        <PodiumCard user={third} size="sm" delay={0.4} onProfileClick={onProfileClick} />
       </div>
     </div>
   );
@@ -658,10 +552,7 @@ function PositionBadge({ change }: { change: number }) {
         className={`h-1.5 w-1.5 rounded-full ${positive ? "bg-emerald-400" : "bg-red-400"}`}
       />
       <span
-        className={`text-[9px] font-black uppercase tracking-tight ${
-          positive ? "text-emerald-500" : "text-red-400"
-        }`}
-      >
+        className={`text-[9px] font-black uppercase tracking-tight ${positive ? "text-emerald-500" : "text-red-400"}`}>
         {positive ? "+" : ""}
         {change} POSITION{Math.abs(change) !== 1 ? "S" : ""}
       </span>
@@ -698,15 +589,13 @@ function LeaderboardRow({
         isMe
           ? "rounded-3xl bg-blue-600 text-white shadow-[0px_25px_50px_0px_#bedbff]"
           : "border-b border-gray-50 cursor-pointer hover:bg-gray-50/50 transition-colors"
-      }`}
-    >
+      }`}>
       {/* Left side */}
       <div className="flex items-center gap-5">
         <motion.div
           className={`flex h-10 w-10 items-center justify-center rounded-[14px] text-base font-black ${
             isMe ? "bg-white/20 text-white" : "bg-gray-100 text-gray-400"
-          }`}
-        >
+          }`}>
           #{user.rank}
         </motion.div>
 
@@ -716,8 +605,7 @@ function LeaderboardRow({
               isMe
                 ? "border-white/40 bg-blue-500 text-white"
                 : "border-gray-100 bg-linear-to-br from-blue-50 to-indigo-50 text-blue-600"
-            }`}
-          >
+            }`}>
             {user.avatar}
           </div>
           <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-[10px] bg-white shadow-sm">
@@ -727,27 +615,19 @@ function LeaderboardRow({
 
         <div>
           <div className="flex items-center gap-2">
-            <p
-              className={`text-base font-black ${isMe ? "text-white" : "text-gray-900"}`}
-            >
-              {user.name}
-            </p>
+            <p className={`text-base font-black ${isMe ? "text-white" : "text-gray-900"}`}>{user.name}</p>
             {isMe && (
               <motion.span
                 animate={{ opacity: [1, 0.5, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-blue-600"
-              >
+                className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-blue-600">
                 YOU
               </motion.span>
             )}
           </div>
           <div className="mt-0.5 flex items-center gap-3">
             <span
-              className={`text-[10px] font-bold uppercase tracking-widest ${
-                isMe ? "text-blue-200" : "text-gray-400"
-              }`}
-            >
+              className={`text-[10px] font-bold uppercase tracking-widest ${isMe ? "text-blue-200" : "text-gray-400"}`}>
               Level {user.level}
             </span>
             <PositionBadge change={user.positionChange} />
@@ -757,16 +637,8 @@ function LeaderboardRow({
 
       {/* Right — XP */}
       <div className="text-right">
-        <p
-          className={`text-2xl font-black ${isMe ? "text-white" : "text-gray-900"}`}
-        >
-          {user.xp.toLocaleString()}
-        </p>
-        <p
-          className={`text-[10px] font-black uppercase tracking-widest ${
-            isMe ? "text-blue-200" : "text-gray-400"
-          }`}
-        >
+        <p className={`text-2xl font-black ${isMe ? "text-white" : "text-gray-900"}`}>{user.xp.toLocaleString()}</p>
+        <p className={`text-[10px] font-black uppercase tracking-widest ${isMe ? "text-blue-200" : "text-gray-400"}`}>
           Total XP
         </p>
       </div>
@@ -785,18 +657,12 @@ function MasteryRoadmap() {
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={staggerContainer}
-      className="mt-6 border-t border-white/20 pt-6"
-    >
+      className="mt-6 border-t border-white/20 pt-6">
       {/* Header */}
-      <motion.div
-        variants={fadeUp}
-        className="flex items-center justify-between"
-      >
+      <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Trophy className="h-4 w-4 text-[#FDC700]" />
-          <span className="text-sm font-black uppercase tracking-wider text-white">
-            Mastery Roadmap
-          </span>
+          <span className="text-sm font-black uppercase tracking-wider text-white">Mastery Roadmap</span>
         </div>
         <span className="rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-blue-200">
           350 XP to Level 19
@@ -804,42 +670,30 @@ function MasteryRoadmap() {
       </motion.div>
 
       {/* Level grid */}
-      <motion.div
-        variants={staggerContainer}
-        className="mt-4 grid grid-cols-5 gap-2"
-      >
+      <motion.div variants={staggerContainer} className="mt-4 grid grid-cols-5 gap-2">
         {roadmapLevels.map((l) => (
           <motion.div
             key={l.level}
             variants={scaleUp}
             // whileHover={{ scale: 1.08, y: -4 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="flex flex-col items-center gap-1.5"
-          >
+            className="flex flex-col items-center gap-1.5">
             <div
-              className={`flex h-[100px] w-full items-center justify-center rounded-2xl border-2 ${
+              className={`flex h-25 w-full items-center justify-center rounded-2xl border-2 ${
                 l.status === "achieved"
                   ? "border-white bg-white shadow-[0px_10px_15px_0px_rgba(28,57,142,0.2)]"
                   : l.status === "current"
                     ? "border-white bg-[#2b7fff] shadow-[0px_20px_25px_0px_rgba(81,162,255,0.4)]"
                     : "border-white/10 bg-blue-800/50"
-              }`}
-            >
+              }`}>
               <div className="flex flex-col items-center gap-1">
                 <span
                   className={`text-[10px] font-black tracking-wide ${
-                    l.status === "achieved"
-                      ? "text-blue-600"
-                      : l.status === "current"
-                        ? "text-white"
-                        : "text-white/30"
-                  }`}
-                >
+                    l.status === "achieved" ? "text-blue-600" : l.status === "current" ? "text-white" : "text-white/30"
+                  }`}>
                   L{l.level}
                 </span>
-                {l.status === "achieved" && (
-                  <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                )}
+                {l.status === "achieved" && <CheckCircle2 className="h-4 w-4 text-blue-600" />}
                 {l.status === "current" && (
                   <motion.div
                     animate={{ rotate: [0, 360] }}
@@ -847,50 +701,34 @@ function MasteryRoadmap() {
                       duration: 3,
                       repeat: Infinity,
                       ease: "linear",
-                    }}
-                  >
+                    }}>
                     <Star className="h-5 w-5 text-[#FFDF20] fill-[#FFDF20]" />
                   </motion.div>
                 )}
-                {l.status === "locked" && (
-                  <Lock className="h-3 w-3 text-white/30" />
-                )}
+                {l.status === "locked" && <Lock className="h-3 w-3 text-white/30" />}
               </div>
             </div>
             <span
               className={`text-[7px] font-black uppercase tracking-tight ${
                 l.status === "current" ? "text-white" : "text-blue-200/60"
-              }`}
-            >
-              {l.status === "achieved"
-                ? "Achieved"
-                : l.status === "current"
-                  ? "Now"
-                  : "Locked"}
+              }`}>
+              {l.status === "achieved" ? "Achieved" : l.status === "current" ? "Now" : "Locked"}
             </span>
           </motion.div>
         ))}
       </motion.div>
 
       {/* How to reach next level */}
-      <motion.div
-        variants={fadeUp}
-        className="mt-6 rounded-[32px] border border-white/10 bg-white/10 p-6"
-      >
+      <motion.div variants={fadeUp} className="mt-6 rounded-[32px] border border-white/10 bg-white/10 p-6">
         <div className="flex items-center gap-3">
           <motion.div
             // whileHover={{ rotate: 15, scale: 1.1 }}
-            className="flex h-8 w-8 items-center justify-center rounded-[14px] bg-[#fdc700]"
-          >
+            className="flex h-8 w-8 items-center justify-center rounded-[14px] bg-[#fdc700]">
             <Zap fill="#1C398E" className="h-4 w-4 text-[#1C398E]" />
           </motion.div>
           <div>
-            <p className="text-[11px] font-black uppercase tracking-wider text-white">
-              How to reach Level 19
-            </p>
-            <p className="text-[9px] font-bold text-blue-200">
-              Complete these challenges to ascend
-            </p>
+            <p className="text-[11px] font-black uppercase tracking-wider text-white">How to reach Level 19</p>
+            <p className="text-[9px] font-bold text-blue-200">Complete these challenges to ascend</p>
           </div>
         </div>
 
@@ -901,22 +739,16 @@ function MasteryRoadmap() {
             //   scale: 1.02,
             //   backgroundColor: "rgba(255,255,255,0.1)",
             // }}
-            className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-3.5 py-3"
-          >
+            className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-3.5 py-3">
             <motion.div
               whileHover={{ scale: 1.15 }}
-              className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white"
-            >
+              className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white">
               <BookOpen className="h-4 w-4 text-blue-600" />
             </motion.div>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-white">
-                  Master 3 Science Topics
-                </span>
-                <span className="text-[10px] font-black text-blue-100">
-                  2/3
-                </span>
+                <span className="text-[10px] font-black text-white">Master 3 Science Topics</span>
+                <span className="text-[10px] font-black text-blue-100">2/3</span>
               </div>
               <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-white/50">
                 <motion.div
@@ -935,22 +767,16 @@ function MasteryRoadmap() {
             //   scale: 1.02,
             //   backgroundColor: "rgba(255,255,255,0.1)",
             // }}
-            className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-3.5 py-3"
-          >
+            className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/5 px-3.5 py-3">
             <motion.div
               // whileHover={{ scale: 1.15 }}
-              className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-orange-500/60"
-            >
+              className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-orange-500/60">
               <Flame className="h-4 w-4 text-white" />
             </motion.div>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-white">
-                  5-Day Study Streak
-                </span>
-                <span className="text-[10px] font-black text-blue-100">
-                  4/5
-                </span>
+                <span className="text-[10px] font-black text-white">5-Day Study Streak</span>
+                <span className="text-[10px] font-black text-blue-100">4/5</span>
               </div>
               <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-white/50">
                 <motion.div
@@ -968,26 +794,19 @@ function MasteryRoadmap() {
       {/* Stats row */}
       <motion.div
         variants={fadeUp}
-        className="mt-4 flex items-center justify-center gap-8 rounded-2xl border border-white/5 bg-white/5 py-4"
-      >
+        className="mt-4 flex items-center justify-center gap-8 rounded-2xl border border-white/5 bg-white/5 py-4">
         <div className="text-center">
-          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">
-            Achieved
-          </p>
+          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">Achieved</p>
           <p className="text-sm font-black text-white">18 Levels</p>
         </div>
         <div className="h-6 w-px bg-white/10" />
         <div className="text-center">
-          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">
-            Future
-          </p>
+          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">Future</p>
           <p className="text-sm font-black text-white">Unlimited</p>
         </div>
         <div className="h-6 w-px bg-white/10" />
         <div className="text-center">
-          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">
-            Milestones
-          </p>
+          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">Milestones</p>
           <p className="text-sm font-black text-white">12 Badges</p>
         </div>
       </motion.div>
@@ -1002,10 +821,8 @@ function XpOverdriveCard() {
       <div
         className="relative overflow-hidden rounded-[40px] p-8 shadow-[0px_25px_50px_-12px_#bedbff]"
         style={{
-          backgroundImage:
-            "linear-gradient(129deg, rgb(79, 57, 246) 0%, rgb(20, 71, 230) 100%)",
-        }}
-      >
+          backgroundImage: "linear-gradient(129deg, rgb(79, 57, 246) 0%, rgb(20, 71, 230) 100%)",
+        }}>
         {/* Animated glow */}
         <motion.div
           animate={{ x: [0, 20, -10, 0], y: [0, -15, 10, 0] }}
@@ -1016,24 +833,19 @@ function XpOverdriveCard() {
         <div className="relative space-y-5">
           <motion.div
             // whileHover={{ rotate: 15, scale: 1.1 }}
-            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20"
-          >
+            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
               <Zap className="h-7 w-7 text-white" />
             </motion.div>
           </motion.div>
 
-          <h3 className="text-2xl font-black leading-snug text-white">
-            XP Overdrive Active!
-          </h3>
+          <h3 className="text-2xl font-black leading-snug text-white">XP Overdrive Active!</h3>
 
           <p className="text-sm leading-relaxed text-blue-200">
-            Complete 3{" "}
-            <span className="font-bold text-white">Hard Difficulty</span>{" "}
-            quizzes today to unlock the "Mastermind" badge and gain +1000 XP.
+            Complete 3 <span className="font-bold text-white">Hard Difficulty</span> quizzes today to unlock the
+            "Mastermind" badge and gain +1000 XP.
           </p>
 
           <motion.button
@@ -1042,8 +854,7 @@ function XpOverdriveCard() {
             //   boxShadow: "0px 25px 30px 0px rgba(28,57,142,0.35)",
             // }}
             whileTap={{ scale: 0.97 }}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-4 text-base font-black text-blue-600 shadow-[0px_20px_25px_0px_rgba(28,57,142,0.2)]"
-          >
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-4 text-base font-black text-blue-600 shadow-[0px_20px_25px_0px_rgba(28,57,142,0.2)]">
             Accept Challenge
             <motion.span
               animate={{ x: [0, 4, 0] }}
@@ -1051,8 +862,7 @@ function XpOverdriveCard() {
                 duration: 1.5,
                 repeat: Infinity,
                 ease: "easeInOut",
-              }}
-            >
+              }}>
               <ChevronRight className="h-5 w-5" />
             </motion.span>
           </motion.button>
@@ -1085,8 +895,7 @@ function WeeklyRivalCard({
           <motion.span
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
-            className="rounded-[10px] bg-red-50 px-3 py-1.5 text-[10px] font-black uppercase leading-tight tracking-wider text-red-500"
-          >
+            className="rounded-[10px] bg-red-50 px-3 py-1.5 text-[10px] font-black uppercase leading-tight tracking-wider text-red-500">
             CLOSET
             <br />
             COMPETITOR
@@ -1095,17 +904,12 @@ function WeeklyRivalCard({
 
         <motion.div
           className="mt-4 rounded-[32px] border border-gray-100 bg-gray-50 p-4 cursor-pointer hover:bg-gray-100/60 transition-colors"
-          onClick={() => onProfileClick?.(rivalUser)}
-        >
+          onClick={() => onProfileClick?.(rivalUser)}>
           <div className="flex items-center gap-4">
             <motion.div className="relative">
               <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border-2 border-white bg-linear-to-br from-pink-50 to-rose-50 text-lg font-black text-pink-600 shadow-md">
                 {rivalUser.image ? (
-                  <img
-                    src={rivalUser.image}
-                    alt={rivalUser.name}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={rivalUser.image} alt={rivalUser.name} className="w-full h-full object-cover" />
                 ) : (
                   rivalUser.avatar
                 )}
@@ -1142,8 +946,7 @@ function WeeklyRivalCard({
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={() => onProfileClick?.(rivalUser)}
-          className="mt-4 w-full rounded-2xl border-2 border-gray-100 py-3 text-xs font-black uppercase tracking-wider text-gray-500 transition-colors cursor-pointer hover:border-blue-200 hover:bg-blue-50/50"
-        >
+          className="mt-4 w-full rounded-2xl border-2 border-gray-100 py-3 text-xs font-black uppercase tracking-wider text-gray-500 transition-colors cursor-pointer hover:border-blue-200 hover:bg-blue-50/50">
           VIEW PROFILE
         </motion.button>
       </div>
@@ -1154,13 +957,7 @@ function WeeklyRivalCard({
 // ─── Streak Masters Components ───────────────────────
 
 /** Streak leaderboard row */
-function StreakLeaderboardRow({
-  user,
-  index = 0,
-}: {
-  user: ApiStreakUser;
-  index?: number;
-}) {
+function StreakLeaderboardRow({ user, index = 0 }: { user: ApiStreakUser; index?: number }) {
   const isMe = user.isCurrentUser;
   const isFirst = user.rank === 1;
   const ref = useRef(null);
@@ -1178,42 +975,26 @@ function StreakLeaderboardRow({
         ease: [0.22, 1, 0.36, 1],
       }}
       className={`flex items-center justify-between px-8 py-7 ${
-        isMe
-          ? "bg-orange-50 border-x-4 border-b border-orange-500 border-b-gray-50"
-          : "border-b border-gray-50"
-      }`}
-    >
+        isMe ? "bg-orange-50 border-x-4 border-b border-orange-500 border-b-gray-50" : "border-b border-gray-50"
+      }`}>
       {/* Left side */}
       <div className="flex items-center gap-8">
         {/* Rank number */}
-        <span
-          className={`text-lg font-black italic tracking-tight ${
-            isMe ? "text-gray-300" : "text-orange-500"
-          }`}
-        >
+        <span className={`text-lg font-black italic tracking-tight ${isMe ? "text-gray-300" : "text-orange-500"}`}>
           {rankStr}
         </span>
 
         {/* Avatar */}
         <div className="relative">
           <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border-2 border-gray-100 bg-linear-to-br from-orange-50 to-rose-50 text-base font-black text-orange-600 shadow-sm">
-            {user.image ? (
-              <img
-                src={user.image}
-                alt={user.name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              user.avatar
-            )}
+            {user.image ? <img src={user.image} alt={user.name} className="h-full w-full object-cover" /> : user.avatar}
           </div>
           {isFirst && (
             <motion.div
               initial={{ scale: 0 }}
               animate={isInView ? { scale: 1 } : {}}
               transition={{ delay: 0.4, type: "spring", stiffness: 300 }}
-              className="absolute -right-1 -top-3 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-yellow-400 shadow-lg"
-            >
+              className="absolute -right-1 -top-3 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-yellow-400 shadow-lg">
               <Crown className="h-4 w-4 text-white" />
             </motion.div>
           )}
@@ -1222,15 +1003,12 @@ function StreakLeaderboardRow({
         {/* Info */}
         <div>
           <div className="flex items-center gap-2">
-            <p className="text-lg font-bold tracking-tight text-gray-900">
-              {user.name}
-            </p>
+            <p className="text-lg font-bold tracking-tight text-gray-900">{user.name}</p>
             {isMe && (
               <motion.span
                 animate={{ opacity: [1, 0.6, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="rounded-2xl bg-orange-600 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-lg shadow-orange-200"
-              >
+                className="rounded-2xl bg-orange-600 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-lg shadow-orange-200">
                 YOU
               </motion.span>
             )}
@@ -1251,14 +1029,12 @@ function StreakLeaderboardRow({
               initial={{ scale: 0.5 }}
               animate={isInView ? { scale: 1 } : {}}
               transition={{ delay: index * 0.1 + 0.3 }}
-              className="text-4xl font-black tracking-tight text-gray-900"
-            >
+              className="text-4xl font-black tracking-tight text-gray-900">
               {user.streakDays}
             </motion.span>
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
               <Flame className="h-8 w-8 text-orange-500 fill-orange-500" />
             </motion.div>
           </div>
@@ -1273,13 +1049,7 @@ function StreakLeaderboardRow({
 }
 
 /** Full Streak Masters tab content */
-function StreakMastersContent({
-  streaksData,
-  loading,
-}: {
-  streaksData: StreaksData | null;
-  loading: boolean;
-}) {
+function StreakMastersContent({ streaksData, loading }: { streaksData: StreaksData | null; loading: boolean }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
@@ -1293,8 +1063,7 @@ function StreakMastersContent({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-10"
-    >
+      className="mt-10">
       {/* Consistency Champions Card */}
       <div className="overflow-hidden rounded-[40px] border border-gray-100 shadow-2xl">
         {/* Header */}
@@ -1304,19 +1073,14 @@ function StreakMastersContent({
               <span className="rounded-xl bg-orange-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-orange-600">
                 Top Consistency
               </span>
-              <h3 className="text-2xl font-black tracking-tight text-gray-900">
-                Consistency Champions
-              </h3>
+              <h3 className="text-2xl font-black tracking-tight text-gray-900">Consistency Champions</h3>
             </div>
-            <p className="text-sm text-gray-500">
-              Global ranking based on consecutive days of learning.
-            </p>
+            <p className="text-sm text-gray-500">Global ranking based on consecutive days of learning.</p>
           </div>
           <motion.div
             animate={{ rotate: [0, 3, -3, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="flex h-16 w-16 items-center justify-center rounded-3xl bg-orange-500 shadow-[0px_20px_25px_0px_#ffd6a8]"
-          >
+            className="flex h-16 w-16 items-center justify-center rounded-3xl bg-orange-500 shadow-[0px_20px_25px_0px_#ffd6a8]">
             <Flame className="h-8 w-8 text-white" />
           </motion.div>
         </div>
@@ -1324,14 +1088,10 @@ function StreakMastersContent({
         {/* Leaderboard rows */}
         <div>
           {loading && (
-            <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
-              Loading...
-            </div>
+            <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">Loading...</div>
           )}
           {!loading &&
-            streaksData?.topStreaks.map((user, i) => (
-              <StreakLeaderboardRow key={user.id} user={user} index={i} />
-            ))}
+            streaksData?.topStreaks.map((user, i) => <StreakLeaderboardRow key={user.id} user={user} index={i} />)}
         </div>
 
         {/* Dark footer */}
@@ -1339,8 +1099,7 @@ function StreakMastersContent({
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="bg-gray-900 px-8 py-8"
-        >
+          className="bg-gray-900 px-8 py-8">
           <p className="text-center text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
             You're in the Top {percentile}% of consistent learners
           </p>
@@ -1367,13 +1126,7 @@ function StreakMastersContent({
 
 // ─── My Best Components ──────────────────────────────
 
-function MyBestContent({
-  myBestData,
-  loading,
-}: {
-  myBestData: MyBestData | null;
-  loading: boolean;
-}) {
+function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null; loading: boolean }) {
   const circumference = 2 * Math.PI * 40; // r=40
   const pct = myBestData?.progress.percent ?? 0;
   const dashOffset = circumference - (pct / 100) * circumference;
@@ -1391,30 +1144,22 @@ function MyBestContent({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -40 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-12 space-y-16"
-    >
+      className="mt-12 space-y-16">
       {/* 1. Active Standing */}
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-blue-600 rounded-full" />
-          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
-            Active Standing
-          </h2>
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Active Standing</h2>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
-            Loading...
-          </div>
+          <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">Loading...</div>
         ) : (
           <div className="flex gap-6">
             {/* Level Progress Card */}
             <div className="flex-1 rounded-[40px] border border-gray-100 bg-white p-10 shadow-sm flex items-center gap-10">
               <div className="relative h-40 w-40 shrink-0">
-                <svg
-                  className="h-full w-full -rotate-90 transform"
-                  viewBox="0 0 100 100"
-                >
+                <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
                   <circle
                     className="text-gray-100 stroke-current"
                     strokeWidth="8"
@@ -1438,28 +1183,18 @@ function MyBestContent({
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-4xl font-black tracking-tight text-gray-900">
-                    {myBestData?.level ?? 0}
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-                    Level
-                  </span>
+                  <span className="text-4xl font-black tracking-tight text-gray-900">{myBestData?.level ?? 0}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Level</span>
                 </div>
               </div>
               <div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-3xl font-black text-gray-900">
-                    {myBestData?.totalXp.toLocaleString() ?? 0}
-                  </span>
-                  <span className="text-sm font-bold text-gray-400">
-                    Total XP
-                  </span>
+                  <span className="text-3xl font-black text-gray-900">{myBestData?.totalXp.toLocaleString() ?? 0}</span>
+                  <span className="text-sm font-bold text-gray-400">Total XP</span>
                 </div>
                 <p className="text-sm text-gray-500 mb-4 max-w-sm">
-                  {myBestData?.progress.current.toLocaleString()} /{" "}
-                  {myBestData?.progress.required.toLocaleString()} XP to next
-                  level —{" "}
-                  <span className="font-bold text-blue-600">{pct}%</span> there.
+                  {myBestData?.progress.current.toLocaleString()} / {myBestData?.progress.required.toLocaleString()} XP
+                  to next level — <span className="font-bold text-blue-600">{pct}%</span> there.
                 </p>
                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                   <motion.div
@@ -1473,20 +1208,14 @@ function MyBestContent({
             </div>
 
             {/* XP Snapshot Card */}
-            <div className="w-[304px] shrink-0 overflow-hidden rounded-[40px] bg-linear-to-br from-blue-600 to-indigo-700 p-10 text-center relative shadow-[0px_20px_25px_-5px_rgba(190,219,255,0.5)]">
-              <div className="absolute top-[-80px] -right-10 h-40 w-40 rounded-full bg-white/20 blur-3xl mix-blend-overlay" />
+            <div className="w-76 shrink-0 overflow-hidden rounded-[40px] bg-linear-to-br from-blue-600 to-indigo-700 p-10 text-center relative shadow-[0px_20px_25px_-5px_rgba(190,219,255,0.5)]">
+              <div className="absolute -top-20 -right-10 h-40 w-40 rounded-full bg-white/20 blur-3xl mix-blend-overlay" />
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20 shadow-xl border border-white/20 mb-6 backdrop-blur-md">
                 <Zap className="h-8 w-8 text-white" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">
-                XP Earned
-              </p>
-              <h3 className="text-3xl font-black text-white mb-2">
-                {myBestData?.totalXp.toLocaleString() ?? 0}
-              </h3>
-              <p className="text-xs text-blue-200/80">
-                Keep learning to level up faster!
-              </p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">XP Earned</p>
+              <h3 className="text-3xl font-black text-white mb-2">{myBestData?.totalXp.toLocaleString() ?? 0}</h3>
+              <p className="text-xs text-blue-200/80">Keep learning to level up faster!</p>
             </div>
           </div>
         )}
@@ -1549,17 +1278,13 @@ function MyBestContent({
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-green-500 rounded-full" />
-          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
-            Mastered History
-          </h2>
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Mastered History</h2>
         </div>
 
         <div className="flex gap-12">
           {/* Earned Badges */}
           <div className="flex-1">
-            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
-              Earned Badges
-            </h3>
+            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">Earned Badges</h3>
             <div className="grid grid-cols-2 gap-4">
               {earnedBadges.map((badge, i) => (
                 <motion.div
@@ -1569,17 +1294,12 @@ function MyBestContent({
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                   whileHover={{ y: -5 }}
-                  className="rounded-[32px] border border-gray-100 bg-white p-6 text-center shadow-sm cursor-pointer transition-shadow hover:shadow-md"
-                >
+                  className="rounded-[32px] border border-gray-100 bg-white p-6 text-center shadow-sm cursor-pointer transition-shadow hover:shadow-md">
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50">
                     {badge.icon}
                   </div>
-                  <h4 className="font-bold text-gray-900 text-sm mb-1">
-                    {badge.title}
-                  </h4>
-                  <p className="text-[10px] text-gray-400">
-                    {badge.description}
-                  </p>
+                  <h4 className="font-bold text-gray-900 text-sm mb-1">{badge.title}</h4>
+                  <p className="text-[10px] text-gray-400">{badge.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -1587,9 +1307,7 @@ function MyBestContent({
 
           {/* Level History */}
           <div className="flex-1">
-            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
-              Level History
-            </h3>
+            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">Level History</h3>
             <div className="space-y-3">
               {levelHistoryData.map((lvl, i) => (
                 <motion.div
@@ -1598,16 +1316,13 @@ function MyBestContent({
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex items-center justify-between rounded-[32px] border border-cyan-200 bg-cyan-50 px-6 py-4"
-                >
+                  className="flex items-center justify-between rounded-[32px] border border-cyan-200 bg-cyan-50 px-6 py-4">
                   <div className="flex items-center gap-5">
                     <div className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-teal-600 text-lg font-black text-white shadow-md">
                       {lvl.level}
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-800 text-sm">
-                        {lvl.title}
-                      </h4>
+                      <h4 className="font-bold text-gray-800 text-sm">{lvl.title}</h4>
                       <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-0.5">
                         Completed • {lvl.xp} XP
                       </p>
@@ -1626,23 +1341,17 @@ function MyBestContent({
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <div className="h-1 w-12 bg-indigo-600 rounded-full" />
-            <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
-              Badge Gallery
-            </h2>
+            <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Badge Gallery</h2>
           </div>
           <div className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-gray-50 px-4 py-2">
             <div className="flex items-center gap-2">
               <div className="h-2.5 w-2.5 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.5)]" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">
-                3 Earned
-              </span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">3 Earned</span>
             </div>
             <div className="h-4 w-px bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                5 Locked
-              </span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">5 Locked</span>
             </div>
           </div>
         </div>
@@ -1659,8 +1368,7 @@ function MyBestContent({
                 badge.locked
                   ? "border-gray-100 bg-gray-50/50 opacity-60 grayscale"
                   : "border-blue-100 bg-white hover:shadow-md"
-              }`}
-            >
+              }`}>
               {badge.locked && (
                 <div className="absolute top-4 right-4">
                   <div className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-100 bg-white/80 backdrop-blur-sm">
@@ -1672,15 +1380,10 @@ function MyBestContent({
               <div
                 className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:rotate-6 ${
                   badge.locked ? "bg-gray-200 text-gray-400" : "bg-gray-100/80"
-                }`}
-              >
+                }`}>
                 {badge.icon}
               </div>
-              <h4
-                className={`text-sm font-black mb-1 ${
-                  badge.locked ? "text-gray-500" : "text-gray-900"
-                }`}
-              >
+              <h4 className={`text-sm font-black mb-1 ${badge.locked ? "text-gray-500" : "text-gray-900"}`}>
                 {badge.title}
               </h4>
               <p className="text-[10px] font-bold text-gray-400 mb-4 h-8 leading-relaxed line-clamp-2">
@@ -1689,9 +1392,7 @@ function MyBestContent({
 
               {badge.earnedDate && (
                 <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-auto">
-                  <span className="text-[8px] font-black uppercase tracking-widest text-blue-600">
-                    Achieved
-                  </span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-blue-600">Achieved</span>
                   <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">
                     {badge.earnedDate}
                   </span>
@@ -1701,20 +1402,14 @@ function MyBestContent({
               {badge.progress && (
                 <div className="flex flex-col gap-1.5 border-t border-gray-50 pt-3 mt-auto">
                   <div className="flex items-center justify-between">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">
-                      Progress
-                    </span>
-                    <span className="text-[8px] font-black text-gray-900">
-                      {badge.progress.label}
-                    </span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">Progress</span>
+                    <span className="text-[8px] font-black text-gray-900">{badge.progress.label}</span>
                   </div>
                   <div className="h-1 w-full overflow-hidden rounded-full bg-gray-200">
                     <div
                       className="h-full bg-blue-600 opacity-50"
                       style={{
-                        width: `${
-                          (badge.progress.current / badge.progress.max) * 100
-                        }%`,
+                        width: `${(badge.progress.current / badge.progress.max) * 100}%`,
                       }}
                     />
                   </div>
@@ -1729,31 +1424,23 @@ function MyBestContent({
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-orange-500 rounded-full" />
-          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
-            Next Evolution
-          </h2>
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Next Evolution</h2>
         </div>
 
         <div className="grid grid-cols-2 gap-8">
           {/* Priority Challenge */}
           <div className="relative overflow-hidden rounded-[40px] bg-gray-900 p-8 shadow-xl flex items-center gap-8">
-            <div className="absolute top-[-100px] -right-20 h-64 w-64 rounded-full bg-blue-600/20 blur-[100px]" />
+            <div className="absolute -top-25 -right-20 h-64 w-64 rounded-full bg-blue-600/20 blur-[100px]" />
             <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm">
               <Brain className="h-10 w-10 text-white/80" />
             </div>
             <div className="relative z-10 flex-1">
               <div className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-3 py-1 mb-4">
                 <Target className="h-3 w-3 text-white" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white">
-                  Priority Challenge
-                </span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-white">Priority Challenge</span>
               </div>
-              <h3 className="text-2xl font-black text-white mb-2">
-                Analytical Genius
-              </h3>
-              <p className="text-sm text-gray-400 max-w-[250px] mb-6">
-                Maintained low cognitive load for 3 hours
-              </p>
+              <h3 className="text-2xl font-black text-white mb-2">Analytical Genius</h3>
+              <p className="text-sm text-gray-400 max-w-62.5 mb-6">Maintained low cognitive load for 3 hours</p>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
                   <span className="text-blue-200">Requirement</span>
@@ -1822,9 +1509,7 @@ function MyBestContent({
 
 const Ranks = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("global");
-  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(
-    null,
-  );
+  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(null);
   const [topThreeData, setTopThreeData] = useState<LeaderboardUser[]>([]);
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>([]);
   const [weeklyRival, setWeeklyRival] = useState<LeaderboardUser | null>(null);
@@ -1916,13 +1601,9 @@ const Ranks = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            >
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}>
               {/* 3. Podium */}
-              <Podium
-                topThree={topThreeData}
-                onProfileClick={setSelectedUser}
-              />
+              <Podium topThree={topThreeData} onProfileClick={setSelectedUser} />
 
               {/* 4. Main content area */}
               <div className="mt-12 flex gap-6">
@@ -1931,23 +1612,16 @@ const Ranks = () => {
                   {/* Table header */}
                   <AnimatedSection className="flex items-center justify-between rounded-2xl bg-gray-50 px-8 py-3">
                     <div className="flex gap-12">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                        Rank
-                      </span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                        Learner
-                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Rank</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Learner</span>
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                      Total XP
-                    </span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Total XP</span>
                   </AnimatedSection>
 
                   {/* Leaderboard card */}
                   <div
                     ref={leaderboardRef}
-                    className="mt-4 overflow-hidden rounded-[40px] border border-gray-100 shadow-xl"
-                  >
+                    className="mt-4 overflow-hidden rounded-[40px] border border-gray-100 shadow-xl">
                     {loadingGlobal && (
                       <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
                         Loading...
@@ -1959,12 +1633,7 @@ const Ranks = () => {
                       leaderboardData
                         .filter((u) => !u.isCurrentUser && u.rank < 5)
                         .map((user, i) => (
-                          <LeaderboardRow
-                            key={user.rank}
-                            user={user}
-                            index={i}
-                            onProfileClick={setSelectedUser}
-                          />
+                          <LeaderboardRow key={user.rank} user={user} index={i} onProfileClick={setSelectedUser} />
                         ))}
 
                     {/* "Your" blue card with mastery */}
@@ -1976,18 +1645,13 @@ const Ranks = () => {
                             <motion.div
                               key={user.rank}
                               initial={{ opacity: 0, scale: 0.92 }}
-                              animate={
-                                leaderboardInView
-                                  ? { opacity: 1, scale: 1 }
-                                  : {}
-                              }
+                              animate={leaderboardInView ? { opacity: 1, scale: 1 } : {}}
                               transition={{
                                 delay: 0.15,
                                 duration: 0.6,
                                 ease: [0.22, 1, 0.36, 1],
                               }}
-                              className="rounded-3xl bg-blue-600 p-6 shadow-[0px_25px_50px_0px_#bedbff]"
-                            >
+                              className="rounded-3xl bg-blue-600 p-6 shadow-[0px_25px_50px_0px_#bedbff]">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-5">
                                   <motion.div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-white/20 text-base font-black text-white">
@@ -2003,17 +1667,14 @@ const Ranks = () => {
                                   </motion.div>
                                   <div>
                                     <div className="flex items-center gap-2">
-                                      <p className="text-lg font-black text-white">
-                                        {user.name}
-                                      </p>
+                                      <p className="text-lg font-black text-white">{user.name}</p>
                                       <motion.span
                                         animate={{ opacity: [1, 0.5, 1] }}
                                         transition={{
                                           duration: 2,
                                           repeat: Infinity,
                                         }}
-                                        className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-blue-600"
-                                      >
+                                        className="rounded-full bg-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-blue-600">
                                         YOU
                                       </motion.span>
                                     </div>
@@ -2021,16 +1682,12 @@ const Ranks = () => {
                                       <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200">
                                         Level {user.level}
                                       </span>
-                                      <PositionBadge
-                                        change={user.positionChange}
-                                      />
+                                      <PositionBadge change={user.positionChange} />
                                     </div>
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <p className="text-2xl font-black text-white">
-                                    {user.xp.toLocaleString()}
-                                  </p>
+                                  <p className="text-2xl font-black text-white">{user.xp.toLocaleString()}</p>
                                   <p className="text-[10px] font-black uppercase tracking-widest text-blue-200">
                                     Total XP
                                   </p>
@@ -2046,54 +1703,31 @@ const Ranks = () => {
                       leaderboardData
                         .filter((u) => !u.isCurrentUser && u.rank > 5)
                         .map((user, i) => (
-                          <LeaderboardRow
-                            key={user.rank}
-                            user={user}
-                            index={i + 2}
-                            onProfileClick={setSelectedUser}
-                          />
+                          <LeaderboardRow key={user.rank} user={user} index={i + 2} onProfileClick={setSelectedUser} />
                         ))}
                   </div>
                 </div>
 
                 {/* Right column — Sidebar */}
-                <div className="w-[304px] shrink-0 space-y-6">
+                <div className="w-76 shrink-0 space-y-6">
                   <XpOverdriveCard />
-                  <WeeklyRivalCard
-                    rival={weeklyRival}
-                    onProfileClick={setSelectedUser}
-                  />
+                  <WeeklyRivalCard rival={weeklyRival} onProfileClick={setSelectedUser} />
                 </div>
               </div>
             </motion.div>
           )}
 
           {activeTab === "streak" && (
-            <StreakMastersContent
-              key="streak"
-              streaksData={streaksData}
-              loading={loadingStreaks}
-            />
+            <StreakMastersContent key="streak" streaksData={streaksData} loading={loadingStreaks} />
           )}
 
-          {activeTab === "best" && (
-            <MyBestContent
-              key="best"
-              myBestData={myBestData}
-              loading={loadingMyBest}
-            />
-          )}
+          {activeTab === "best" && <MyBestContent key="best" myBestData={myBestData} loading={loadingMyBest} />}
         </AnimatePresence>
       </main>
 
       {/* Profile Details Modal */}
       <AnimatePresence>
-        {selectedUser && (
-          <ProfileModal
-            user={selectedUser}
-            onClose={() => setSelectedUser(null)}
-          />
-        )}
+        {selectedUser && <ProfileModal user={selectedUser} onClose={() => setSelectedUser(null)} />}
       </AnimatePresence>
     </div>
   );

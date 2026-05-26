@@ -34,11 +34,11 @@ export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChan
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-gray-900/60 supports-backdrop-filter:backdrop-blur-xs duration-150 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" />
         <DialogPrimitive.Content
-          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-[672px] max-h-[90vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto overflow-x-clip rounded-[28px] sm:rounded-[40px] border border-[#f3f4f6] bg-white shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] outline-none duration-150 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 hideScrollbar"
+          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-2xl max-h-[90vh] -translate-x-1/2 -translate-y-1/2 overflow-y-auto overflow-x-clip rounded-[28px] sm:rounded-[40px] border border-[#f3f4f6] bg-white shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] outline-none duration-150 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 hideScrollbar"
           aria-describedby={undefined}>
           {/* decorative blurred blobs */}
-          <div className="pointer-events-none absolute -right-32 -top-32 size-64 rounded-full bg-[#eff6ff] opacity-50 blur-[64px]" />
-          <div className="pointer-events-none absolute -left-32 bottom-0 size-64 rounded-full bg-[#eef2ff] opacity-50 blur-[64px]" />
+          <div className="pointer-events-none absolute -right-32 -top-32 size-64 rounded-full bg-[#eff6ff] opacity-50 blur-3xl" />
+          <div className="pointer-events-none absolute -left-32 bottom-0 size-64 rounded-full bg-[#eef2ff] opacity-50 blur-3xl" />
 
           {/* close button */}
           <DialogPrimitive.Close className="absolute right-5 top-5 sm:right-8 sm:top-8 z-10 flex size-10 items-center justify-center rounded-full border border-[#f3f4f6] bg-[#f9fafb] text-[#6a7282] transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc]">
@@ -52,19 +52,19 @@ export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChan
                 <Crown size={14} />
                 Upgrade to Premium
               </span>
-              <h2 className="mt-5 text-3xl sm:text-4xl font-black leading-[1.25] tracking-[0.37px] text-[#101828]">
+              <h2 className="mt-5 text-3xl sm:text-4xl font-black leading-tight tracking-[0.37px] text-[#101828]">
                 Unlock Unlimited
                 <br />
                 <span className="text-[#155dfc]">Learning Potential</span>
               </h2>
-              <p className="mt-4 max-w-[448px] text-base leading-6 tracking-[-0.31px] text-[#6a7282]">
+              <p className="mt-4 max-w-md text-base leading-6 tracking-[-0.31px] text-[#6a7282]">
                 Your credits have expired. Subscribe now to get unlimited AI-driven quizzes, advanced analytics, and
                 priority mentor support.
               </p>
             </div>
 
             {/* billing toggle */}
-            <div className="mx-auto mt-8 flex w-full max-w-[320px] items-center gap-0 rounded-2xl border border-[#f3f4f6] bg-[#f9fafb] p-[5px]">
+            <div className="mx-auto mt-8 flex w-full max-w-[320px] items-center gap-0 rounded-2xl border border-[#f3f4f6] bg-[#f9fafb] p-1.25">
               <button
                 type="button"
                 onClick={() => setBilling("monthly")}
@@ -134,7 +134,7 @@ export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChan
             {/* CTA */}
             <button
               type="button"
-              className="mt-8 flex h-[60px] w-full items-center justify-center gap-3 rounded-[24px] bg-[#155dfc] text-sm font-black uppercase tracking-[2.6px] text-white transition-colors hover:bg-[#0e44c7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] focus-visible:ring-offset-2">
+              className="mt-8 flex h-15 w-full items-center justify-center gap-3 rounded-[24px] bg-[#155dfc] text-sm font-black uppercase tracking-[2.6px] text-white transition-colors hover:bg-[#0e44c7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] focus-visible:ring-offset-2">
               <Zap size={20} fill="currentColor" />
               Activate Premium Now
             </button>
