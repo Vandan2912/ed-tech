@@ -109,3 +109,13 @@ export const getPinnedMessages = async (): Promise<PinnedMessage[]> => {
     teacherName: m.teacher_name,
   }));
 };
+
+export const pinMessage = async (payload: {
+  title: string;
+  message: string;
+}): Promise<void> => {
+  const token = localStorage.getItem("token");
+  await api.post("/message/pin-message", payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
