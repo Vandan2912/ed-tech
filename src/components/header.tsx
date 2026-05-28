@@ -21,6 +21,7 @@ import { useState } from "react";
 import { CoursesDropdown } from "./courses_drawer";
 import { UpgradeModal } from "./UpgradeModal";
 import { NotificationBell } from "./NotificationPanel";
+import { useUnreadAlertsCount } from "@/api/notifications";
 
 export function Header() {
   const navigate = useNavigate();
@@ -28,9 +29,10 @@ export function Header() {
   const { user, logout } = useAuth();
   const [imgError, setImgError] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const unreadAlerts = useUnreadAlertsCount();
 
   const teacherTabs = [
-    { id: "alerts", label: "Alerts", path: "/", icon: Bell, badge: 5 },
+    { id: "alerts", label: "Alerts", path: "/", icon: Bell, badge: unreadAlerts },
     { id: "pin-message", label: "Pin Message", path: "/pin-message", icon: Pin },
     { id: "engagement", label: "Engagement", path: "/engagement", icon: BarChart3 },
     { id: "content", label: "Content", path: "/content", icon: BookOpen },
@@ -175,9 +177,11 @@ export function Header() {
                     aria-label="Notifications"
                     className="relative w-9 h-9 flex-col shrink-0 p-0.5 rounded-full bg-[#F3F4F6] hover:bg-gray-200 transition-colors hidden md:flex justify-center items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc]">
                     <Bell size={16} className="text-black" />
-                    <div className="absolute -top-1 -right-1 bg-[#FB2C36] shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-4 h-4 justify-center items-center rounded-full text-white text-center text-[8px] not-italic font-black leading-3 tracking-[0.206px]">
-                      3
-                    </div>
+                    {unreadAlerts > 0 && (
+                      <div className="absolute -top-1 -right-1 bg-[#FB2C36] shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-4 h-4 justify-center items-center rounded-full text-white text-center text-[8px] not-italic font-black leading-3 tracking-[0.206px]">
+                        {unreadAlerts > 9 ? "9+" : unreadAlerts}
+                      </div>
+                    )}
                   </button>
                 }
               />
@@ -194,7 +198,9 @@ export function Header() {
                     aria-label="Notifications"
                     className="md:hidden relative w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors">
                     <Bell size={18} />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FB2C36] rounded-full ring-2 ring-white" />
+                    {unreadAlerts > 0 && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FB2C36] rounded-full ring-2 ring-white" />
+                    )}
                   </button>
                 }
               />

@@ -1,9 +1,10 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   AlertCircle,
   AlertTriangle,
   Bell,
   Brain,
+  Loader2,
   PlayCircle,
   X,
   type LucideIcon,
@@ -15,6 +16,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import {
+  getPinnedMessages,
+  loadReadIds,
+  notifyNotificationsUpdated,
+  persistReadIds,
+  type PinnedMessage,
+} from "@/api/notifications";
 
 type NotificationType = "urgent" | "quiz" | "lesson" | "info" | "warning";
 
@@ -70,63 +78,36 @@ const typeConfig: Record<
   },
 };
 
-const initialNotifications: AppNotification[] = [
-  {
-    id: "1",
+function formatRelativeTime(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diffSec = Math.max(0, Math.floor((Date.now() - then) / 1000));
+  if (diffSec < 60) return "Just now";
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin} minute${diffMin === 1 ? "" : "s"} ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr} hour${diffHr === 1 ? "" : "s"} ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay === 1) return "Yesterday";
+  if (diffDay < 7) return `${diffDay} days ago`;
+  return new Date(iso).toLocaleDateString();
+}
+
+function toAppNotification(
+  message: PinnedMessage,
+  readIds: Set<string>,
+): AppNotification {
+  return {
+    id: message.id,
     type: "urgent",
-    badge: "Urgent",
-    time: "Just now",
-    title: "Class Test Tomorrow!",
-    description:
-      "Reminder: Unit 3 Mathematics test is scheduled for tomorrow at 10:00 AM. Make sure to cover Chapters 7–9 and revise all formulas.",
-    from: "Ms. Priya Sharma",
-    read: false,
-  },
-  {
-    id: "2",
-    type: "quiz",
-    badge: "Quiz",
-    time: "1 hour ago",
-    title: "New Quiz Assigned: Laws of Motion",
-    description:
-      "A new quiz on 'Laws of Motion' has been assigned. It covers Newton's 3 laws and friction. Due by Friday, Feb 28.",
-    from: "Ms. Priya Sharma",
-    read: false,
-  },
-  {
-    id: "3",
-    type: "lesson",
-    badge: "Lesson",
-    time: "3 hours ago",
-    title: "New Lesson Published: Wave Optics Part 2",
-    description:
-      "'Wave Optics — Part 2' has been uploaded to your course. Watch it before your next class session on Thursday.",
-    from: "Mr. Anil Kumar",
-    read: false,
-  },
-  {
-    id: "4",
-    type: "info",
-    badge: "Info",
-    time: "Yesterday",
-    title: "Schedule Change — Physics Class",
-    description:
-      "Thursday's Physics class is rescheduled to Friday 2:00 PM due to a school event. Please update your calendar accordingly.",
-    from: "Ms. Priya Sharma",
-    read: true,
-  },
-  {
-    id: "5",
-    type: "warning",
-    badge: "Warning",
-    time: "2 days ago",
-    title: "Progress Falling Behind",
-    description:
-      "Your Chemistry module progress is below the weekly target (32% vs 60% expected). Please complete the 3 pending lessons this week.",
-    from: "Mr. Anil Kumar",
-    read: true,
-  },
-];
+    badge: "Pinned",
+    time: formatRelativeTime(message.createdAt),
+    title: message.title,
+    description: message.message,
+    from: message.teacherName,
+    read: readIds.has(message.id),
+  };
+}
 
 function NotificationCard({ notification }: { notification: AppNotification }) {
   const config = typeConfig[notification.type];
@@ -189,8 +170,33 @@ function NotificationCard({ notification }: { notification: AppNotification }) {
 }
 
 export function NotificationPanel({ onClose }: { onClose?: () => void }) {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [filter, setFilter] = useState<"all" | "unread">("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    getPinnedMessages()
+      .then((messages) => {
+        if (cancelled) return;
+        const readIds = loadReadIds();
+        setNotifications(messages.map((m) => toAppNotification(m, readIds)));
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("Failed to load pinned messages", err);
+        setError("Couldn't load alerts. Please try again.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const unreadCount = useMemo(
     () => notifications.filter((n) => !n.read).length,
@@ -202,8 +208,16 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
     [notifications, filter],
   );
 
-  const markAllRead = () =>
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const markAllRead = () => {
+    setNotifications((prev) => {
+      const next = prev.map((n) => ({ ...n, read: true }));
+      const ids = loadReadIds();
+      next.forEach((n) => ids.add(n.id));
+      persistReadIds(ids);
+      return next;
+    });
+    notifyNotificationsUpdated();
+  };
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-white">
@@ -298,7 +312,14 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
 
           {/* list */}
           <div className="flex flex-col gap-2.5 p-4">
-            {visible.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center gap-2 py-8 text-[12px] text-[#99a1af]">
+                <Loader2 size={14} className="animate-spin" />
+                Loading alerts...
+              </div>
+            ) : error ? (
+              <p className="py-8 text-center text-[12px] text-[#fb2c36]">{error}</p>
+            ) : visible.length === 0 ? (
               <p className="py-8 text-center text-[12px] text-[#99a1af]">
                 You're all caught up.
               </p>
