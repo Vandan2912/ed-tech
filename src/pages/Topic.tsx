@@ -6,6 +6,73 @@ import { api } from "@/lib/api";
 import { Clock, Play, Zap, BarChart3, BookOpen, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface QuizMode {
+  id: number;
+  title: string;
+  difficulty: string;
+  passing_score: number;
+  xp_reward: number;
+  max_attempts_per_day: number;
+  passed: boolean;
+  total_attempts: number;
+}
+
+interface DifficultyMeta {
+  title: string;
+  emoji: string;
+  desc: string;
+  color: string;
+  // Palette used by the small "Quiz Attempts Today" summary card.
+  attemptColor: string;
+  attemptBg: string;
+  attemptBorder: string;
+  attemptAccent: string;
+}
+
+const DIFFICULTY_META: Record<string, DifficultyMeta> = {
+  easy: {
+    title: "Easy",
+    emoji: "🌱",
+    desc: "Core concepts · perfect for first-time learners",
+    color: "#009966",
+    attemptColor: "#007a55",
+    attemptBg: "#ecfdf5",
+    attemptBorder: "#d0fae5",
+    attemptAccent: "#a4f4cf",
+  },
+  medium: {
+    title: "Medium",
+    emoji: "⚡",
+    desc: "Applied knowledge · moderate challenge",
+    color: "#e17100",
+    attemptColor: "#bb4d00",
+    attemptBg: "#fffbeb",
+    attemptBorder: "#fef3c6",
+    attemptAccent: "#fee685",
+  },
+  hard: {
+    title: "Hard",
+    emoji: "🔥",
+    desc: "Advanced reasoning · for mastery seekers",
+    color: "#ec003f",
+    attemptColor: "#c70036",
+    attemptBg: "#fff1f2",
+    attemptBorder: "#ffe4e6",
+    attemptAccent: "#ffccd3",
+  },
+};
+
+const FALLBACK_META: DifficultyMeta = {
+  title: "Quiz",
+  emoji: "🎯",
+  desc: "Quiz",
+  color: "#155dfc",
+  attemptColor: "#155dfc",
+  attemptBg: "#eff6ff",
+  attemptBorder: "#dbeafe",
+  attemptAccent: "#bedbff",
+};
+
 const Topic = () => {
   const { courseId, topicId } = useParams();
   const navigate = useNavigate();
@@ -13,9 +80,45 @@ const Topic = () => {
   const { subjects, loading } = useAppSelector((state) => state.course);
 
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(
-    null,
-  );
+  const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
+
+  // Quiz modes returned by GET /course/quiz/:topicId — one entry per difficulty.
+  const [quizModes, setQuizModes] = useState<QuizMode[]>([]);
+  const [modesLoading, setModesLoading] = useState(false);
+  const [modesError, setModesError] = useState<string | null>(null);
+
+  // Fetch quiz modes for this topic up front — both the modal and the
+  // "Quiz Attempts Today" summary card need the same data.
+  useEffect(() => {
+    if (!topicId) return;
+    let cancelled = false;
+    const fetchModes = async () => {
+      setModesLoading(true);
+      setModesError(null);
+      try {
+        const res = await api.get(`/course/quiz/${topicId}`);
+        if (!cancelled) setQuizModes(res.data || []);
+      } catch (err) {
+        if (cancelled) return;
+        console.error("Failed to fetch quiz modes", err);
+        setModesError("Failed to load quiz modes");
+        setQuizModes([]);
+      } finally {
+        if (!cancelled) setModesLoading(false);
+      }
+    };
+    fetchModes();
+    return () => {
+      cancelled = true;
+    };
+  }, [topicId]);
+
+  const openQuizModes = () => {
+    setShowDifficultyModal(true);
+    setSelectedQuizId(null);
+  };
+
+  const selectedMode = quizModes.find((m) => m.id === selectedQuizId) || null;
 
   useEffect(() => {
     if (subjects.length === 0) {
@@ -99,11 +202,10 @@ const Topic = () => {
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-2 min-w-[180px]">
+            <div className="flex flex-col items-center gap-2 min-w-45">
               <button
-                className="w-full bg-[#155dfc] text-white px-8 h-[44px] rounded-[16px] font-black text-[14px] uppercase tracking-[1.25px] shadow-[0px_10px_15px_0px_#bedbff,0px_4px_6px_0px_#bedbff] hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group"
-                onClick={() => setShowDifficultyModal(true)}
-              >
+                className="w-full bg-[#155dfc] text-white px-8 h-11 rounded-[16px] font-black text-[14px] uppercase tracking-[1.25px] shadow-[0px_10px_15px_0px_#bedbff,0px_4px_6px_0px_#bedbff] hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group"
+                onClick={openQuizModes}>
                 <div className="w-4 h-4 flex items-center justify-center">
                   <Play
                     size={16}
@@ -131,37 +233,54 @@ const Topic = () => {
                   Quiz Attempts Today
                 </h3>
                 <p className="text-[10px] text-[#99a1af]">
-                  3 attempts per difficulty level · resets daily
+                  {quizModes.length > 0
+                    ? `${quizModes[0].max_attempts_per_day} attempts per difficulty level · resets daily`
+                    : "Resets daily"}
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <AttemptCard
-                label="easy"
-                color="#007a55"
-                bg="#ecfdf5"
-                border="#d0fae5"
-                accent="#a4f4cf"
-                left={3}
-              />
-              <AttemptCard
-                label="medium"
-                color="#bb4d00"
-                bg="#fffbeb"
-                border="#fef3c6"
-                accent="#fee685"
-                left={3}
-              />
-              <AttemptCard
-                label="hard"
-                color="#c70036"
-                bg="#fff1f2"
-                border="#ffe4e6"
-                accent="#ffccd3"
-                left={3}
-              />
-            </div>
+            {modesLoading ? (
+              <div className="text-[12px] text-[#6a7282] py-4">
+                Loading attempts...
+              </div>
+            ) : modesError ? (
+              <div className="text-[12px] text-red-500 py-4">{modesError}</div>
+            ) : quizModes.length === 0 ? (
+              <div className="text-[12px] text-[#6a7282] py-4">
+                No quizzes available yet.
+              </div>
+            ) : (
+              <div
+                className={`grid grid-cols-1 gap-6 ${
+                  quizModes.length === 1
+                    ? "md:grid-cols-1"
+                    : quizModes.length === 2
+                      ? "md:grid-cols-2"
+                      : "md:grid-cols-3"
+                }`}>
+                {quizModes.map((mode) => {
+                  const meta =
+                    DIFFICULTY_META[mode.difficulty] || FALLBACK_META;
+                  const attemptsLeft = Math.max(
+                    0,
+                    mode.max_attempts_per_day - mode.total_attempts,
+                  );
+                  return (
+                    <AttemptCard
+                      key={mode.id}
+                      label={mode.difficulty}
+                      color={meta.attemptColor}
+                      bg={meta.attemptBg}
+                      border={meta.attemptBorder}
+                      accent={meta.attemptAccent}
+                      left={attemptsLeft}
+                      total={mode.max_attempts_per_day}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* 🎓 Learning Outcomes */}
@@ -201,16 +320,18 @@ const Topic = () => {
             topic={topic}
             onClose={() => {
               setShowDifficultyModal(false);
-              setSelectedDifficulty(null);
+              setSelectedQuizId(null);
             }}
-            selectedDifficulty={selectedDifficulty}
-            onSelect={setSelectedDifficulty}
+            modes={quizModes}
+            loading={modesLoading}
+            error={modesError}
+            selectedQuizId={selectedQuizId}
+            onSelect={setSelectedQuizId}
             onStart={() => {
-              if (selectedDifficulty) {
-                navigate(
-                  `/courses/${course.id}/${topic.id}/quiz?difficulty=${selectedDifficulty.toLowerCase()}`,
-                );
-              }
+              if (!selectedMode) return;
+              navigate(
+                `/courses/${course.id}/${topic.id}/quiz?quizId=${selectedMode.id}&difficulty=${selectedMode.difficulty}`,
+              );
             }}
           />
         )}
@@ -220,25 +341,45 @@ const Topic = () => {
 };
 
 // Sub-components
+interface DifficultyModalProps {
+  topic: { title: string };
+  onClose: () => void;
+  modes: QuizMode[];
+  loading: boolean;
+  error: string | null;
+  selectedQuizId: number | null;
+  onSelect: (id: number) => void;
+  onStart: () => void;
+}
+
 function DifficultyModal({
   topic,
   onClose,
-  selectedDifficulty,
+  modes,
+  loading,
+  error,
+  selectedQuizId,
   onSelect,
   onStart,
-}: any) {
+}: DifficultyModalProps) {
+  const selectedMode = modes.find((m) => m.id === selectedQuizId) || null;
+  const anyExhausted = modes.some(
+    (m) => m.total_attempts >= m.max_attempts_per_day,
+  );
+  const selectedTitle = selectedMode
+    ? DIFFICULTY_META[selectedMode.difficulty]?.title || selectedMode.difficulty
+    : null;
+
   return (
     <div className="relative items-center justify-center p-4">
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="relative bg-[#f9fafb] w-full max-w-[896px] rounded-[32px] overflow-hidden p-8 mx-auto"
-      >
+        className="relative bg-[#f9fafb] w-full max-w-4xl rounded-[32px] overflow-hidden p-8 mx-auto">
         <button
           onClick={onClose}
-          className="absolute top-6 left-6 flex items-center gap-2 text-[#99a1af] font-medium hover:text-[#101828] transition-colors"
-        >
+          className="absolute top-6 left-6 flex items-center gap-2 text-[#99a1af] font-medium hover:text-[#101828] transition-colors">
           <ArrowLeft size={16} />
           Back to Lesson
         </button>
@@ -253,88 +394,116 @@ function DifficultyModal({
           <h2 className="text-[32px] font-black text-[#101828] mb-4">
             {topic.title}
           </h2>
-          <p className="text-[#6a7282] text-[14px] text-center max-w-[450px]">
-            This quiz was created by your teacher with 3 difficulty levels.
-            Choose your challenge level and earn XP!
+          <p className="text-[#6a7282] text-[14px] text-center max-w-112.5">
+            {modes.length > 0
+              ? `This quiz was created by your teacher with ${modes.length} difficulty ${modes.length === 1 ? "level" : "levels"}. Choose your challenge level and earn XP!`
+              : "Choose your challenge level and earn XP!"}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <DifficultyCard
-            title="Easy"
-            emoji="🌱"
-            desc="Core concepts · perfect for first-time learners"
-            questions={3}
-            attemptsLeft={2}
-            xp={25}
-            attempts={3}
-            color="#009966"
-            isSelected={selectedDifficulty === "Easy"}
-            onClick={() => onSelect("Easy")}
-          />
-          <DifficultyCard
-            title="Medium"
-            emoji="⚡"
-            desc="Applied knowledge · moderate challenge"
-            questions={3}
-            attemptsLeft={3}
-            xp={50}
-            attempts={3}
-            color="#e17100"
-            isSelected={selectedDifficulty === "Medium"}
-            onClick={() => onSelect("Medium")}
-          />
-          <DifficultyCard
-            title="Hard"
-            emoji="🔥"
-            desc="Advanced reasoning · for mastery seekers"
-            questions={3}
-            attemptsLeft={1}
-            xp={100}
-            attempts={3}
-            color="#ec003f"
-            isSelected={selectedDifficulty === "Hard"}
-            onClick={() => onSelect("Hard")}
-          />
-        </div>
+        {loading ? (
+          <div className="text-center text-[#6a7282] py-12">
+            Loading quiz modes...
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-12">{error}</div>
+        ) : modes.length === 0 ? (
+          <div className="text-center text-[#6a7282] py-12">
+            No quizzes available for this topic yet.
+          </div>
+        ) : (
+          <div
+            className={`grid grid-cols-1 gap-6 mb-8 ${
+              modes.length === 1
+                ? "md:grid-cols-1 max-w-md mx-auto"
+                : modes.length === 2
+                  ? "md:grid-cols-2"
+                  : "md:grid-cols-3"
+            }`}>
+            {modes.map((mode) => {
+              const meta = DIFFICULTY_META[mode.difficulty] || {
+                title: mode.difficulty,
+                emoji: "🎯",
+                desc: mode.title,
+                color: "#155dfc",
+              };
+              const attemptsLeft = Math.max(
+                0,
+                mode.max_attempts_per_day - mode.total_attempts,
+              );
+              const exhausted = attemptsLeft === 0;
+              return (
+                <DifficultyCard
+                  key={mode.id}
+                  title={meta.title}
+                  emoji={meta.emoji}
+                  desc={meta.desc}
+                  questions={3}
+                  attemptsLeft={attemptsLeft}
+                  attempts={mode.max_attempts_per_day}
+                  xp={mode.xp_reward}
+                  color={meta.color}
+                  exhausted={exhausted}
+                  isSelected={selectedQuizId === mode.id}
+                  onClick={() => {
+                    if (!exhausted) onSelect(mode.id);
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
 
-        {/* 🌟 Premium Upgrade Option (Logic: Show if any attempts used) */}
-        {(1 < 3 || 3 < 3 || 2 < 3) && ( // Dynamically showing banner based on chosen states
-          <div className="bg-linear-to-r from-[#fffbeb] to-[#fff7ed] border border-[#fee685] rounded-[16px] h-[82px] px-6 flex items-center gap-4 mb-8">
+        {/* 🌟 Premium Upgrade Banner — show if at least one mode is exhausted */}
+        {anyExhausted && (
+          <div className="bg-linear-to-r from-[#fffbeb] to-[#fff7ed] border border-[#fee685] rounded-[16px] h-20.5 px-6 flex items-center gap-4 mb-8">
             <div className="w-10 h-10 rounded-[14px] bg-[#fef3c6] flex items-center justify-center shrink-0">
               <Zap size={20} className="text-[#973c00] fill-[#973c00]/20" />
             </div>
             <div className="flex-1">
               <h4 className="text-[14px] font-black text-[#973c00] leading-none mb-1">
-                Weekly Daily Attempts Exhausted
+                Daily Attempts Exhausted
               </h4>
               <p className="text-[10px] font-medium text-[#e17100]">
                 Upgrade to Premium for unlimited daily attempts across all
                 difficulty levels.
               </p>
             </div>
-            <button className="bg-[#fe9a00] h-[32px] px-6 rounded-[14px] text-white text-[10px] font-black uppercase tracking-[1.1px] hover:shadow-lg hover:scale-105 active:scale-95 transition-all">
+            <button className="bg-[#fe9a00] h-8 px-6 rounded-[14px] text-white text-[10px] font-black uppercase tracking-[1.1px] hover:shadow-lg hover:scale-105 active:scale-95 transition-all">
               Upgrade
             </button>
           </div>
         )}
 
         <button
-          disabled={!selectedDifficulty}
+          disabled={!selectedMode}
           onClick={onStart}
-          className={`w-full h-[56px] rounded-[16px] font-black text-[16px] uppercase tracking-[1.3px] transition-all flex items-center justify-center gap-3 ${
-            selectedDifficulty
+          className={`w-full h-14 rounded-[16px] font-black text-[16px] uppercase tracking-[1.3px] transition-all flex items-center justify-center gap-3 ${
+            selectedMode
               ? "bg-[#155dfc] text-white shadow-lg cursor-pointer"
               : "bg-[#155dfc]/10 text-[#155dfc]/40 cursor-not-allowed"
-          }`}
-        >
-          {selectedDifficulty
-            ? `Start ${selectedDifficulty} Quiz`
+          }`}>
+          {selectedTitle
+            ? `Start ${selectedTitle} Quiz`
             : "Select a Difficulty to Continue"}
         </button>
       </motion.div>
     </div>
   );
+}
+
+interface DifficultyCardProps {
+  title: string;
+  emoji: string;
+  desc: string;
+  questions: number;
+  attemptsLeft: number;
+  xp: number;
+  attempts: number;
+  color: string;
+  isSelected: boolean;
+  exhausted: boolean;
+  onClick: () => void;
 }
 
 function DifficultyCard({
@@ -347,24 +516,26 @@ function DifficultyCard({
   attempts,
   color,
   isSelected,
+  exhausted,
   onClick,
-}: any) {
+}: DifficultyCardProps) {
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={exhausted ? undefined : { y: -4 }}
+      whileTap={exhausted ? undefined : { scale: 0.98 }}
       onClick={onClick}
-      className={`bg-white rounded-[28px] p-6 border-2 transition-all cursor-pointer select-none h-full flex flex-col ${
-        isSelected
-          ? "border-[#155dfc] shadow-lg scale-[1.02]"
-          : "border-[#f3f4f6] hover:border-gray-200"
-      }`}
-    >
+      className={`bg-white rounded-[28px] p-6 border-2 transition-all select-none h-full flex flex-col ${
+        exhausted
+          ? "border-[#f3f4f6] opacity-60 cursor-not-allowed"
+          : isSelected
+            ? "border-[#155dfc] shadow-lg scale-[1.02] cursor-pointer"
+            : "border-[#f3f4f6] hover:border-gray-200 cursor-pointer"
+      }`}>
       <div className="bg-gray-50 w-12 h-12 rounded-2xl flex items-center justify-center text-[24px] mb-4">
         {emoji}
       </div>
       <h3 className="text-[18px] font-black text-[#101828] mb-2">{title}</h3>
-      <p className="text-[10px] font-medium text-[#6a7282] mb-6 leading-[16px]">
+      <p className="text-[10px] font-medium text-[#6a7282] mb-6 leading-4">
         {desc}
       </p>
 
@@ -374,15 +545,14 @@ function DifficultyCard({
             {questions} Questions
           </span>
 
-          {attempts - attemptsLeft > 0 && (
-            <div className="bg-[#ffc760] px-2 py-0.5 rounded-[4px] shadow-sm text-[8px] font-black text-[#815a12] uppercase tracking-[0.5px]">
+          {exhausted && (
+            <div className="bg-[#ffc760] px-2 py-0.5 rounded-lg shadow-sm text-[8px] font-black text-[#815a12] uppercase tracking-[0.5px]">
               Upgrade
             </div>
           )}
           <div
             className="flex items-center gap-1 px-1.5 py-0.5 rounded-lg"
-            style={{ backgroundColor: color + "15" }}
-          >
+            style={{ backgroundColor: color + "15" }}>
             <Zap size={10} style={{ color }} />
             <span className="text-[9px] font-black" style={{ color }}>
               +{xp} XP
@@ -390,18 +560,14 @@ function DifficultyCard({
           </div>
         </div>
         <div className="h-1.5 bg-gray-50 rounded-full overflow-hidden">
-          <div className="flex gap-[4px] h-full">
-            {[1, 2, 3].map((i) => {
-              // Logic: attemptsLeft 1 means 2 used. 2 means 1 used. 3 means 0 used.
-              // Wait, in Figma, Easy (1 left) showed 1 colored? No, 2/3 left showed 1 colored.
-              // So Colored = Used.
-              // Easy (356:7800) says 2/3 left -> 1 colored.
-              // Medium (356:7825) says 3/3 left -> 0 colored (presumably, if following the rule).
-              const used = 3 - (attemptsLeft || 3);
-              const isActive = i <= used;
+          <div className="flex gap-1 h-full">
+            {Array.from({ length: attempts }, (_, idx) => {
+              // Coloured segments represent attempts already used today.
+              const used = attempts - attemptsLeft;
+              const isActive = idx < used;
               return (
                 <motion.div
-                  key={i}
+                  key={idx}
                   initial={{ opacity: 0, scaleX: 0 }}
                   animate={{ opacity: 1, scaleX: 1 }}
                   className="flex-1 h-full rounded-full transition-colors duration-300"
@@ -420,38 +586,63 @@ function DifficultyCard({
         </div>
         <div
           className="text-[9px] font-bold"
-          style={{ color: isSelected ? "#155dfc" : color }}
-        >
-          {attemptsLeft}/{attempts} attempts left
+          style={{ color: isSelected ? "#155dfc" : color }}>
+          {exhausted
+            ? "No attempts left today"
+            : `${attemptsLeft}/${attempts} attempts left`}
         </div>
       </div>
     </motion.div>
   );
 }
 
-function AttemptCard({ label, color, bg, border, accent, left }: any) {
+interface AttemptCardProps {
+  label: string;
+  color: string;
+  bg: string;
+  border: string;
+  accent: string;
+  left: number;
+  total: number;
+}
+
+function AttemptCard({
+  label,
+  color,
+  bg,
+  border,
+  accent,
+  left,
+  total,
+}: AttemptCardProps) {
+  const used = Math.max(0, total - left);
   return (
     <div
       className="rounded-[16px] p-4 flex flex-col items-center gap-2 group hover:shadow-md transition-all border"
-      style={{ backgroundColor: bg, borderColor: border }}
-    >
+      style={{ backgroundColor: bg, borderColor: border }}>
       <p
         className="text-[9px] font-black uppercase tracking-[1.067px]"
-        style={{ color }}
-      >
+        style={{ color }}>
         {label}
       </p>
       <div className="flex gap-1.5">
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="w-2.5 h-2.5 rounded-full bg-white border"
-            style={{ borderColor: accent }}
-          />
-        ))}
+        {Array.from({ length: total }, (_, i) => {
+          // Filled dots represent attempts already used today.
+          const isUsed = i < used;
+          return (
+            <div
+              key={i}
+              className="w-2.5 h-2.5 rounded-full border"
+              style={{
+                borderColor: accent,
+                backgroundColor: isUsed ? accent : "#ffffff",
+              }}
+            />
+          );
+        })}
       </div>
       <p className="text-[9px] font-bold" style={{ color }}>
-        {left} left
+        {left === 0 ? "No attempts left" : `${left} left`}
       </p>
     </div>
   );

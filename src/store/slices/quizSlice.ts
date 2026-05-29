@@ -30,18 +30,35 @@ const initialState: QuizState = {
   error: null,
 };
 
-export const fetchQuizQuestions = createAsyncThunk<Question[], string | number, { rejectValue: string }>(
+type FetchQuestionsArg = { quizId?: string | number; topicId?: string | number };
+
+export const fetchQuizQuestions = createAsyncThunk<
+  Question[],
+  FetchQuestionsArg | string | number,
+  { rejectValue: string }
+>(
   "quiz/fetchQuizQuestions",
-  async (topicId, { rejectWithValue }) => {
+  async (arg, { rejectWithValue }) => {
     try {
-      const quizRes = await api.get(`/course/quiz/${topicId}`);
-      const quizzes = quizRes.data;
-      if (quizzes && quizzes.length > 0) {
-        const quizId = quizzes[0].id;
-        const questionsRes = await api.get(`/course/question/${quizId}`);
-        return questionsRes.data;
+      // Normalize the argument: support legacy `topicId` string/number too.
+      const { quizId, topicId } =
+        typeof arg === "object"
+          ? arg
+          : ({ topicId: arg } as FetchQuestionsArg);
+
+      // Resolve the quizId: prefer explicit, otherwise fall back to the first
+      // quiz returned for the topic.
+      let resolvedQuizId = quizId;
+      if (!resolvedQuizId && topicId) {
+        const quizRes = await api.get(`/course/quiz/${topicId}`);
+        const quizzes = quizRes.data;
+        if (!quizzes || quizzes.length === 0) return [];
+        resolvedQuizId = quizzes[0].id;
       }
-      return [];
+      if (!resolvedQuizId) return [];
+
+      const questionsRes = await api.get(`/course/question/${resolvedQuizId}`);
+      return questionsRes.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch quiz data");
     }

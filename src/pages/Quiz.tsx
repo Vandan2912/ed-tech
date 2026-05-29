@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Clock, CircleAlert, CircleCheck, X, Flame, Brain } from "lucide-react";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
@@ -14,6 +14,8 @@ import { useAuth } from "@/auth/useAuth";
 
 const Quiz = () => {
   const { courseId, topicId } = useParams();
+  const [searchParams] = useSearchParams();
+  const quizId = searchParams.get("quizId");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { token } = useAuth();
@@ -98,13 +100,16 @@ const Quiz = () => {
   };
 
   useEffect(() => {
-    if (topicId) {
-      dispatch(fetchQuizQuestions(topicId));
+    if (quizId) {
+      dispatch(fetchQuizQuestions({ quizId }));
+    } else if (topicId) {
+      // Fallback when no quizId is provided in the URL (legacy entry points).
+      dispatch(fetchQuizQuestions({ topicId }));
     }
     return () => {
       dispatch(clearQuiz());
     };
-  }, [dispatch, topicId]);
+  }, [dispatch, topicId, quizId]);
 
   if (loading) return <h2 className="p-6 min-h-[50vh]">Loading quiz...</h2>;
   if (!questions || questions.length === 0)
