@@ -1,41 +1,20 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GraduationCap, Loader2, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/auth/useAuth";
 import type { User } from "@/auth/AuthProvider";
-import { saveAcademicDetails } from "@/api/user";
+import {
+  getClasses,
+  getSchools,
+  saveAcademicDetails,
+  type ClassOption,
+  type School,
+} from "@/api/user";
 import CustomSelect from "@/components/CustomSelect";
 import { OtpVerifyModal } from "@/components/profile/OtpVerifyModal";
 
 /** Fields that can be edited inline on this page. */
 type EditableKey = "email" | "contact_number" | "school_name" | "std" | "district";
-
-/** Same option sets used by the onboarding flow. */
-const SCHOOL_OPTIONS = [
-  { label: "Delhi Public School", value: "Delhi Public School" },
-  { label: "Kendriya Vidyalaya", value: "Kendriya Vidyalaya" },
-  { label: "St. Xavier's School", value: "St. Xavier's School" },
-  { label: "DAV Public School", value: "DAV Public School" },
-  { label: "Army Public School", value: "Army Public School" },
-  { label: "Ryan International School", value: "Ryan International School" },
-  { label: "Amity International School", value: "Amity International School" },
-  { label: "The Doon School", value: "The Doon School" },
-  { label: "La Martiniere College", value: "La Martiniere College" },
-  { label: "Bishop Cotton School", value: "Bishop Cotton School" },
-  { label: "Modern School", value: "Modern School" },
-  { label: "Sanskriti School", value: "Sanskriti School" },
-  { label: "Springdales School", value: "Springdales School" },
-  { label: "Birla Vidya Niketan", value: "Birla Vidya Niketan" },
-  { label: "Mount Litera Zee School", value: "Mount Litera Zee School" },
-  { label: "Other", value: "Other" },
-];
-
-const CLASS_OPTIONS = [
-  { label: "Class 9", value: "9" },
-  { label: "Class 10", value: "10" },
-  { label: "Class 11", value: "11" },
-  { label: "Class 12", value: "12" },
-];
 
 export default function Profile() {
   const { user, setUser } = useAuth();
@@ -45,6 +24,43 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   // True when "Other" is chosen for school name, revealing a free-text input.
   const [schoolOther, setSchoolOther] = useState(false);
+  const [schools, setSchools] = useState<School[]>([]);
+  const [classes, setClasses] = useState<ClassOption[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSchools()
+      .then((list) => {
+        if (!cancelled) setSchools(list);
+      })
+      .catch((err) => console.error("Failed to load schools", err));
+    getClasses()
+      .then((list) => {
+        if (!cancelled) setClasses(list);
+      })
+      .catch((err) => console.error("Failed to load classes", err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const schoolOptions = useMemo(
+    () => [
+      ...schools.map((s) => ({ label: s.name, value: s.name })),
+      { label: "Other", value: "Other" },
+    ],
+    [schools]
+  );
+
+  // The backend stores `std` as the raw number, so strip the "Class " prefix the API returns.
+  const classOptions = useMemo(
+    () =>
+      classes.map((c) => ({
+        label: c.name,
+        value: c.name.replace(/^Class\s+/i, "").trim(),
+      })),
+    [classes]
+  );
 
   // OTP verification for mobile-number changes (sent to WhatsApp).
   const [otpOpen, setOtpOpen] = useState(false);
@@ -58,7 +74,7 @@ export default function Profile() {
     setDraft(current);
     // A saved school not in the preset list counts as a custom ("Other") entry.
     if (field === "school_name") {
-      setSchoolOther(Boolean(current) && !SCHOOL_OPTIONS.some((o) => o.value === current));
+      setSchoolOther(Boolean(current) && !schoolOptions.some((o) => o.value === current));
     }
   };
 
@@ -176,9 +192,9 @@ export default function Profile() {
             editControl={
               <div className="flex flex-col gap-2">
                 <CustomSelect
-                  value={schoolOther ? "Other" : SCHOOL_OPTIONS.some((o) => o.value === draft) ? draft : ""}
+                  value={schoolOther ? "Other" : schoolOptions.some((o) => o.value === draft) ? draft : ""}
                   placeholder="Select your school"
-                  options={SCHOOL_OPTIONS}
+                  options={schoolOptions}
                   onChange={(val) => {
                     if (val === "Other") {
                       setSchoolOther(true);
@@ -214,7 +230,7 @@ export default function Profile() {
               <CustomSelect
                 value={draft}
                 placeholder="Select your class"
-                options={CLASS_OPTIONS}
+                options={classOptions}
                 onChange={setDraft}
               />
             }

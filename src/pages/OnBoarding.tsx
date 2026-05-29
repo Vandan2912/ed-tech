@@ -1,10 +1,17 @@
+/* eslint-disable react-hooks/incompatible-library */
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
-import { saveAcademicDetails } from "@/api/user";
+import {
+  getClasses,
+  getSchools,
+  saveAcademicDetails,
+  type ClassOption,
+  type School,
+} from "@/api/user";
 import type { User } from "@/auth/AuthProvider";
 import CountryCodeSelect from "@/components/CountryCodeSelect";
 import { ChevronDown, Loader2 } from "lucide-react";
@@ -64,8 +71,7 @@ function SuccessToast({ visible }: { visible: boolean }) {
         transitionProperty: "transform, opacity",
         transitionDuration: "400ms",
         transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-      }}
-    >
+      }}>
       <div
         className="flex items-center gap-3 px-5 py-4 rounded-2xl"
         style={{
@@ -73,16 +79,14 @@ function SuccessToast({ visible }: { visible: boolean }) {
           boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
           minWidth: 280,
           whiteSpace: "nowrap",
-        }}
-      >
+        }}>
         {/* Checkmark icon */}
         <svg
           width="20"
           height="20"
           viewBox="0 0 20 20"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -97,8 +101,7 @@ function SuccessToast({ visible }: { visible: boolean }) {
             fontSize: 14,
             fontWeight: 700,
             lineHeight: "20px",
-          }}
-        >
+          }}>
           Successfully authenticated with Google!
         </span>
       </div>
@@ -145,6 +148,37 @@ export default function Onboarding() {
   const classLevelValue = watch("classLevel");
   const pinCodeValue = watch("pinCode");
   const [loadingPin, setLoadingPin] = useState(false);
+  const [schools, setSchools] = useState<School[]>([]);
+  const [classes, setClasses] = useState<ClassOption[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSchools()
+      .then((list) => {
+        if (!cancelled) setSchools(list);
+      })
+      .catch((err) => console.error("Failed to load schools", err));
+    getClasses()
+      .then((list) => {
+        if (!cancelled) setClasses(list);
+      })
+      .catch((err) => console.error("Failed to load classes", err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const schoolOptions = [
+    ...schools.map((s) => ({ label: s.name, value: s.name })),
+    { label: "Other", value: "Other" },
+  ];
+
+  // Backend stores `std` as the raw number ("9", "10"…), but the API returns
+  // labels like "Class 12" — strip the prefix so we keep the existing payload shape.
+  const classOptions = classes.map((c) => ({
+    label: c.name,
+    value: c.name.replace(/^Class\s+/i, "").trim(),
+  }));
 
   useEffect(() => {
     if (pinCodeValue?.length === 6 && countryValue === "India") {
@@ -226,8 +260,7 @@ export default function Onboarding() {
           <div className="h-1.5 w-full bg-gray-100">
             <div
               className="h-1.5 bg-[#1C398E] transition-all flex items-center justify-end pr-1"
-              style={{ width: step === 1 ? "50%" : "100%" }}
-            >
+              style={{ width: step === 1 ? "50%" : "100%" }}>
               {/* Optional glowing effect for the tip of the progress bar */}
               <div className="w-4 h-full bg-blue-400 blur-sm opacity-50" />
             </div>
@@ -239,8 +272,7 @@ export default function Onboarding() {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="p-6 sm:p-12 flex flex-col relative z-10"
-        >
+          className="p-6 sm:p-12 flex flex-col relative z-10">
           {/* Step badge */}
           <div className="inline-flex w-fit items-center gap-2 px-3 py-1 bg-blue-50 rounded-full text-[10px] font-black text-blue-900 uppercase tracking-widest mb-4">
             <svg
@@ -248,8 +280,7 @@ export default function Onboarding() {
               height="12"
               viewBox="0 0 12 12"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+              xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M9.5 10.5V9.5C9.5 8.96957 9.28929 8.46086 8.91421 8.08579C8.53914 7.71071 8.03043 7.5 7.5 7.5H4.5C3.96957 7.5 3.46086 7.71071 3.08579 8.08579C2.71071 8.46086 2.5 8.96957 2.5 9.5V10.5"
                 stroke="#1C398E"
@@ -298,8 +329,7 @@ export default function Onboarding() {
 
               <Field
                 label="Email Address (Google)"
-                error={errors.email?.message}
-              >
+                error={errors.email?.message}>
                 <input
                   className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
                   {...register("email")}
@@ -329,8 +359,7 @@ export default function Onboarding() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]"
-              >
+                className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]">
                 Next Step
               </button>
             </div>
@@ -347,65 +376,14 @@ export default function Onboarding() {
                     setValue("schoolName", val, { shouldValidate: true })
                   }
                   placeholder="Select your school"
-                  options={[
-                    {
-                      label: "Delhi Public School",
-                      value: "Delhi Public School",
-                    },
-                    {
-                      label: "Kendriya Vidyalaya",
-                      value: "Kendriya Vidyalaya",
-                    },
-                    {
-                      label: "St. Xavier's School",
-                      value: "St. Xavier's School",
-                    },
-                    { label: "DAV Public School", value: "DAV Public School" },
-                    {
-                      label: "Army Public School",
-                      value: "Army Public School",
-                    },
-                    {
-                      label: "Ryan International School",
-                      value: "Ryan International School",
-                    },
-                    {
-                      label: "Amity International School",
-                      value: "Amity International School",
-                    },
-                    { label: "The Doon School", value: "The Doon School" },
-                    {
-                      label: "La Martiniere College",
-                      value: "La Martiniere College",
-                    },
-                    {
-                      label: "Bishop Cotton School",
-                      value: "Bishop Cotton School",
-                    },
-                    { label: "Modern School", value: "Modern School" },
-                    { label: "Sanskriti School", value: "Sanskriti School" },
-                    {
-                      label: "Springdales School",
-                      value: "Springdales School",
-                    },
-                    {
-                      label: "Birla Vidya Niketan",
-                      value: "Birla Vidya Niketan",
-                    },
-                    {
-                      label: "Mount Litera Zee School",
-                      value: "Mount Litera Zee School",
-                    },
-                    { label: "Other", value: "Other" },
-                  ]}
+                  options={schoolOptions}
                 />
               </Field>
 
               {schoolNameValue === "Other" && (
                 <Field
                   label="Enter School Name"
-                  error={errors.otherSchoolName?.message}
-                >
+                  error={errors.otherSchoolName?.message}>
                   <input
                     className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all font-bold text-gray-900"
                     {...register("otherSchoolName")}
@@ -421,12 +399,7 @@ export default function Onboarding() {
                     setValue("classLevel", val, { shouldValidate: true })
                   }
                   placeholder="Select your class"
-                  options={[
-                    { label: "Class 9", value: "9" },
-                    { label: "Class 10", value: "10" },
-                    { label: "Class 11", value: "11" },
-                    { label: "Class 12", value: "12" },
-                  ]}
+                  options={classOptions}
                 />
               </Field>
 
@@ -449,8 +422,7 @@ export default function Onboarding() {
                   <select
                     {...register("state")}
                     className="w-full px-5 py-4 bg-gray-100 border border-gray-100 rounded-2xl focus:outline-none transition-all font-bold text-gray-500 appearance-none pointer-events-none"
-                    defaultValue=""
-                  >
+                    defaultValue="">
                     <option value="" disabled hidden>
                       Select your state
                     </option>
@@ -523,15 +495,13 @@ export default function Onboarding() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="flex-1 py-4 border-2 border-gray-100 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:border-gray-200 transition-all"
-                >
+                  className="flex-1 py-4 border-2 border-gray-100 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400 hover:text-gray-900 hover:border-gray-200 transition-all">
                   Back
                 </button>
 
                 <button
                   type="submit"
-                  className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]"
-                >
+                  className="flex-2 py-4 bg-blue-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-800 transition-all shadow-xl shadow-blue-100 active:scale-[0.98]">
                   Complete Signup
                 </button>
               </div>
