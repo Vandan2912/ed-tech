@@ -6,6 +6,8 @@ import {
   Brain,
   Loader2,
   PlayCircle,
+  Sparkles,
+  Trophy,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -17,14 +19,17 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import {
+  getNotifications,
   getPinnedMessages,
   loadReadIds,
+  markNotificationRead,
   notifyNotificationsUpdated,
   persistReadIds,
+  type AppNotificationItem,
   type PinnedMessage,
 } from "@/api/notifications";
 
-type NotificationType = "urgent" | "quiz" | "lesson" | "info" | "warning";
+type NotificationType = "urgent" | "quiz" | "lesson" | "info" | "warning" | "reward";
 
 interface AppNotification {
   id: string;
@@ -76,7 +81,54 @@ const typeConfig: Record<
     dot: "bg-[#f0b100]",
     badgeUnread: "bg-[#f0b100] text-white",
   },
+  reward: {
+    icon: Trophy,
+    accent: "text-[#16a34a]",
+    cardUnread: "bg-[#f0fdf4] border-[#bbf7d0]",
+    dot: "bg-[#16a34a]",
+    badgeUnread: "bg-[#16a34a] text-white",
+  },
 };
+
+function humanizeTitle(raw: string): string {
+  return raw
+    .toLowerCase()
+    .split(/[_\s]+/)
+    .filter(Boolean)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+function fromApiType(apiType: string): { type: NotificationType; badge: string } {
+  switch (apiType) {
+    case "xp_reward":
+      return { type: "reward", badge: "XP Reward" };
+    case "homework":
+      return { type: "lesson", badge: "Homework" };
+    case "quiz":
+      return { type: "quiz", badge: "Quiz" };
+    case "lesson":
+      return { type: "lesson", badge: "Lesson" };
+    case "system":
+      return { type: "info", badge: "System" };
+    default:
+      return { type: "info", badge: humanizeTitle(apiType) };
+  }
+}
+
+function toAppNotificationFromApi(n: AppNotificationItem): AppNotification {
+  const { type, badge } = fromApiType(n.type);
+  return {
+    id: n.id,
+    type,
+    badge,
+    time: formatRelativeTime(n.createdAt),
+    title: humanizeTitle(n.title),
+    description: n.message,
+    from: n.from,
+    read: n.isRead,
+  };
+}
 
 function formatRelativeTime(iso: string): string {
   const then = new Date(iso).getTime();
@@ -109,16 +161,38 @@ function toAppNotification(
   };
 }
 
-function NotificationCard({ notification }: { notification: AppNotification }) {
+function NotificationCard({
+  notification,
+  onClick,
+}: {
+  notification: AppNotification;
+  onClick?: () => void;
+}) {
   const config = typeConfig[notification.type];
   const Icon = config.icon;
   const { read } = notification;
+  const clickable = !read && !!onClick;
 
   return (
     <div
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onClick={clickable ? onClick : undefined}
+      onKeyDown={
+        clickable
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick?.();
+              }
+            }
+          : undefined
+      }
       className={cn(
         "flex gap-3 rounded-[16px] border-2 p-4",
         read ? "border-[#f3f4f6] bg-[#f9fafb]/60" : config.cardUnread,
+        clickable &&
+          "cursor-pointer transition-colors hover:brightness-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc]",
       )}
     >
       <div
@@ -175,6 +249,10 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [activity, setActivity] = useState<AppNotification[]>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
+  const [activityError, setActivityError] = useState<string | null>(null);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -193,10 +271,34 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
         if (!cancelled) setLoading(false);
       });
 
+    getNotifications()
+      .then((res) => {
+        if (cancelled) return;
+        setActivity(res.items.map(toAppNotificationFromApi));
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("Failed to load notifications", err);
+        setActivityError("Couldn't load notifications. Please try again.");
+      })
+      .finally(() => {
+        if (!cancelled) setActivityLoading(false);
+      });
+
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const activityUnreadCount = useMemo(
+    () => activity.filter((n) => !n.read).length,
+    [activity],
+  );
+
+  const visibleActivity = useMemo(
+    () => (filter === "unread" ? activity.filter((n) => !n.read) : activity),
+    [activity, filter],
+  );
 
   const unreadCount = useMemo(
     () => notifications.filter((n) => !n.read).length,
@@ -208,7 +310,23 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
     [notifications, filter],
   );
 
+  const markActivityRead = (id: string) => {
+    // optimistic update; revert on failure
+    setActivity((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+    );
+    markNotificationRead(id)
+      .then(() => notifyNotificationsUpdated())
+      .catch((err) => {
+        console.error("Failed to mark notification read", err);
+        setActivity((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: false } : n)),
+        );
+      });
+  };
+
   const markAllRead = () => {
+    // pinned messages (localStorage-backed)
     setNotifications((prev) => {
       const next = prev.map((n) => ({ ...n, read: true }));
       const ids = loadReadIds();
@@ -216,6 +334,28 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
       persistReadIds(ids);
       return next;
     });
+
+    // API notifications — patch each unread one in parallel
+    const unread = activity.filter((n) => !n.read);
+    if (unread.length > 0) {
+      setActivity((prev) => prev.map((n) => ({ ...n, read: true })));
+      Promise.allSettled(unread.map((n) => markNotificationRead(n.id))).then(
+        (results) => {
+          const failed = results
+            .map((r, i) => (r.status === "rejected" ? unread[i].id : null))
+            .filter((x): x is string => x !== null);
+          if (failed.length > 0) {
+            console.error("Failed to mark some notifications read", failed);
+            const failedSet = new Set(failed);
+            setActivity((prev) =>
+              prev.map((n) => (failedSet.has(n.id) ? { ...n, read: false } : n)),
+            );
+          }
+          notifyNotificationsUpdated();
+        },
+      );
+    }
+
     notifyNotificationsUpdated();
   };
 
@@ -247,7 +387,7 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
       </div>
 
       {/* scrollable body */}
-      <div className="flex-1 overflow-y-auto p-5">
+      <div className="flex-1 overflow-y-auto p-5 space-y-5">
         <div className="overflow-hidden rounded-[16px] border border-[#f3f4f6] bg-white shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-6px_rgba(0,0,0,0.1)]">
           {/* summary */}
           <div className="flex flex-col gap-3 border-b border-[#f9fafb] bg-linear-to-r from-[#fef2f2]/40 to-white px-5 pt-4 pb-4">
@@ -296,13 +436,13 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
                       : "text-[#6a7282]",
                   )}
                 >
-                  Unread ({unreadCount})
+                  Unread ({unreadCount + activityUnreadCount})
                 </button>
               </div>
               <button
                 type="button"
                 onClick={markAllRead}
-                disabled={unreadCount === 0}
+                disabled={unreadCount + activityUnreadCount === 0}
                 className="rounded-[14px] bg-[#eff6ff] px-4 py-1.5 text-[10px] font-black uppercase tracking-[1.12px] text-[#155dfc] transition-colors hover:bg-[#dbeafe] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Mark all read
@@ -326,6 +466,53 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
             ) : (
               visible.map((notification) => (
                 <NotificationCard key={notification.id} notification={notification} />
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* notifications (activity) section */}
+        <div className="overflow-hidden rounded-[16px] border border-[#f3f4f6] bg-white shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-6px_rgba(0,0,0,0.1)]">
+          <div className="flex items-center gap-3 border-b border-[#f9fafb] bg-linear-to-r from-[#eff6ff]/40 to-white px-5 pt-4 pb-4">
+            <div className="relative shrink-0">
+              <div className="flex size-9 items-center justify-center rounded-[14px] bg-[#dbeafe]">
+                <Sparkles size={20} className="text-[#2b7fff]" />
+              </div>
+              {activityUnreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full bg-[#2b7fff] text-[9px] font-black tracking-[0.17px] text-white drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.1)]">
+                  {activityUnreadCount}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[12px] font-black uppercase leading-4 tracking-[0.6px] text-[#101828]">
+                Notifications
+              </span>
+              <span className="text-[12px] leading-4 text-[#6a7282]">
+                Rewards, homework & system updates
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2.5 p-4">
+            {activityLoading ? (
+              <div className="flex items-center justify-center gap-2 py-8 text-[12px] text-[#99a1af]">
+                <Loader2 size={14} className="animate-spin" />
+                Loading notifications...
+              </div>
+            ) : activityError ? (
+              <p className="py-8 text-center text-[12px] text-[#fb2c36]">{activityError}</p>
+            ) : visibleActivity.length === 0 ? (
+              <p className="py-8 text-center text-[12px] text-[#99a1af]">
+                No notifications yet.
+              </p>
+            ) : (
+              visibleActivity.map((notification) => (
+                <NotificationCard
+                  key={notification.id}
+                  notification={notification}
+                  onClick={() => markActivityRead(notification.id)}
+                />
               ))
             )}
           </div>
