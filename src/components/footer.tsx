@@ -2,7 +2,7 @@ import { Brain } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100 py-12 mt-20">
+    <footer className="bg-white border-t border-gray-100 pt-12 pb-19 md:pb-12 mt-20">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="space-y-6 md:col-span-1">
           <div className="flex items-center gap-2">
@@ -14,7 +14,8 @@ export function Footer() {
             </span>
           </div>
           <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-            Empowering 5th to 12th standard learners with AI-driven personalized education and cognitive tracking.
+            Empowering 5th to 12th standard learners with AI-driven personalized
+            education and cognitive tracking.
           </p>
         </div>
 

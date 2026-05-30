@@ -159,9 +159,9 @@ const Topic = () => {
   return (
     <div className="min-h-screen bg-[#f9fafb] pb-24 md:pb-12">
       {!showDifficultyModal && (
-        <div className="max-w-5xl mx-auto px-4 pt-8 md:px-8">
+        <div className="max-w-5xl mx-auto px-4 pt-4 sm:pt-8 md:px-8">
           {/* 🎥 Video Container */}
-          <div className="bg-black aspect-video rounded-[32px] overflow-hidden shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] mb-8">
+          <div className="bg-black aspect-video rounded-2xl sm:rounded-[32px] overflow-hidden shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] mb-6 sm:mb-8">
             <iframe
               width="100%"
               height="100%"
@@ -173,26 +173,26 @@ const Topic = () => {
           </div>
 
           {/* 📘 Header Section */}
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-8">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3">
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-8 mb-6 sm:mb-8">
+            <div className="flex-1 w-full">
+              <div className="flex flex-wrap items-center gap-2 mb-3">
                 <span className="bg-[#eff6ff] border border-[#dbeafe] text-[#155dfc] text-[9px] font-black uppercase tracking-[1.067px] px-2 py-0.5 rounded-full">
                   {course.name}
                 </span>
                 <span className="bg-[#fffbeb] border border-[#fef3c6] text-[#e17100] text-[9px] font-black uppercase tracking-[1.067px] px-2 py-0.5 rounded-full">
                   Medium
                 </span>
-                <div className="flex items-center gap-1 text-[#99a1af] text-[9px] font-bold ml-2">
+                <div className="flex items-center gap-1 text-[#99a1af] text-[9px] font-bold ml-0 sm:ml-2">
                   <Clock size={12} />
                   <span>18:30</span>
                 </div>
               </div>
 
-              <h1 className="text-[32px] font-black text-[#101828] tracking-tight mb-4">
+              <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-black text-[#101828] tracking-tight mb-3 sm:mb-4">
                 {topic.title}
               </h1>
 
-              <p className="text-[#4a5565] text-[14px] leading-[22.75px] max-w-2xl">
+              <p className="text-[#4a5565] text-[13px] sm:text-[14px] leading-relaxed sm:leading-[22.75px] max-w-2xl">
                 Algebra is the foundation of all advanced mathematics. In this
                 lesson, you'll explore variables, expressions, and equations —
                 learning how to manipulate unknowns to solve real-world
@@ -202,7 +202,7 @@ const Topic = () => {
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-2 min-w-45">
+            <div className="flex flex-col items-center gap-2 w-full lg:w-auto lg:min-w-45">
               <button
                 className="w-full bg-[#155dfc] text-white px-8 h-11 rounded-[16px] font-black text-[14px] uppercase tracking-[1.25px] shadow-[0px_10px_15px_0px_#bedbff,0px_4px_6px_0px_#bedbff] hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group"
                 onClick={openQuizModes}>
@@ -223,8 +223,8 @@ const Topic = () => {
           </div>
 
           {/* 📊 Quiz Attempts Today */}
-          <div className="bg-white border border-[#f3f4f6] rounded-[28px] shadow-sm p-6 mb-8">
-            <div className="flex items-center gap-3 mb-6 px-1">
+          <div className="bg-white border border-[#f3f4f6] rounded-[24px] sm:rounded-[28px] shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+            <div className="flex items-center gap-3 mb-4 sm:mb-6 px-1">
               <div className="w-8 h-8 rounded-[14px] bg-[#dbeafe] flex items-center justify-center">
                 <BarChart3 size={16} className="text-[#155dfc]" />
               </div>
@@ -252,9 +252,9 @@ const Topic = () => {
               </div>
             ) : (
               <div
-                className={`grid grid-cols-1 gap-6 ${
+                className={`grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 ${
                   quizModes.length === 1
-                    ? "md:grid-cols-1"
+                    ? "grid-cols-1 md:grid-cols-1"
                     : quizModes.length === 2
                       ? "md:grid-cols-2"
                       : "md:grid-cols-3"
@@ -284,8 +284,8 @@ const Topic = () => {
           </div>
 
           {/* 🎓 Learning Outcomes */}
-          <div className="bg-white border border-[#f3f4f6] rounded-[28px] shadow-sm p-8">
-            <div className="flex items-center gap-3 mb-8 px-1">
+          <div className="bg-white border border-[#f3f4f6] rounded-[24px] sm:rounded-[28px] shadow-sm p-5 sm:p-8">
+            <div className="flex items-center gap-3 mb-6 sm:mb-8 px-1">
               <div className="w-8 h-8 rounded-[14px] bg-[#d0fae5] flex items-center justify-center">
                 <BookOpen size={16} className="text-[#00bc7d]" />
               </div>
@@ -294,7 +294,7 @@ const Topic = () => {
               </h3>
             </div>
 
-            <div className="space-y-4 px-2">
+            <div className="space-y-4 px-0 sm:px-2">
               <OutcomeItem
                 num={1}
                 text="Variables, constants, and algebraic expressions"
@@ -371,30 +371,31 @@ function DifficultyModal({
     : null;
 
   return (
-    <div className="relative items-center justify-center p-4">
+    <div className="relative items-center justify-center p-2 sm:p-4">
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="relative bg-[#f9fafb] w-full max-w-4xl rounded-[32px] overflow-hidden p-8 mx-auto">
+        className="relative bg-[#f9fafb] w-full max-w-4xl rounded-[24px] sm:rounded-[32px] overflow-hidden p-4 sm:p-6 md:p-8 mx-auto">
         <button
           onClick={onClose}
-          className="absolute top-6 left-6 flex items-center gap-2 text-[#99a1af] font-medium hover:text-[#101828] transition-colors">
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-1.5 sm:gap-2 text-[#99a1af] text-[12px] sm:text-sm font-medium hover:text-[#101828] transition-colors">
           <ArrowLeft size={16} />
-          Back to Lesson
+          <span className="hidden sm:inline">Back to Lesson</span>
+          <span className="sm:hidden">Back</span>
         </button>
 
-        <div className="flex flex-col items-center mt-12 mb-12">
-          <div className="bg-[#eff6ff] border border-[#dbeafe] px-4 py-1.5 rounded-full flex items-center gap-2 mb-4">
+        <div className="flex flex-col items-center mt-10 sm:mt-12 mb-8 sm:mb-12">
+          <div className="bg-[#eff6ff] border border-[#dbeafe] px-3 sm:px-4 py-1.5 rounded-full flex items-center gap-2 mb-3 sm:mb-4">
             <Zap size={14} className="text-[#155dfc]" />
             <span className="text-[10px] font-black text-[#155dfc] uppercase tracking-[1.1px]">
               Teacher-Created Quiz
             </span>
           </div>
-          <h2 className="text-[32px] font-black text-[#101828] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-[32px] font-black text-[#101828] mb-3 sm:mb-4 text-center px-2">
             {topic.title}
           </h2>
-          <p className="text-[#6a7282] text-[14px] text-center max-w-112.5">
+          <p className="text-[#6a7282] text-[13px] sm:text-[14px] text-center max-w-112.5 px-2">
             {modes.length > 0
               ? `This quiz was created by your teacher with ${modes.length} difficulty ${modes.length === 1 ? "level" : "levels"}. Choose your challenge level and earn XP!`
               : "Choose your challenge level and earn XP!"}
@@ -413,7 +414,7 @@ function DifficultyModal({
           </div>
         ) : (
           <div
-            className={`grid grid-cols-1 gap-6 mb-8 ${
+            className={`grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8 ${
               modes.length === 1
                 ? "md:grid-cols-1 max-w-md mx-auto"
                 : modes.length === 2
@@ -456,20 +457,22 @@ function DifficultyModal({
 
         {/* 🌟 Premium Upgrade Banner — show if at least one mode is exhausted */}
         {anyExhausted && (
-          <div className="bg-linear-to-r from-[#fffbeb] to-[#fff7ed] border border-[#fee685] rounded-[16px] h-20.5 px-6 flex items-center gap-4 mb-8">
-            <div className="w-10 h-10 rounded-[14px] bg-[#fef3c6] flex items-center justify-center shrink-0">
-              <Zap size={20} className="text-[#973c00] fill-[#973c00]/20" />
+          <div className="bg-linear-to-r from-[#fffbeb] to-[#fff7ed] border border-[#fee685] rounded-[16px] p-4 sm:p-0 sm:h-20.5 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto sm:flex-1">
+              <div className="w-10 h-10 rounded-[14px] bg-[#fef3c6] flex items-center justify-center shrink-0">
+                <Zap size={20} className="text-[#973c00] fill-[#973c00]/20" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-[13px] sm:text-[14px] font-black text-[#973c00] leading-tight sm:leading-none mb-1">
+                  Daily Attempts Exhausted
+                </h4>
+                <p className="text-[10px] font-medium text-[#e17100]">
+                  Upgrade to Premium for unlimited daily attempts across all
+                  difficulty levels.
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h4 className="text-[14px] font-black text-[#973c00] leading-none mb-1">
-                Daily Attempts Exhausted
-              </h4>
-              <p className="text-[10px] font-medium text-[#e17100]">
-                Upgrade to Premium for unlimited daily attempts across all
-                difficulty levels.
-              </p>
-            </div>
-            <button className="bg-[#fe9a00] h-8 px-6 rounded-[14px] text-white text-[10px] font-black uppercase tracking-[1.1px] hover:shadow-lg hover:scale-105 active:scale-95 transition-all">
+            <button className="bg-[#fe9a00] h-8 px-6 rounded-[14px] text-white text-[10px] font-black uppercase tracking-[1.1px] hover:shadow-lg hover:scale-105 active:scale-95 transition-all w-full sm:w-auto shrink-0">
               Upgrade
             </button>
           </div>
@@ -478,7 +481,7 @@ function DifficultyModal({
         <button
           disabled={!selectedMode}
           onClick={onStart}
-          className={`w-full h-14 rounded-[16px] font-black text-[16px] uppercase tracking-[1.3px] transition-all flex items-center justify-center gap-3 ${
+          className={`w-full h-12 sm:h-14 rounded-[16px] font-black text-[13px] sm:text-[16px] uppercase tracking-[1.1px] sm:tracking-[1.3px] transition-all flex items-center justify-center gap-3 ${
             selectedMode
               ? "bg-[#155dfc] text-white shadow-lg cursor-pointer"
               : "bg-[#155dfc]/10 text-[#155dfc]/40 cursor-not-allowed"
@@ -524,18 +527,20 @@ function DifficultyCard({
       whileHover={exhausted ? undefined : { y: -4 }}
       whileTap={exhausted ? undefined : { scale: 0.98 }}
       onClick={onClick}
-      className={`bg-white rounded-[28px] p-6 border-2 transition-all select-none h-full flex flex-col ${
+      className={`bg-white rounded-[20px] sm:rounded-[28px] p-4 sm:p-6 border-2 transition-all select-none h-full flex flex-col ${
         exhausted
           ? "border-[#f3f4f6] opacity-60 cursor-not-allowed"
           : isSelected
             ? "border-[#155dfc] shadow-lg scale-[1.02] cursor-pointer"
             : "border-[#f3f4f6] hover:border-gray-200 cursor-pointer"
       }`}>
-      <div className="bg-gray-50 w-12 h-12 rounded-2xl flex items-center justify-center text-[24px] mb-4">
+      <div className="bg-gray-50 w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-[20px] sm:text-[24px] mb-3 sm:mb-4">
         {emoji}
       </div>
-      <h3 className="text-[18px] font-black text-[#101828] mb-2">{title}</h3>
-      <p className="text-[10px] font-medium text-[#6a7282] mb-6 leading-4">
+      <h3 className="text-[16px] sm:text-[18px] font-black text-[#101828] mb-1 sm:mb-2">
+        {title}
+      </h3>
+      <p className="text-[10px] font-medium text-[#6a7282] mb-4 sm:mb-6 leading-4">
         {desc}
       </p>
 
@@ -650,11 +655,11 @@ function AttemptCard({
 
 function OutcomeItem({ num, text }: { num: number; text: string }) {
   return (
-    <div className="flex items-center gap-4 group">
-      <div className="w-6 h-6 rounded-lg bg-[#d0fae5] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+    <div className="flex items-start sm:items-center gap-3 sm:gap-4 group">
+      <div className="w-6 h-6 rounded-lg bg-[#d0fae5] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform mt-0.5 sm:mt-0">
         <span className="text-[10px] font-black text-[#007a55]">{num}</span>
       </div>
-      <p className="text-[14px] text-[#364153] leading-relaxed group-hover:text-[#101828] transition-colors">
+      <p className="text-[13px] sm:text-[14px] text-[#364153] leading-relaxed group-hover:text-[#101828] transition-colors">
         {text}
       </p>
     </div>

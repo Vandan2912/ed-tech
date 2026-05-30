@@ -2,7 +2,7 @@ import { Clock, Play } from "lucide-react";
 
 export function ResumeLearning() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 px-4 pb-3 mb-0">
+    <div className="fixed bottom-18 left-0 right-0 z-40 px-4 pb-3 mb-0">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-4 bg-blue-900 text-white px-5 py-3.5 rounded-2xl shadow-xl shadow-blue-900/20">
           <div className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center shrink-0">
@@ -13,7 +13,8 @@ export function ResumeLearning() {
               Pick up where you left off
             </p>
             <p className="font-bold text-sm truncate">
-              Trigonometry<span className="text-blue-300 ml-2 text-xs">Maths</span>
+              Trigonometry
+              <span className="text-blue-300 ml-2 text-xs">Maths</span>
             </p>
           </div>
           <button
