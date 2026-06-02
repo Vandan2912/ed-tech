@@ -25,6 +25,7 @@ import Profile from "./pages/Profile";
 import Certificates from "./pages/Certificates";
 import StudyRoom from "./pages/StudyRoom";
 import StudyRoomChat from "./pages/StudyRoomChat";
+import TeacherDashboard from "./pages/TeacherDashboard";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -180,6 +181,15 @@ function App() {
                 element={
                   <ProtectedRoute header={false} footer={false}>
                     <StudyRoomChat />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/teacher"
+                element={
+                  <ProtectedRoute>
+                    <TeacherDashboard />
                   </ProtectedRoute>
                 }
               />
