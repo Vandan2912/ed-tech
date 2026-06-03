@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
+import { api } from "@/lib/api";
 
 export type User = {
   email: string;
@@ -41,6 +42,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserState(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
+
+  useEffect(() => {
+    if (!token) return;
+    const today = new Date().toDateString();
+    if (localStorage.getItem("xp_activity_date") === today) return;
+    api
+      .post("/xp/activity", {}, { headers: { Authorization: `Bearer ${token}` } })
+      .then(() => localStorage.setItem("xp_activity_date", today))
+      .catch((err) => console.error("Failed to record XP activity", err));
+  }, [token]);
 
   const logout = () => {
     setToken(null);
