@@ -56,10 +56,11 @@ export function notifyNotificationsUpdated() {
 /** Pinned-message count minus the IDs marked read in localStorage. Refreshes
  *  on mount, when another tab writes to storage, and when `notifyNotifications-
  *  Updated()` fires in this tab. */
-export function useUnreadAlertsCount(): number {
+export function useUnreadAlertsCount(skip = false): number {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (skip) return;
     let cancelled = false;
 
     const refresh = async () => {
@@ -88,7 +89,7 @@ export function useUnreadAlertsCount(): number {
       window.removeEventListener(NOTIFICATIONS_UPDATED_EVENT, onUpdate);
       window.removeEventListener("storage", onStorage);
     };
-  }, []);
+  }, [skip]);
 
   return count;
 }
@@ -184,4 +185,46 @@ export const pinMessage = async (payload: {
   await api.post("/message/pin-message", payload, {
     headers: { Authorization: `Bearer ${token}` },
   });
+};
+
+export interface TeacherPinnedMessage {
+  id: string;
+  title: string;
+  message: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ApiTeacherPinnedMessage {
+  id: string;
+  title: string;
+  message: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface ApiTeacherPinnedMessagesResponse {
+  success: boolean;
+  count: number;
+  data: ApiTeacherPinnedMessage[];
+}
+
+export const getTeacherPinnedMessages = async (): Promise<TeacherPinnedMessage[]> => {
+  const token = localStorage.getItem("token");
+  const res = await api.get<ApiTeacherPinnedMessagesResponse>(
+    "/message/teacher-pinned-messages",
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+
+  const data = res?.data?.data ?? [];
+  return data.map((m) => ({
+    id: m.id,
+    title: m.title,
+    message: m.message,
+    isActive: m.is_active,
+    createdAt: m.created_at,
+    updatedAt: m.updated_at,
+  }));
 };

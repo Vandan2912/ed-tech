@@ -29,7 +29,7 @@ export function Header() {
   const { user, logout } = useAuth();
   const [imgError, setImgError] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
-  const unreadAlerts = useUnreadAlertsCount();
+  const unreadAlerts = useUnreadAlertsCount(user?.role === "teacher");
 
   const teacherTabs = [
     { id: "alerts", label: "Alerts", path: "/", icon: Bell, badge: unreadAlerts },

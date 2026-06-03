@@ -3,10 +3,10 @@ import { toast } from "sonner";
 import { useAuth } from "@/auth/useAuth";
 import { Pin, Send, Loader2 } from "lucide-react";
 import {
-  getPinnedMessages,
+  getTeacherPinnedMessages,
   notifyNotificationsUpdated,
   pinMessage,
-  type PinnedMessage,
+  type TeacherPinnedMessage,
 } from "@/api/notifications";
 
 function formatDate(iso: string): string {
@@ -24,7 +24,7 @@ export default function PinMessage() {
   const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [pinned, setPinned] = useState<PinnedMessage | null>(null);
+  const [pinned, setPinned] = useState<TeacherPinnedMessage | null>(null);
   const [loadingPinned, setLoadingPinned] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -35,8 +35,8 @@ export default function PinMessage() {
 
   const refreshPinned = async () => {
     try {
-      const list = await getPinnedMessages();
-      setPinned(list[0] ?? null);
+      const list = await getTeacherPinnedMessages();
+      setPinned(list.find((m) => m.isActive) ?? list[0] ?? null);
     } catch (err) {
       console.error("Failed to load pinned messages", err);
     } finally {
@@ -116,7 +116,7 @@ export default function PinMessage() {
                   {pinned.message}
                 </p>
                 <p className="text-[#99a1af] text-[10px] font-black uppercase tracking-[1.12px] mt-3">
-                  Pinned by {pinned.teacherName}
+                  {pinned.isActive ? "Active" : "Inactive"}
                 </p>
               </div>
             </div>
