@@ -1,7 +1,9 @@
 import { motion } from "motion/react";
 import { Brain, ChevronRight } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
-const data = [
+import type { CognitiveMetrics } from "@/api/home";
+
+const chartData = [
   { load: 40 },
   { load: 50 },
   { load: 55 },
@@ -13,7 +15,11 @@ const data = [
   { load: 80 },
 ];
 
-export function CognitiveLoad() {
+interface Props {
+  metrics?: CognitiveMetrics;
+}
+
+export function CognitiveLoad({ metrics }: Props) {
   return (
     <section className="px-6 py-20 relative">
       <motion.div
@@ -42,18 +48,18 @@ export function CognitiveLoad() {
           <div className="flex items-center gap-8">
             <div>
               <div className="text-white text-center text-lg not-italic font-bold leading-7 tracking-[-0.439px]">
-                98%
+                {metrics?.efficiency ?? "—"}
               </div>
               <div className="text-[#6A7282] text-center text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
-                ACCURACY
+                EFFICIENCY
               </div>
             </div>
             <div>
               <div className="text-white text-center text-lg not-italic font-bold leading-7 tracking-[-0.439px]">
-                2.4k
+                {metrics?.hours_learned != null ? `${metrics.hours_learned}h` : "—"}
               </div>
               <div className="text-[#6A7282] text-center text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
-                STUDENTS
+                HOURS LEARNED
               </div>
             </div>
             <button className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-blue-900/20 leading-normal">
@@ -64,7 +70,7 @@ export function CognitiveLoad() {
 
         <div className="lg:w-1/2 w-full h-50 bg-[#FFFFFF0D] border border-[#FFFFFF1A] rounded-2xl p-5 relative z-10">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
+            <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.35} />

@@ -1,7 +1,12 @@
 import { motion } from "motion/react";
 import { ChevronRight, Trophy, Award, Medal } from "lucide-react";
+import type { HomeProgressSummary } from "@/api/home";
 
-export function Progress() {
+interface Props {
+  summary?: HomeProgressSummary;
+}
+
+export function Progress({ summary }: Props) {
   return (
     <section className="px-6 pb-16 relative overflow-hidden bg-gray-50/50">
       <div className="lg:flex-row gap-16 max-w-7xl mx-auto relative z-10 flex w-full flex-col items-start border border-blue-50 rounded-[40px] border-solid bg-white p-8 md:p-12 shadow-2xl shadow-blue-50/50 ">
@@ -18,7 +23,7 @@ export function Progress() {
             </button>
           </div>
 
-          {/* Current Level Card */}
+          {/* Courses Completed Card */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -26,15 +31,12 @@ export function Progress() {
             className="relative overflow-hidden bg-blue-100 p-6 rounded-3xl flex flex-col gap-4">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#1C398E] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
-                CURRENT LEVEL
+                COURSES COMPLETED
               </span>
               <Trophy size={16} className="text-blue-500" />
             </div>
-            <div className="mb-3 text-[#1C398E] text-3xl not-italic font-black leading-9 tracking-[0.396px]">18</div>
-            <div className="space-y-3 mb-3">
-              <div className="h-2 bg-blue-200 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-600 w-[60%] rounded-full"></div>
-              </div>
+            <div className="mb-3 text-[#1C398E] text-3xl not-italic font-black leading-9 tracking-[0.396px]">
+              {summary?.courses_completed ?? "—"}
             </div>
             <a
               href="#"
@@ -57,8 +59,9 @@ export function Progress() {
               <Award size={16} className="text-purple-500" />
             </div>
             <div>
-              <div className="text-[#59168B] text-3xl not-italic font-black leading-9 tracking-[0.396px] mb-2">12</div>
-              <div className="text-[#3C0366] text-xs not-italic font-bold leading-4">+2 New this month</div>
+              <div className="text-[#59168B] text-3xl not-italic font-black leading-9 tracking-[0.396px] mb-2">
+                {summary?.certificates_earned ?? "—"}
+              </div>
             </div>
           </motion.div>
 
@@ -76,8 +79,9 @@ export function Progress() {
               <Medal size={16} className="text-orange-500" />
             </div>
             <div>
-              <div className="text-[#7E2A0C] text-3xl not-italic font-black leading-9 tracking-[0.396px] mb-2">#4</div>
-              <div className="text-[#441306] text-xs not-italic font-bold leading-4">Top 1% Worldwide</div>
+              <div className="text-[#7E2A0C] text-3xl not-italic font-black leading-9 tracking-[0.396px] mb-2">
+                {summary?.global_rank != null ? `#${summary.global_rank}` : "—"}
+              </div>
             </div>
           </motion.div>
         </div>
