@@ -28,7 +28,7 @@ export function Recommended() {
   if (subjects.length === 0) return null;
 
   return (
-    <section className="px-6 pb-16">
+    <section className="px-6 pb-5 md:pb-16">
       <div className="flex justify-between items-end mb-10">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">

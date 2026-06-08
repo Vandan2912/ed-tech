@@ -21,7 +21,7 @@ interface Props {
 
 export function CognitiveLoad({ metrics }: Props) {
   return (
-    <section className="px-6 py-20 relative">
+    <section className="px-6 py-5 md:py-20 relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -41,8 +41,9 @@ export function CognitiveLoad({ metrics }: Props) {
           </h2>
 
           <p className="max-w-md text-[#99A1AF] text-xs not-italic font-normal leading-[19.5px]">
-            Our AI analyzes your response patterns and time to answer to determine real-time mental pressure. Our
-            syllabus adapts while minimizing peak cognitive load.
+            Our AI analyzes your response patterns and time to answer to
+            determine real-time mental pressure. Our syllabus adapts while
+            minimizing peak cognitive load.
           </p>
 
           <div className="flex items-center gap-8">
@@ -56,7 +57,9 @@ export function CognitiveLoad({ metrics }: Props) {
             </div>
             <div>
               <div className="text-white text-center text-lg not-italic font-bold leading-7 tracking-[-0.439px]">
-                {metrics?.hours_learned != null ? `${metrics.hours_learned}h` : "—"}
+                {metrics?.hours_learned != null
+                  ? `${metrics.hours_learned}h`
+                  : "—"}
               </div>
               <div className="text-[#6A7282] text-center text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
                 HOURS LEARNED

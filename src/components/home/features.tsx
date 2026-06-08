@@ -30,14 +30,15 @@ export function Features() {
   ];
 
   return (
-    <section className="px-8 py-24 text-center">
+    <section className="px-8 py-5 md:py-24 text-center">
       <div className="max-w-3xl mx-auto mb-16">
         <h2 className="md:text-4xl mb-6 text-[#101828] text-center text-3xl not-italic font-black leading-9 tracking-[0.396px]">
           Why Choose SmartLearn AI?
         </h2>
         <p className="max-w-2xl mx-auto text-[#364153] text-center text-base not-italic font-normal leading-6 tracking-[-0.312px]">
-          We combine advanced artificial intelligence with cognitive science to create the most effective learning
-          environment for 5th to 12th-grade students.
+          We combine advanced artificial intelligence with cognitive science to
+          create the most effective learning environment for 5th to 12th-grade
+          students.
         </p>
       </div>
 
@@ -50,11 +51,17 @@ export function Features() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ delay: idx * 0.1, duration: 0.5 }}
             className="group p-8 rounded-[32px] bg-white border border-gray-100 hover:border-blue-100 hover:shadow-2xl hover:shadow-blue-50 transition-all duration-300 text-start">
-            <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center mb-8`}>
+            <div
+              className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center mb-8`}>
               {feature.icon}
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3"> {feature.title}</h3>
-            <p className="text-sm text-gray-700 leading-relaxed">{feature.desc}</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">
+              {" "}
+              {feature.title}
+            </h3>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              {feature.desc}
+            </p>
           </motion.div>
         ))}
       </div>

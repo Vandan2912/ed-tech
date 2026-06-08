@@ -8,18 +8,21 @@ interface Props {
 
 export function Progress({ summary }: Props) {
   return (
-    <section className="px-6 pb-16 relative overflow-hidden bg-gray-50/50">
+    <section className="px-6 pb-5 md:pb-16 relative overflow-hidden bg-gray-50/50">
       <div className="lg:flex-row gap-16 max-w-7xl mx-auto relative z-10 flex w-full flex-col items-start border border-blue-50 rounded-[40px] border-solid bg-white p-8 md:p-12 shadow-2xl shadow-blue-50/50 ">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 id="progress-snapshot-heading" className="text-xl font-bold text-gray-900">
+            <h3
+              id="progress-snapshot-heading"
+              className="text-xl font-bold text-gray-900">
               Your Progress
             </h3>
             <p className="text-gray-700 text-sm leading-relaxed">
               You are doing better than 85% of students in your grade.
             </p>
             <button className="text-blue-900 font-bold text-sm flex items-center gap-1 focus:underline">
-              See Learning Path <ChevronRight size={16} className="text-blue-900" />
+              See Learning Path{" "}
+              <ChevronRight size={16} className="text-blue-900" />
             </button>
           </div>
 

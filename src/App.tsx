@@ -1,5 +1,14 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { TooltipProvider } from "./components/ui/tooltip";
@@ -37,6 +46,7 @@ function App() {
           <Sonner />
 
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               {/* PUBLIC ROUTES */}
               <Route path="/login" element={<Login />} />
