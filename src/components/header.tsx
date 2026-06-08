@@ -6,7 +6,6 @@ import {
   Brain,
   Flame,
   LogOut,
-  Search,
   Settings,
   User,
   Users,
@@ -16,7 +15,11 @@ import {
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/useAuth";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useState } from "react";
 import { CoursesDropdown } from "./courses_drawer";
 import { UpgradeModal } from "./UpgradeModal";
@@ -32,9 +35,25 @@ export function Header() {
   const unreadAlerts = useUnreadAlertsCount(user?.role === "teacher");
 
   const teacherTabs = [
-    { id: "alerts", label: "Alerts", path: "/", icon: Bell, badge: unreadAlerts },
-    { id: "pin-message", label: "Pin Message", path: "/pin-message", icon: Pin },
-    { id: "engagement", label: "Engagement", path: "/engagement", icon: BarChart3 },
+    {
+      id: "alerts",
+      label: "Alerts",
+      path: "/",
+      icon: Bell,
+      badge: unreadAlerts,
+    },
+    {
+      id: "pin-message",
+      label: "Pin Message",
+      path: "/pin-message",
+      icon: Pin,
+    },
+    {
+      id: "engagement",
+      label: "Engagement",
+      path: "/engagement",
+      icon: BarChart3,
+    },
     { id: "content", label: "Content", path: "/content", icon: BookOpen },
   ];
 
@@ -66,7 +85,9 @@ export function Header() {
                   AI
                 </span>
               </span>
-              <span className="text-[#6A7282] text-[11px] font-medium leading-tight mt-0.5">Your Learning Journey</span>
+              <span className="text-[#6A7282] text-[11px] font-medium leading-tight mt-0.5">
+                Your Learning Journey
+              </span>
             </div>
           )}
         </div>
@@ -93,12 +114,18 @@ export function Header() {
                       layoutId="teacher-nav"
                       className="absolute inset-0 bg-white shadow-sm rounded-[14px]"
                       initial={false}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 30,
+                      }}
                     />
                   )}
                   <div className="relative z-10 flex items-center gap-2">
                     <Icon size={16} />
-                    <span className="text-[12px] font-black uppercase tracking-[1.2px]">{tab.label}</span>
+                    <span className="text-[12px] font-black uppercase tracking-[1.2px]">
+                      {tab.label}
+                    </span>
                     {tab.badge && (
                       <span className="bg-[#fb2c36] text-white text-[8px] font-black px-1.5 py-0.5 rounded-full -ml-1">
                         {tab.badge}
@@ -115,7 +142,9 @@ export function Header() {
               to="/"
               className={({ isActive }) =>
                 `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
                 }`
               }>
               HOME
@@ -126,7 +155,9 @@ export function Header() {
               to="/ranks"
               className={({ isActive }) =>
                 `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
                 }`
               }>
               RANKS
@@ -135,7 +166,9 @@ export function Header() {
               to="/stats"
               className={({ isActive }) =>
                 `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
                 }`
               }>
               STATS
@@ -144,7 +177,9 @@ export function Header() {
               to="/progress"
               className={({ isActive }) =>
                 `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
                 }`
               }>
               PROGRESS
@@ -153,7 +188,9 @@ export function Header() {
               to="/study"
               className={({ isActive }) =>
                 `flex justify-center items-center px-3.75 py-1.5 rounded-full ${
-                  isActive ? "text-[#1C398E] bg-white shadow-sm text-center " : "hover:text-[#1C398E]"
+                  isActive
+                    ? "text-[#1C398E] bg-white shadow-sm text-center "
+                    : "hover:text-[#1C398E]"
                 }`
               }>
               <Users size={16} className="me-1.75" /> STUDY
@@ -168,7 +205,12 @@ export function Header() {
                 <Flame size={16} className="group-hover:scale-110" /> 7
               </div>
               <div className="hidden md:flex items-center gap-1 bg-blue-50 text-[#155DFC] px-3 py-1.5 rounded-full text-sm border border-[#A9C8FFCC] group text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[0.064px]">
-                <Zap size={16} fill="#155DFC" className="group-hover:scale-110" /> 4
+                <Zap
+                  size={16}
+                  fill="#155DFC"
+                  className="group-hover:scale-110"
+                />{" "}
+                4
               </div>
 
               <NotificationBell
@@ -187,11 +229,6 @@ export function Header() {
               />
               <div className="hidden md:block w-px h-5 bg-[#E5E7EB] rounded-full"></div>
 
-              <button
-                aria-label="Search"
-                className="md:hidden w-9 h-9 flex items-center justify-center bg-[#F3F4F6] hover:bg-gray-200 rounded-full text-gray-600 transition-colors">
-                <Search size={18} />
-              </button>
               <NotificationBell
                 trigger={
                   <button
@@ -223,7 +260,9 @@ export function Header() {
               <button className="w-8 h-8 flex-col shrink-0 shadow-[0_0_0_2px_#E5E7EB,0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] rounded-full border-2 border-solid border-white flex justify-center items-center group focus-visible:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 {user?.profile_picture ? (
                   <img
-                    src={!imgError ? user.profile_picture : "/default-avatar.png"}
+                    src={
+                      !imgError ? user.profile_picture : "/default-avatar.png"
+                    }
                     onError={() => setImgError(true)}
                     alt="profile"
                     className="w-8 h-8 rounded-full"
@@ -237,7 +276,9 @@ export function Header() {
             <PopoverContent className="w-60 bg-white rounded-3xl shadow-2xl border border-gray-100 py-3 px-0 overflow-hidden z-50">
               <div className="px-5 py-3 border-b border-gray-50 mb-2 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Active {user?.role}</p>
+                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                    Active {user?.role}
+                  </p>
                   <p className="font-bold text-gray-900">
                     {user?.first_name} {user?.last_name}
                   </p>

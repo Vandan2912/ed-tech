@@ -48,8 +48,8 @@ const Courses = () => {
 
   return (
     <main className="min-h-[50vh]">
-      <div className="py-12">
-        <div className="p-6 pb-24 md:pb-6 md:px-28">
+      <div className="pt-12 pb-0 md:pb-12">
+        <div className="p-6 pb-0 md:pb-6 md:px-28">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             What do you want to learn?
           </h2>
@@ -75,11 +75,9 @@ const Courses = () => {
                 <div
                   key={course.id || course.name}
                   onClick={() => navigate(`/courses/${course.id}`)}
-                  className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm cursor-pointer flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition"
-                >
+                  className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm cursor-pointer flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition">
                   <div
-                    className={`${color} p-5 rounded-2xl text-white shadow-lg`}
-                  >
+                    className={`${color} p-5 rounded-2xl text-white shadow-lg`}>
                     {Icon ? <Icon size={24} /> : <div className="w-6 h-6" />}
                   </div>
 

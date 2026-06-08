@@ -34,7 +34,7 @@ export default function ProtectedRoute({
   return (
     <>
       {header && <Header />}
-      <div className={header ? "pb-20 md:pb-0" : undefined}>{children}</div>
+      <div className={header ? "pb-10 md:pb-0" : undefined}>{children}</div>
       {footer && <Footer />}
       {header && <MobileBottomBar />}
     </>

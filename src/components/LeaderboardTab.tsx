@@ -173,7 +173,7 @@ export default function LeaderboardTab() {
   return (
     <div className="space-y-6">
       {/* ── Header ── */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
             <Trophy size={20} className="text-amber-500" />
@@ -185,13 +185,13 @@ export default function LeaderboardTab() {
         </div>
 
         {/* Period filter */}
-        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 self-start sm:self-auto">
           {PERIODS.map(({ id, label }) => (
             <button
               key={id}
               onClick={() => setPeriod(id)}
               className={cn(
-                "px-4 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all",
+                "px-2.5 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-wider transition-all",
                 period === id
                   ? "bg-white text-[#101828] shadow-sm"
                   : "text-gray-400 hover:text-gray-600"
@@ -204,28 +204,28 @@ export default function LeaderboardTab() {
       </div>
 
       {/* ── Your rank banner ── */}
-      <div className="bg-blue-50 border border-blue-100 rounded-2xl px-5 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="bg-blue-50 border border-blue-100 rounded-2xl px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <Star size={16} className="text-blue-500 shrink-0" />
-          <div>
+          <div className="min-w-0">
             <p className="text-[10px] font-black uppercase tracking-widest text-blue-500">Your Rank</p>
-            <p className="text-[13px] font-black text-[#1C398E]">
-              #{you.rank} out of {students.length} students ·{" "}
+            <p className="text-[12px] sm:text-[13px] font-black text-[#1C398E] truncate">
+              #{you.rank} of {students.length} students ·{" "}
               <span className="text-blue-600">{you.pts.toLocaleString()} pts</span>
             </p>
           </div>
         </div>
-        <span className="flex items-center gap-1 text-[11px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full">
+        <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 sm:px-2.5 py-1 rounded-full shrink-0">
           <TrendingUp size={11} /> Rising
         </span>
       </div>
 
       {/* ── Podium ── */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-2xl p-4 sm:p-6 shadow-sm overflow-hidden">
         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 text-center mb-6">
           Top 3 Classmates
         </p>
-        <div className="flex items-end justify-center gap-6">
+        <div className="flex items-end justify-center gap-3 sm:gap-6">
           <PodiumCard student={top3[1]} place={2} />
           <PodiumCard student={top3[0]} place={1} />
           <PodiumCard student={top3[2]} place={3} />
@@ -235,10 +235,10 @@ export default function LeaderboardTab() {
       {/* ── Full leaderboard table ── */}
       <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
         {/* Table header */}
-        <div className="grid grid-cols-[60px_1fr_100px_90px] px-5 py-3 border-b border-gray-100">
+        <div className="grid grid-cols-[40px_1fr_80px] sm:grid-cols-[60px_1fr_100px_90px] px-4 sm:px-5 py-3 border-b border-gray-100">
           <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Rank</span>
           <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Student</span>
-          <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 text-center">Level</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 hidden sm:block text-center">Level</span>
           <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 text-right">Points</span>
         </div>
 
@@ -250,7 +250,7 @@ export default function LeaderboardTab() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.04 }}
             className={cn(
-              "grid grid-cols-[60px_1fr_100px_90px] items-center px-5 py-3.5 border-b border-gray-50 last:border-0 transition-colors",
+              "grid grid-cols-[40px_1fr_80px] sm:grid-cols-[60px_1fr_100px_90px] items-center px-4 sm:px-5 py-3.5 border-b border-gray-50 last:border-0 transition-colors",
               student.isYou ? "bg-blue-50/60" : "hover:bg-gray-50"
             )}
           >
@@ -260,15 +260,15 @@ export default function LeaderboardTab() {
             </div>
 
             {/* Student info */}
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <div className="relative shrink-0">
-                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-[11px] font-black text-gray-600">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200 flex items-center justify-center text-[10px] sm:text-[11px] font-black text-gray-600">
                   {student.avatar}
                 </div>
               </div>
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className={cn("text-[13px] font-black truncate", student.isYou ? "text-[#1C398E]" : "text-[#101828]")}>
+                <div className="flex items-center gap-1">
+                  <span className={cn("text-[12px] sm:text-[13px] font-black truncate", student.isYou ? "text-[#1C398E]" : "text-[#101828]")}>
                     {student.name}
                   </span>
                   {student.isYou && (
@@ -278,18 +278,18 @@ export default function LeaderboardTab() {
                   )}
                   <TrendIcon trend={student.trend} />
                 </div>
-                <p className="text-[11px] text-gray-400 font-medium truncate">{student.subject}</p>
+                <p className="text-[10px] sm:text-[11px] text-gray-400 font-medium truncate">{student.subject}</p>
               </div>
             </div>
 
-            {/* Level */}
-            <div className="flex items-center justify-center gap-1">
+            {/* Level — hidden on mobile */}
+            <div className="hidden sm:flex items-center justify-center gap-1">
               <span className="text-[11px] font-black text-gray-500 uppercase tracking-wider">LV. {student.level}</span>
             </div>
 
             {/* Points */}
             <div className="text-right">
-              <p className={cn("text-[14px] font-black", student.isYou ? "text-[#1C398E]" : "text-[#101828]")}>
+              <p className={cn("text-[13px] sm:text-[14px] font-black", student.isYou ? "text-[#1C398E]" : "text-[#101828]")}>
                 {student.pts.toLocaleString()}
               </p>
               <p className="text-[10px] text-amber-500 font-black flex items-center justify-end gap-0.5">

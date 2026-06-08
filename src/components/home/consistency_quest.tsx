@@ -10,7 +10,6 @@ import {
   Globe,
   Flame,
 } from "lucide-react";
-import user from "@/assets/user.svg";
 
 export function ConsistencyQuest() {
   const subjects = [
@@ -66,8 +65,7 @@ export function ConsistencyQuest() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-white rounded-[2rem] flex flex-col lg:flex-row gap-12 items-center justify-between p-8 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group"
-      >
+        className="bg-white rounded-[2rem] flex flex-col lg:flex-row gap-12 items-center justify-between p-8 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50/50 rounded-full blur-3xl -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl -ml-32 -mb-32"></div>
 
@@ -95,29 +93,6 @@ export function ConsistencyQuest() {
             <button className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-2xl font-bold text-xs hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-100 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
               Join Challenge <ChevronRight size={16} />
             </button>
-
-            <div className="flex items-center gap-4">
-              <div className="flex -space-x-3">
-                <img
-                  src={user}
-                  alt="Avatar"
-                  className="w-7 h-w-7 rounded-full border-2 border-white object-cover shadow-sm"
-                />
-                <img
-                  src={user}
-                  alt="Avatar"
-                  className="w-7 h-w-7 rounded-full border-2 border-white object-cover shadow-sm"
-                />
-                <img
-                  src={user}
-                  alt="Avatar"
-                  className="w-7 h-w-7 rounded-full border-2 border-white object-cover shadow-sm"
-                />
-              </div>
-              <span className="text-xs text-[#101828] text-[10px] not-italic font-bold leading-3.75 tracking-[1.117px] uppercase">
-                +2.3K <span className="text-[#99A1AF]">ACTIVE LEARNERS</span>
-              </span>
-            </div>
           </div>
         </div>
 
@@ -127,11 +102,9 @@ export function ConsistencyQuest() {
               <motion.div
                 key={idx}
                 whileHover={{ scale: 1.05 }}
-                className="bg-[#F9FAFB80] rounded-2xl p-4.25 flex flex-col items-center justify-center text-center gap-4 border border-[#00000000] transition-all hover:shadow-md cursor-pointer"
-              >
+                className="bg-[#F9FAFB80] rounded-2xl p-4.25 flex flex-col items-center justify-center text-center gap-4 border border-[#00000000] transition-all hover:shadow-md cursor-pointer">
                 <div
-                  className={`shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-9 h-9 justify-center items-center rounded-[14px] ${sub.color}`}
-                >
+                  className={`shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-9 h-9 justify-center items-center rounded-[14px] ${sub.color}`}>
                   {sub.icon}
                 </div>
                 <div>

@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import { Trophy, ChevronRight } from "lucide-react";
-import user from "@/assets/user.svg";
 
 export function Hero() {
   return (
@@ -27,24 +26,14 @@ export function Hero() {
           </h1>
 
           <p className="not-italic font-normal tracking-[-0.312px] pr-16 text-sm md:text-base text-blue-50 max-w-md leading-relaxed">
-            Join 50,000+ students mastering subjects with personalized paths and cognitive pressure analytics.
+            Join 50,000+ students mastering subjects with personalized paths and
+            cognitive pressure analytics.
           </p>
 
           <div className="flex flex-wrap items-center gap-6 pt-2">
             <button className="bg-white hover:bg-gray-50 px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-[#1C398E] text-center text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
               Enroll Now
             </button>
-
-            <div className="flex items-center gap-4">
-              <div className="flex -space-x-3">
-                <img src={user} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-blue-900 object-cover" />
-                <img src={user} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-blue-900 object-cover" />
-                <img src={user} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-blue-900 object-cover" />
-              </div>
-              <span className="text-blue-100 text-[11px] not-italic font-black leading-[16.5px] tracking-[1.164px] uppercase">
-                +12K JOINED TODAY
-              </span>
-            </div>
           </div>
         </div>
 
@@ -62,7 +51,9 @@ export function Hero() {
                 <div className="text-[#BEDBFF] text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
                   Level
                 </div>
-                <div className="text-white text-sm not-italic font-bold leading-5 tracking-[-0.15px]">18</div>
+                <div className="text-white text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
+                  18
+                </div>
               </div>
             </div>
             <div className="flex flex-col items-end">

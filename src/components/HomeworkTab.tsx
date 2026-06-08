@@ -463,25 +463,24 @@ function ActiveHomeworkCard({
       <div className="h-1.5 bg-linear-to-r from-rose-400 via-fuchsia-500 to-blue-500" />
 
       {/* Header */}
-      <div className="px-6 py-5 border-b border-gray-100">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
-          <div className="flex items-start gap-3">
+      <div className="px-4 sm:px-6 py-5 border-b border-gray-100">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
             <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
               <FileText size={16} className="text-[#1C398E]" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <h3 className="text-[15px] font-black text-[#101828]">
+                <h3 className="text-[14px] sm:text-[15px] font-black text-[#101828] truncate">
                   {hw.title}
                 </h3>
-                <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full">
-                  {hw.total_questions} Question
-                  {hw.total_questions !== 1 ? "s" : ""}
+                <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full shrink-0">
+                  {hw.total_questions} Q{hw.total_questions !== 1 ? "s" : ""}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-400 font-medium">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-400 font-medium">
                 <span className="flex items-center gap-1">
-                  <Calendar size={10} /> Given: {fmtDate(hw.created_at)}
+                  <Calendar size={10} /> {fmtDate(hw.created_at)}
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock size={10} /> Due: {fmtDateTime(hw.due_date)}
@@ -493,7 +492,7 @@ function ActiveHomeworkCard({
             </div>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-[20px] font-black text-[#101828] leading-none">
+            <p className="text-[18px] sm:text-[20px] font-black text-[#101828] leading-none">
               {answeredCount}/{totalQ}
             </p>
             <p className="text-[11px] text-gray-400 font-medium">answered</p>
@@ -512,7 +511,7 @@ function ActiveHomeworkCard({
       </div>
 
       {/* Question list */}
-      <div className="p-6 space-y-4 bg-gray-50/50">
+      <div className="p-4 sm:p-6 space-y-4 bg-gray-50/50">
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -546,7 +545,7 @@ function ActiveHomeworkCard({
       </div>
 
       {/* Submit */}
-      <div className="px-6 pb-6 pt-2">
+      <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-2">
         <button
           onClick={handleSubmit}
           disabled={answeredCount < totalQ || submitting || totalQ === 0}
@@ -684,7 +683,7 @@ export default function HomeworkTab() {
   return (
     <div className="space-y-8">
       {/* ── Section header ── */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
             <BookOpen size={20} className="text-blue-600" />
@@ -699,7 +698,7 @@ export default function HomeworkTab() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
           {dueCount > 0 && (
             <span className="flex items-center gap-1.5 text-[12px] font-black text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-full">
               <AlertCircle size={12} />

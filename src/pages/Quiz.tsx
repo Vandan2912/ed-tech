@@ -175,8 +175,7 @@ const Quiz = () => {
             passedStatus
               ? "bg-[#dcfce7] text-[#00a63e]"
               : "bg-red-100 text-red-600"
-          }`}
-        >
+          }`}>
           {passedStatus ? (
             <CircleCheck size={48} strokeWidth={2.5} />
           ) : (
@@ -209,8 +208,7 @@ const Quiz = () => {
                 Quest Accuracy
               </span>
               <span
-                className={`font-bold text-[16px] tracking-[-0.3125px] ${passedStatus ? "text-[#00a63e]" : "text-red-500"}`}
-              >
+                className={`font-bold text-[16px] tracking-[-0.3125px] ${passedStatus ? "text-[#00a63e]" : "text-red-500"}`}>
                 {finalPercentage}%
               </span>
             </div>
@@ -280,8 +278,7 @@ const Quiz = () => {
                 navigate(`/courses/${courseId}`);
               }
             }}
-            className="w-full h-[56px] mt-4 bg-[#101828] text-white rounded-[16px] font-bold text-[16px] tracking-[-0.3125px] hover:bg-black transition-colors shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)]"
-          >
+            className="w-full h-[56px] mt-4 bg-[#101828] text-white rounded-[16px] font-bold text-[16px] tracking-[-0.3125px] hover:bg-black transition-colors shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)]">
             {passedStatus ? "Collect Rewards" : "Try Again"}
           </button>
         </div>
@@ -290,7 +287,7 @@ const Quiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 md:pb-6">
+    <div className="min-h-[50vh] md:min-h-screen bg-gray-50 pb-4 md:pb-6">
       <div className="max-w-4xl mx-auto p-4 md:p-8">
         {/* 📊 Progress */}
         <div className="mb-6 sm:mb-8">
@@ -314,8 +311,7 @@ const Quiz = () => {
               <button
                 onClick={() => setOpenAbort(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
-                aria-label="Abort quiz"
-              >
+                aria-label="Abort quiz">
                 <X size={14} />
                 Abort
               </button>
@@ -375,8 +371,7 @@ const Quiz = () => {
                           ? "border-blue-600 bg-blue-50"
                           : "border-gray-100 hover:border-blue-400"
                     }
-                `}
-                >
+                `}>
                   <div
                     className={`shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[10px] sm:text-[11px] font-black transition-all ${isSelected ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
                     ${
@@ -390,8 +385,7 @@ const Quiz = () => {
                           ? "bg-blue-600 text-white"
                           : "bg-gray-100 text-gray-500"
                     }
-                    `}
-                  >
+                    `}>
                     {String.fromCharCode(65 + i)}
                   </div>
                   <span className="font-semibold flex-1 text-sm sm:text-base">
@@ -436,8 +430,7 @@ const Quiz = () => {
                   handleSubmit();
                 }
               }}
-              className="flex-1 py-3.5 sm:py-4 bg-blue-600 text-white rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
-            >
+              className="flex-1 py-3.5 sm:py-4 bg-blue-600 text-white rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2">
               <CircleCheck size={20} />
               {showAnswer
                 ? "Checking..."
@@ -448,8 +441,7 @@ const Quiz = () => {
 
             <button
               onClick={() => setOpenAbort(true)}
-              className="w-full sm:w-auto px-6 py-3.5 sm:py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest hover:bg-red-50 hover:text-red-600 border border-gray-200 hover:border-red-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
+              className="w-full sm:w-auto px-6 py-3.5 sm:py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest hover:bg-red-50 hover:text-red-600 border border-gray-200 hover:border-red-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               <X size={20} />
               Abort
             </button>
@@ -475,8 +467,7 @@ const Quiz = () => {
                 className="w-full py-3.5 bg-gray-100 text-gray-700 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-200 transition-all"
                 onClick={() => {
                   setOpenAbort(false);
-                }}
-              >
+                }}>
                 Keep Going
               </button>
               <button
@@ -484,8 +475,7 @@ const Quiz = () => {
                 onClick={() => {
                   setOpenAbort(false);
                   navigate(-1);
-                }}
-              >
+                }}>
                 Yes, Abort
               </button>
             </div>

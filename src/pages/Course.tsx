@@ -49,13 +49,12 @@ const Course = () => {
 
   return (
     <main className="min-h-[50vh]">
-      <div className="py-12">
-        <div className="p-6 pb-24 md:pb-6 md:px-28">
+      <div className="pt-12 pb-0 md:pb-12">
+        <div className="p-6 pb-0 md:pb-6 md:px-28">
           {/* 🔙 Back Button */}
           <button
             onClick={() => navigate("/courses")}
-            className="flex items-center gap-2 text-gray-500 mb-6 hover:text-gray-900"
-          >
+            className="flex items-center gap-2 text-gray-500 mb-6 hover:text-gray-900">
             ← Back to Subjects
           </button>
 
@@ -81,8 +80,7 @@ const Course = () => {
               <div
                 key={topic.id}
                 className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => navigate(`/courses/${course.id}/${topic.id}`)}
-              >
+                onClick={() => navigate(`/courses/${course.id}/${topic.id}`)}>
                 <div className="flex items-center gap-4">
                   {/* ▶ Play Icon */}
                   <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-blue-600">
@@ -102,8 +100,7 @@ const Course = () => {
                             : topic.difficulty === "Medium"
                               ? "bg-yellow-100 text-yellow-600"
                               : "bg-red-100 text-red-600"
-                        }`}
-                      >
+                        }`}>
                         {topic.difficulty}
                       </span>
                     </div>

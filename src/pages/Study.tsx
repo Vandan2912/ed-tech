@@ -60,9 +60,11 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center py-5 bg-white rounded-2xl border border-gray-100 shadow-sm min-w-0">
-      <span className={`text-3xl font-black ${color}`}>{value ?? "—"}</span>
-      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+    <div className="flex-1 flex flex-col items-center justify-center py-4 sm:py-5 bg-white rounded-2xl border border-gray-100 shadow-sm min-w-0 px-2">
+      <span className={`text-2xl sm:text-3xl font-black ${color}`}>
+        {value ?? "—"}
+      </span>
+      <span className="text-[9px] sm:text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1 text-center leading-tight">
         {label}
       </span>
     </div>
@@ -94,14 +96,12 @@ function RoomCard({ room }: { room: Room }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 8 }}
       transition={{ duration: 0.2 }}
-      className={`bg-white rounded-2xl border border-gray-100 shadow-sm border-t-4 ${styles.border} flex flex-col overflow-hidden`}
-    >
+      className={`bg-white rounded-2xl border border-gray-100 shadow-sm border-t-4 ${styles.border} flex flex-col overflow-hidden`}>
       <div className="p-5 flex flex-col gap-3 flex-1">
         {/* Subject + private badge */}
         <div className="flex items-center justify-between">
           <span
-            className={`text-[10px] font-black uppercase tracking-widest ${styles.label}`}
-          >
+            className={`text-[10px] font-black uppercase tracking-widest ${styles.label}`}>
             {room.subject}
           </span>
           {room.is_private && (
@@ -151,8 +151,7 @@ function RoomCard({ room }: { room: Room }) {
         <button
           disabled={full || joining}
           onClick={handleJoin}
-          className="w-full flex items-center justify-center gap-2 bg-[#101828] hover:bg-[#1C398E] disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-white text-[13px] font-black uppercase tracking-wider py-3 rounded-xl"
-        >
+          className="w-full flex items-center justify-center gap-2 bg-[#101828] hover:bg-[#1C398E] disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-white text-[13px] font-black uppercase tracking-wider py-3 rounded-xl">
           <Users size={14} />
           {joining ? "Joining..." : full ? "Room Full" : "Join Session"}
         </button>
@@ -217,17 +216,16 @@ export default function Study() {
       />
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
         {/* Tab bar */}
-        <div className="flex items-center gap-1 bg-white border border-gray-100 shadow-sm rounded-2xl p-1.5 w-fit mb-8">
+        <div className="flex items-center gap-1 bg-white border border-gray-100 shadow-sm rounded-2xl p-1.5 w-full sm:w-fit mb-8">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
-              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-[12px] font-black uppercase tracking-wider transition-colors focus-visible:outline-none ${
+              className={`relative flex flex-1 sm:flex-none items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-xl text-[10px] sm:text-[12px] font-black uppercase tracking-wider transition-colors focus-visible:outline-none ${
                 activeTab === id
                   ? "text-[#1C398E]"
                   : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
+              }`}>
               {activeTab === id && (
                 <motion.div
                   layoutId="study-tab"
@@ -235,8 +233,8 @@ export default function Study() {
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
               )}
-              <Icon size={14} className="relative z-10" />
-              <span className="relative z-10">{label}</span>
+              <Icon size={14} className="relative z-10 shrink-0" />
+              <span className="relative z-10 truncate">{label}</span>
             </button>
           ))}
         </div>
@@ -248,12 +246,11 @@ export default function Study() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-            >
+              transition={{ duration: 0.18 }}>
               {/* Section header */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
                     <Users size={18} className="text-blue-600" />
                   </div>
                   <div>
@@ -267,8 +264,7 @@ export default function Study() {
                 </div>
                 <button
                   onClick={() => setHostModalOpen(true)}
-                  className="flex items-center gap-2 bg-[#1C398E] hover:bg-[#162d72] text-white text-[12px] font-black uppercase tracking-wider px-4 py-2.5 rounded-xl transition-colors"
-                >
+                  className="flex items-center justify-center gap-2 bg-[#1C398E] hover:bg-[#162d72] text-white text-[12px] font-black uppercase tracking-wider px-4 py-2.5 rounded-xl transition-colors w-full sm:w-auto">
                   <Plus size={14} />
                   Host a Session
                 </button>
@@ -316,8 +312,7 @@ export default function Study() {
                         subjectFilter === s
                           ? "bg-[#1C398E] text-white"
                           : "bg-white border border-gray-200 text-gray-500 hover:border-blue-300 hover:text-blue-600"
-                      }`}
-                    >
+                      }`}>
                       {s}
                     </button>
                   ))}
@@ -351,8 +346,7 @@ export default function Study() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-            >
+              transition={{ duration: 0.18 }}>
               <HomeworkTab />
             </motion.div>
           )}
@@ -363,8 +357,7 @@ export default function Study() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-            >
+              transition={{ duration: 0.18 }}>
               <LeaderboardTab />
             </motion.div>
           )}

@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import { ChevronRight, BookOpen } from "lucide-react";
-import user from "@/assets/user.svg";
 import { useAppSelector } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +31,9 @@ export function Recommended() {
     <section className="px-6 pb-16">
       <div className="flex justify-between items-end mb-10">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Recommended for You</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Recommended for You
+          </h2>
           <p className="text-gray-500">Based on your curriculum</p>
         </div>
         <button
@@ -54,7 +55,10 @@ export function Recommended() {
             <div className="flex justify-between items-start">
               <div
                 className={`w-12 h-12 rounded-2xl ${CARD_COLORS[idx % CARD_COLORS.length]} flex items-center justify-center`}>
-                <BookOpen size={24} className={ICON_COLORS[idx % ICON_COLORS.length]} />
+                <BookOpen
+                  size={24}
+                  className={ICON_COLORS[idx % ICON_COLORS.length]}
+                />
               </div>
               <div className="bg-gray-100 text-gray-900 text-[11px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-gray-200">
                 {subject.topics?.length ?? 0} TOPICS
@@ -66,28 +70,12 @@ export function Recommended() {
                 {subject.name}
               </h3>
               <p className="text-[#364153] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
-                Master the fundamentals of {subject.name.toLowerCase()} with our AI-guided structured modules.
+                Master the fundamentals of {subject.name.toLowerCase()} with our
+                AI-guided structured modules.
               </p>
             </div>
 
             <div className="flex items-center justify-between border-t border-gray-100 pt-2 mt-auto">
-              <div className="flex -space-x-3">
-                {[0, 1, 2].map((i) => (
-                  <img
-                    key={i}
-                    src={user}
-                    alt="Student"
-                    className="w-8 h-8 rounded-full border-2 border-white bg-white object-cover shadow-sm"
-                    style={{ zIndex: i + 1 }}
-                  />
-                ))}
-                <div
-                  className="w-8 h-8 rounded-full border-2 border-white bg-white shadow-sm text-[#1C398E] text-[10px] not-italic font-bold leading-3.75 tracking-[0.117px] flex justify-center items-center"
-                  style={{ zIndex: 4 }}>
-                  +2K
-                </div>
-              </div>
-
               <button
                 onClick={() => navigate(`/courses/${subject.id}`)}
                 className="bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl text-sm flex items-center gap-1 transition-colors text-[#1C398E] text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[1.164px] uppercase">
