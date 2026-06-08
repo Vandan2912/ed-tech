@@ -53,7 +53,6 @@ const Quiz = () => {
 
   useEffect(() => {
     if (timeLeft <= 0 || showResult || showAnswer) {
-      if (timeLeft === 0) setIsTimeUp(true);
       return;
     }
 
@@ -75,7 +74,7 @@ const Quiz = () => {
     // Logic for final quiz submission
     try {
       const response = await api.post(
-        `/course/quiz/${(questions[0] as any)?.quiz_id || (questions[current] as any)?.quiz_id}/submit`,
+        `/course/quiz/${questions[0]?.quiz_id || questions[current]?.quiz_id}/submit`,
         {
           answers: answers,
         },
@@ -335,7 +334,7 @@ const Quiz = () => {
             {q.question_text}
           </h2>
           <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
-            {(q as any).question_type === "multiple"
+            {q.question_type === "multiple"
               ? "Select all correct answers below, then submit"
               : "Select an answer below, then submit"}
           </p>
@@ -349,7 +348,7 @@ const Quiz = () => {
                 <button
                   key={opt.id}
                   onClick={() => {
-                    if ((q as any).question_type === "multiple") {
+                    if (q.question_type === "multiple") {
                       setSelected((prev) =>
                         prev.some((o) => o.id === opt.id)
                           ? prev.filter((o) => o.id !== opt.id)

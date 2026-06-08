@@ -1,7 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getLeaderboard, getStreaks, getMyBest } from "@/api/ranks";
-import type { GlobalRankUser, StreakUser as ApiStreakUser, StreaksData, MyBestData } from "@/api/ranks";
-import { motion, AnimatePresence, useInView, type Variants } from "motion/react";
+import type {
+  GlobalRankUser,
+  StreakUser as ApiStreakUser,
+  StreaksData,
+  MyBestData,
+} from "@/api/ranks";
+import {
+  motion,
+  AnimatePresence,
+  useInView,
+  type Variants,
+} from "motion/react";
 import {
   Trophy,
   Flame,
@@ -205,7 +215,13 @@ function AnimatedSection({
 
 // ─── Profile Modal ───────────────────────────────────
 
-function ProfileModal({ user, onClose }: { user: LeaderboardUser; onClose: () => void }) {
+function ProfileModal({
+  user,
+  onClose,
+}: {
+  user: LeaderboardUser;
+  onClose: () => void;
+}) {
   // Close on Escape
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -250,14 +266,15 @@ function ProfileModal({ user, onClose }: { user: LeaderboardUser; onClose: () =>
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 30 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-lg bg-white rounded-[48px] overflow-hidden shadow-2xl"
+        className="relative w-full max-w-lg bg-white rounded-[32px] sm:rounded-[48px] overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}>
         {/* Gradient header */}
         <div className={`h-40 bg-linear-to-br ${gradientFrom} relative`}>
           <div
             className="absolute inset-0 opacity-20"
             style={{
-              backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0px)",
+              backgroundImage:
+                "radial-gradient(circle at 2px 2px, white 1px, transparent 0px)",
               backgroundSize: "24px 24px",
             }}
           />
@@ -269,25 +286,35 @@ function ProfileModal({ user, onClose }: { user: LeaderboardUser; onClose: () =>
         </div>
 
         {/* Content */}
-        <div className="px-10 pb-10 -mt-16 relative">
+        <div className="px-6 sm:px-10 pb-6 sm:pb-10 -mt-16 relative">
           <div className="flex flex-col items-center">
             {/* Avatar */}
             <div className="relative mb-4">
               <div className="w-32 h-32 rounded-[40px] border-[6px] border-white shadow-xl overflow-hidden bg-gray-100 flex items-center justify-center">
                 {user.image ? (
-                  <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                  <img
+                    src={user.image}
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <span className="text-3xl font-black text-blue-600">{user.avatar}</span>
+                  <span className="text-3xl font-black text-blue-600">
+                    {user.avatar}
+                  </span>
                 )}
               </div>
               <div
                 className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg border-2 border-white ${badgeColor}`}>
-                <span className="font-black text-white text-sm">#{user.rank}</span>
+                <span className="font-black text-white text-sm">
+                  #{user.rank}
+                </span>
               </div>
             </div>
 
             {/* Name */}
-            <h3 className="text-3xl font-black text-gray-900 mb-1">{user.name}</h3>
+            <h3 className="text-3xl font-black text-gray-900 mb-1">
+              {user.name}
+            </h3>
 
             {/* Tags */}
             <div className="flex items-center gap-2 mb-8">
@@ -300,24 +327,36 @@ function ProfileModal({ user, onClose }: { user: LeaderboardUser; onClose: () =>
             </div>
 
             {/* Stats grid */}
-            <div className="grid grid-cols-3 gap-4 w-full mb-10">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full mb-6 sm:mb-10">
               <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Level</p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                  Level
+                </p>
                 <p className="text-xl font-black text-gray-900">{user.level}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total XP</p>
-                <p className="text-xl font-black text-gray-900">{user.xp.toLocaleString()}</p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                  Total XP
+                </p>
+                <p className="text-xl font-black text-gray-900">
+                  {user.xp.toLocaleString()}
+                </p>
               </div>
               <div className="bg-gray-50 p-4 rounded-3xl text-center border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Badges</p>
-                <p className="text-xl font-black text-gray-900">{user.badges ?? 0}</p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                  Badges
+                </p>
+                <p className="text-xl font-black text-gray-900">
+                  {user.badges ?? 0}
+                </p>
               </div>
             </div>
 
             {/* Top Achievements */}
             <div className="w-full space-y-4">
-              <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2">Top Achievements</h4>
+              <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2">
+                Top Achievements
+              </h4>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                 {[Zap, Star, Trophy, Award].map((Icon, i) => (
                   <motion.div
@@ -343,7 +382,7 @@ function ProfileModal({ user, onClose }: { user: LeaderboardUser; onClose: () =>
 /** Hero banner at the top */
 function HeroBanner() {
   return (
-    <div className="relative mb-16 p-10 rounded-[48px] bg-gray-900 text-white overflow-hidden shadow-2xl">
+    <div className="relative mb-8 md:mb-16 p-6 md:p-10 rounded-[32px] md:rounded-[48px] bg-gray-900 text-white overflow-hidden shadow-2xl">
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 blur-[100px] -mr-48 -mt-48"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/20 blur-[100px] -ml-48 -mb-48"></div>
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
@@ -354,15 +393,22 @@ function HeroBanner() {
           </div>
           <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight leading-none">
             The Arena of{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">Champions</span>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-cyan-400">
+              Champions
+            </span>
           </h2>
           <p className="text-gray-400 max-w-md text-sm leading-relaxed">
             Top 10 players this week will be promoted to the{" "}
-            <span className="text-purple-400 font-bold italic">Legendary Tier</span>. Keep learning to secure your spot!
+            <span className="text-purple-400 font-bold italic">
+              Legendary Tier
+            </span>
+            . Keep learning to secure your spot!
           </p>
         </div>
         <div className="flex flex-col items-center p-6 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm">
-          <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Promotion Zone</p>
+          <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">
+            Promotion Zone
+          </p>
           <div className="flex items-end gap-1 mb-1">
             <span className="text-4xl font-black text-white">#5</span>
             <span className="text-sm font-bold text-gray-500 mb-1">/ 250</span>
@@ -375,7 +421,9 @@ function HeroBanner() {
               className="h-full rounded-full bg-linear-to-r from-[#2b7fff] to-[#00d3f3]"
             />
           </div>
-          <p className="text-[9px] font-bold text-green-400 mt-2">↑ 3 RANKS THIS WEEK</p>
+          <p className="text-[9px] font-bold text-green-400 mt-2">
+            ↑ 3 RANKS THIS WEEK
+          </p>
         </div>
       </div>
     </div>
@@ -383,31 +431,41 @@ function HeroBanner() {
 }
 
 /** Tab switcher */
-function TabSwitcher({ active, onChange }: { active: TabKey; onChange: (t: TabKey) => void }) {
+function TabSwitcher({
+  active,
+  onChange,
+}: {
+  active: TabKey;
+  onChange: (t: TabKey) => void;
+}) {
   const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
     {
       key: "global",
       label: "Global Ranks",
-      icon: <Trophy className="h-4 w-4" />,
+      icon: <Trophy className="md:h-4 h-3 md:w-4 w-3" />,
     },
     {
       key: "streak",
       label: "Streak Masters",
-      icon: <Flame className="h-4 w-4" />,
+      icon: <Flame className="md:h-4 h-3 md:w-4 w-3" />,
     },
-    { key: "best", label: "My Best", icon: <Award className="h-4 w-4" /> },
+    {
+      key: "best",
+      label: "My Best",
+      icon: <Award className="md:h-4 h-3 md:w-4 w-3" />,
+    },
   ];
 
   return (
-    <AnimatedSection className="flex justify-center">
-      <div className="inline-flex items-center rounded-2xl bg-gray-100 p-1.5 shadow-inner">
+    <AnimatedSection className="flex justify-center w-full overflow-x-auto pb-1">
+      <div className="inline-flex items-center rounded-2xl bg-gray-100 p-1 sm:p-1.5 shadow-inner">
         {tabs.map((t) => (
           <motion.button
             key={t.key}
             onClick={() => onChange(t.key)}
             // whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className={`relative flex items-center gap-2 rounded-[14px] px-6 py-2.5 text-xs font-black uppercase tracking-wider transition-colors ${
+            className={`relative flex items-center gap-1.5 sm:gap-2 rounded-[14px] px-3 sm:px-6 py-2 sm:py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap ${
               active === t.key ? "text-blue-600" : "text-gray-500"
             }`}>
             {active === t.key && (
@@ -418,7 +476,9 @@ function TabSwitcher({ active, onChange }: { active: TabKey; onChange: (t: TabKe
               />
             )}
             <span className="relative z-10 flex items-center gap-2">
-              <motion.span animate={active === t.key ? { rotate: [0, -10, 10, 0] } : {}} transition={{ duration: 0.5 }}>
+              <motion.span
+                animate={active === t.key ? { rotate: [0, -10, 10, 0] } : {}}
+                transition={{ duration: 0.5 }}>
                 {t.icon}
               </motion.span>
               {t.label}
@@ -443,10 +503,15 @@ function PodiumCard({
   onProfileClick?: (user: LeaderboardUser) => void;
 }) {
   const isFirst = user.rank === 1;
-  const dim = size === "lg" ? "w-44 h-44" : "w-32 h-32";
-  const avatarDim = size === "lg" ? "w-[162px] h-[162px]" : "w-[116px] h-[116px]";
+  const dim =
+    size === "lg" ? "w-28 h-28 sm:w-44 sm:h-44" : "w-20 h-20 sm:w-32 sm:h-32";
   const badgeSize = "w-10 h-10";
-  const badgeColor = user.rank === 1 ? "bg-[#fdc700]" : user.rank === 2 ? "bg-[#99a1af]" : "bg-[#ff6900]";
+  const badgeColor =
+    user.rank === 1
+      ? "bg-[#fdc700]"
+      : user.rank === 2
+        ? "bg-[#99a1af]"
+        : "bg-[#ff6900]";
   const glowColor = "from-[#fdc700] to-[#e17100]";
 
   const ref = useRef(null);
@@ -465,14 +530,20 @@ function PodiumCard({
         className="group relative cursor-pointer"
         onClick={() => onProfileClick?.(user)}>
         {/* Glow */}
-        <div className={`absolute inset-1 rounded-full bg-linear-to-t ${glowColor} blur-[20px]`} />
+        <div
+          className={`absolute inset-1 rounded-full bg-linear-to-t ${glowColor} blur-[20px]`}
+        />
         {/* Ring */}
-        <div className={`relative ${dim} rounded-full bg-linear-to-t ${glowColor}`}>
-          <div
-            className={`absolute inset-1.5 ${avatarDim} overflow-hidden rounded-full border-4 border-white bg-linear-to-br from-blue-100 to-blue-50 shadow-xl`}>
+        <div
+          className={`relative ${dim} rounded-full bg-linear-to-t ${glowColor}`}>
+          <div className="absolute inset-1.5 overflow-hidden rounded-full border-4 border-white bg-linear-to-br from-blue-100 to-blue-50 shadow-xl">
             <div className="flex h-full w-full items-center justify-center text-2xl font-black text-blue-600">
               {user.image ? (
-                <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <span>{user.avatar}</span>
               )}
@@ -490,7 +561,9 @@ function PodiumCard({
             }}
             // whileHover={{ scale: 1.15 }}
             className={`absolute -bottom-2 left-1/2 -translate-x-1/2 ${badgeSize} flex items-center justify-center rounded-xl ${badgeColor} shadow-xl`}>
-            <span className="-rotate-45 text-lg font-black text-white">{user.rank}</span>
+            <span className="-rotate-45 text-lg font-black text-white">
+              {user.rank}
+            </span>
           </motion.div>
         </div>
       </motion.div>
@@ -501,12 +574,17 @@ function PodiumCard({
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ delay: delay + 0.4, duration: 0.5 }}
         className="mt-4 text-center">
-        <p className={`font-black tracking-tight text-gray-900 ${isFirst ? "text-xl" : "text-base"}`}>{user.name}</p>
+        <p
+          className={`font-black tracking-tight text-gray-900 ${isFirst ? "text-xl" : "text-base"}`}>
+          {user.name}
+        </p>
         <div className="mt-1 flex items-center justify-center gap-1.5">
           <span className="rounded bg-blue-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-blue-600">
             LVL {user.level}
           </span>
-          <span className="text-xs font-black text-gray-400">{user.xp.toLocaleString()} XP</span>
+          <span className="text-xs font-black text-gray-400">
+            {user.xp.toLocaleString()} XP
+          </span>
         </div>
       </motion.div>
     </motion.div>
@@ -526,15 +604,30 @@ function Podium({
   const second = users.find((u) => u.rank === 2)!;
   const third = users.find((u) => u.rank === 3)!;
   return (
-    <div className="flex items-end justify-center gap-10 pb-4 pt-8">
+    <div className="flex items-end justify-center gap-4 sm:gap-10 pb-4 pt-8">
       <div className="mt-12">
-        <PodiumCard user={second} size="sm" delay={0.2} onProfileClick={onProfileClick} />
+        <PodiumCard
+          user={second}
+          size="sm"
+          delay={0.2}
+          onProfileClick={onProfileClick}
+        />
       </div>
       <div>
-        <PodiumCard user={first} size="lg" delay={0} onProfileClick={onProfileClick} />
+        <PodiumCard
+          user={first}
+          size="lg"
+          delay={0}
+          onProfileClick={onProfileClick}
+        />
       </div>
       <div className="mt-12">
-        <PodiumCard user={third} size="sm" delay={0.4} onProfileClick={onProfileClick} />
+        <PodiumCard
+          user={third}
+          size="sm"
+          delay={0.4}
+          onProfileClick={onProfileClick}
+        />
       </div>
     </div>
   );
@@ -585,15 +678,15 @@ function LeaderboardRow({
         ease: [0.22, 1, 0.36, 1],
       }}
       onClick={() => !isMe && onProfileClick?.(user)}
-      className={`flex items-center justify-between px-6 py-5 ${
+      className={`flex items-center justify-between px-3 sm:px-6 py-4 sm:py-5 ${
         isMe
           ? "rounded-3xl bg-blue-600 text-white shadow-[0px_25px_50px_0px_#bedbff]"
           : "border-b border-gray-50 cursor-pointer hover:bg-gray-50/50 transition-colors"
       }`}>
       {/* Left side */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-2 sm:gap-5">
         <motion.div
-          className={`flex h-10 w-10 items-center justify-center rounded-[14px] text-base font-black ${
+          className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-[12px] sm:rounded-[14px] text-sm sm:text-base font-black ${
             isMe ? "bg-white/20 text-white" : "bg-gray-100 text-gray-400"
           }`}>
           #{user.rank}
@@ -601,7 +694,7 @@ function LeaderboardRow({
 
         <motion.div className="relative">
           <div
-            className={`flex h-14 w-14 items-center justify-center rounded-2xl border-2 text-lg font-black ${
+            className={`flex h-10 w-10 sm:h-14 sm:w-14 items-center justify-center rounded-xl sm:rounded-2xl border-2 text-base sm:text-lg font-black ${
               isMe
                 ? "border-white/40 bg-blue-500 text-white"
                 : "border-gray-100 bg-linear-to-br from-blue-50 to-indigo-50 text-blue-600"
@@ -615,7 +708,10 @@ function LeaderboardRow({
 
         <div>
           <div className="flex items-center gap-2">
-            <p className={`text-base font-black ${isMe ? "text-white" : "text-gray-900"}`}>{user.name}</p>
+            <p
+              className={`text-base font-black ${isMe ? "text-white" : "text-gray-900"}`}>
+              {user.name}
+            </p>
             {isMe && (
               <motion.span
                 animate={{ opacity: [1, 0.5, 1] }}
@@ -637,8 +733,12 @@ function LeaderboardRow({
 
       {/* Right — XP */}
       <div className="text-right">
-        <p className={`text-2xl font-black ${isMe ? "text-white" : "text-gray-900"}`}>{user.xp.toLocaleString()}</p>
-        <p className={`text-[10px] font-black uppercase tracking-widest ${isMe ? "text-blue-200" : "text-gray-400"}`}>
+        <p
+          className={`text-lg sm:text-2xl font-black ${isMe ? "text-white" : "text-gray-900"}`}>
+          {user.xp.toLocaleString()}
+        </p>
+        <p
+          className={`text-[10px] font-black uppercase tracking-widest ${isMe ? "text-blue-200" : "text-gray-400"}`}>
           Total XP
         </p>
       </div>
@@ -659,10 +759,14 @@ function MasteryRoadmap() {
       variants={staggerContainer}
       className="mt-6 border-t border-white/20 pt-6">
       {/* Header */}
-      <motion.div variants={fadeUp} className="flex items-center justify-between">
+      <motion.div
+        variants={fadeUp}
+        className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Trophy className="h-4 w-4 text-[#FDC700]" />
-          <span className="text-sm font-black uppercase tracking-wider text-white">Mastery Roadmap</span>
+          <span className="text-sm font-black uppercase tracking-wider text-white">
+            Mastery Roadmap
+          </span>
         </div>
         <span className="rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-blue-200">
           350 XP to Level 19
@@ -670,7 +774,9 @@ function MasteryRoadmap() {
       </motion.div>
 
       {/* Level grid */}
-      <motion.div variants={staggerContainer} className="mt-4 grid grid-cols-5 gap-2">
+      <motion.div
+        variants={staggerContainer}
+        className="mt-4 grid grid-cols-5 gap-1 sm:gap-2">
         {roadmapLevels.map((l) => (
           <motion.div
             key={l.level}
@@ -689,11 +795,17 @@ function MasteryRoadmap() {
               <div className="flex flex-col items-center gap-1">
                 <span
                   className={`text-[10px] font-black tracking-wide ${
-                    l.status === "achieved" ? "text-blue-600" : l.status === "current" ? "text-white" : "text-white/30"
+                    l.status === "achieved"
+                      ? "text-blue-600"
+                      : l.status === "current"
+                        ? "text-white"
+                        : "text-white/30"
                   }`}>
                   L{l.level}
                 </span>
-                {l.status === "achieved" && <CheckCircle2 className="h-4 w-4 text-blue-600" />}
+                {l.status === "achieved" && (
+                  <CheckCircle2 className="h-4 w-4 text-blue-600" />
+                )}
                 {l.status === "current" && (
                   <motion.div
                     animate={{ rotate: [0, 360] }}
@@ -705,21 +817,29 @@ function MasteryRoadmap() {
                     <Star className="h-5 w-5 text-[#FFDF20] fill-[#FFDF20]" />
                   </motion.div>
                 )}
-                {l.status === "locked" && <Lock className="h-3 w-3 text-white/30" />}
+                {l.status === "locked" && (
+                  <Lock className="h-3 w-3 text-white/30" />
+                )}
               </div>
             </div>
             <span
               className={`text-[7px] font-black uppercase tracking-tight ${
                 l.status === "current" ? "text-white" : "text-blue-200/60"
               }`}>
-              {l.status === "achieved" ? "Achieved" : l.status === "current" ? "Now" : "Locked"}
+              {l.status === "achieved"
+                ? "Achieved"
+                : l.status === "current"
+                  ? "Now"
+                  : "Locked"}
             </span>
           </motion.div>
         ))}
       </motion.div>
 
       {/* How to reach next level */}
-      <motion.div variants={fadeUp} className="mt-6 rounded-[32px] border border-white/10 bg-white/10 p-6">
+      <motion.div
+        variants={fadeUp}
+        className="mt-6 rounded-[32px] border border-white/10 bg-white/10 p-4 sm:p-6">
         <div className="flex items-center gap-3">
           <motion.div
             // whileHover={{ rotate: 15, scale: 1.1 }}
@@ -727,8 +847,12 @@ function MasteryRoadmap() {
             <Zap fill="#1C398E" className="h-4 w-4 text-[#1C398E]" />
           </motion.div>
           <div>
-            <p className="text-[11px] font-black uppercase tracking-wider text-white">How to reach Level 19</p>
-            <p className="text-[9px] font-bold text-blue-200">Complete these challenges to ascend</p>
+            <p className="text-[11px] font-black uppercase tracking-wider text-white">
+              How to reach Level 19
+            </p>
+            <p className="text-[9px] font-bold text-blue-200">
+              Complete these challenges to ascend
+            </p>
           </div>
         </div>
 
@@ -747,8 +871,12 @@ function MasteryRoadmap() {
             </motion.div>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-white">Master 3 Science Topics</span>
-                <span className="text-[10px] font-black text-blue-100">2/3</span>
+                <span className="text-[10px] font-black text-white">
+                  Master 3 Science Topics
+                </span>
+                <span className="text-[10px] font-black text-blue-100">
+                  2/3
+                </span>
               </div>
               <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-white/50">
                 <motion.div
@@ -775,8 +903,12 @@ function MasteryRoadmap() {
             </motion.div>
             <div className="flex-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-white">5-Day Study Streak</span>
-                <span className="text-[10px] font-black text-blue-100">4/5</span>
+                <span className="text-[10px] font-black text-white">
+                  5-Day Study Streak
+                </span>
+                <span className="text-[10px] font-black text-blue-100">
+                  4/5
+                </span>
               </div>
               <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-white/50">
                 <motion.div
@@ -794,19 +926,25 @@ function MasteryRoadmap() {
       {/* Stats row */}
       <motion.div
         variants={fadeUp}
-        className="mt-4 flex items-center justify-center gap-8 rounded-2xl border border-white/5 bg-white/5 py-4">
+        className="mt-4 flex items-center justify-center gap-4 sm:gap-8 rounded-2xl border border-white/5 bg-white/5 py-4">
         <div className="text-center">
-          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">Achieved</p>
+          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">
+            Achieved
+          </p>
           <p className="text-sm font-black text-white">18 Levels</p>
         </div>
         <div className="h-6 w-px bg-white/10" />
         <div className="text-center">
-          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">Future</p>
+          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">
+            Future
+          </p>
           <p className="text-sm font-black text-white">Unlimited</p>
         </div>
         <div className="h-6 w-px bg-white/10" />
         <div className="text-center">
-          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">Milestones</p>
+          <p className="text-[8px] font-black uppercase tracking-wider text-blue-300">
+            Milestones
+          </p>
           <p className="text-sm font-black text-white">12 Badges</p>
         </div>
       </motion.div>
@@ -819,9 +957,10 @@ function XpOverdriveCard() {
   return (
     <AnimatedSection delay={0.1} variants={fadeRight}>
       <div
-        className="relative overflow-hidden rounded-[40px] p-8 shadow-[0px_25px_50px_-12px_#bedbff]"
+        className="relative overflow-hidden rounded-[40px] p-6 sm:p-8 shadow-[0px_25px_50px_-12px_#bedbff]"
         style={{
-          backgroundImage: "linear-gradient(129deg, rgb(79, 57, 246) 0%, rgb(20, 71, 230) 100%)",
+          backgroundImage:
+            "linear-gradient(129deg, rgb(79, 57, 246) 0%, rgb(20, 71, 230) 100%)",
         }}>
         {/* Animated glow */}
         <motion.div
@@ -841,11 +980,14 @@ function XpOverdriveCard() {
             </motion.div>
           </motion.div>
 
-          <h3 className="text-2xl font-black leading-snug text-white">XP Overdrive Active!</h3>
+          <h3 className="text-2xl font-black leading-snug text-white">
+            XP Overdrive Active!
+          </h3>
 
           <p className="text-sm leading-relaxed text-blue-200">
-            Complete 3 <span className="font-bold text-white">Hard Difficulty</span> quizzes today to unlock the
-            "Mastermind" badge and gain +1000 XP.
+            Complete 3{" "}
+            <span className="font-bold text-white">Hard Difficulty</span>{" "}
+            quizzes today to unlock the "Mastermind" badge and gain +1000 XP.
           </p>
 
           <motion.button
@@ -909,7 +1051,11 @@ function WeeklyRivalCard({
             <motion.div className="relative">
               <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border-2 border-white bg-linear-to-br from-pink-50 to-rose-50 text-lg font-black text-pink-600 shadow-md">
                 {rivalUser.image ? (
-                  <img src={rivalUser.image} alt={rivalUser.name} className="w-full h-full object-cover" />
+                  <img
+                    src={rivalUser.image}
+                    alt={rivalUser.name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   rivalUser.avatar
                 )}
@@ -957,7 +1103,13 @@ function WeeklyRivalCard({
 // ─── Streak Masters Components ───────────────────────
 
 /** Streak leaderboard row */
-function StreakLeaderboardRow({ user, index = 0 }: { user: ApiStreakUser; index?: number }) {
+function StreakLeaderboardRow({
+  user,
+  index = 0,
+}: {
+  user: ApiStreakUser;
+  index?: number;
+}) {
   const isMe = user.isCurrentUser;
   const isFirst = user.rank === 1;
   const ref = useRef(null);
@@ -974,20 +1126,31 @@ function StreakLeaderboardRow({ user, index = 0 }: { user: ApiStreakUser; index?
         duration: 0.5,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className={`flex items-center justify-between px-8 py-7 ${
-        isMe ? "bg-orange-50 border-x-4 border-b border-orange-500 border-b-gray-50" : "border-b border-gray-50"
+      className={`flex items-center justify-between px-4 sm:px-8 py-5 sm:py-7 ${
+        isMe
+          ? "bg-orange-50 border-x-4 border-b border-orange-500 border-b-gray-50"
+          : "border-b border-gray-50"
       }`}>
       {/* Left side */}
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-3 sm:gap-8">
         {/* Rank number */}
-        <span className={`text-lg font-black italic tracking-tight ${isMe ? "text-gray-300" : "text-orange-500"}`}>
+        <span
+          className={`text-base sm:text-lg font-black italic tracking-tight ${isMe ? "text-gray-300" : "text-orange-500"}`}>
           {rankStr}
         </span>
 
         {/* Avatar */}
         <div className="relative">
-          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border-2 border-gray-100 bg-linear-to-br from-orange-50 to-rose-50 text-base font-black text-orange-600 shadow-sm">
-            {user.image ? <img src={user.image} alt={user.name} className="h-full w-full object-cover" /> : user.avatar}
+          <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-gray-100 bg-linear-to-br from-orange-50 to-rose-50 text-base font-black text-orange-600 shadow-sm">
+            {user.image ? (
+              <img
+                src={user.image}
+                alt={user.name}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              user.avatar
+            )}
           </div>
           {isFirst && (
             <motion.div
@@ -1003,7 +1166,9 @@ function StreakLeaderboardRow({ user, index = 0 }: { user: ApiStreakUser; index?
         {/* Info */}
         <div>
           <div className="flex items-center gap-2">
-            <p className="text-lg font-bold tracking-tight text-gray-900">{user.name}</p>
+            <p className="text-base sm:text-lg font-bold tracking-tight text-gray-900">
+              {user.name}
+            </p>
             {isMe && (
               <motion.span
                 animate={{ opacity: [1, 0.6, 1] }}
@@ -1029,13 +1194,13 @@ function StreakLeaderboardRow({ user, index = 0 }: { user: ApiStreakUser; index?
               initial={{ scale: 0.5 }}
               animate={isInView ? { scale: 1 } : {}}
               transition={{ delay: index * 0.1 + 0.3 }}
-              className="text-4xl font-black tracking-tight text-gray-900">
+              className="text-2xl sm:text-4xl font-black tracking-tight text-gray-900">
               {user.streakDays}
             </motion.span>
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
-              <Flame className="h-8 w-8 text-orange-500 fill-orange-500" />
+              <Flame className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 fill-orange-500" />
             </motion.div>
           </div>
           <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 text-right">
@@ -1049,7 +1214,13 @@ function StreakLeaderboardRow({ user, index = 0 }: { user: ApiStreakUser; index?
 }
 
 /** Full Streak Masters tab content */
-function StreakMastersContent({ streaksData, loading }: { streaksData: StreaksData | null; loading: boolean }) {
+function StreakMastersContent({
+  streaksData,
+  loading,
+}: {
+  streaksData: StreaksData | null;
+  loading: boolean;
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
@@ -1067,31 +1238,39 @@ function StreakMastersContent({ streaksData, loading }: { streaksData: StreaksDa
       {/* Consistency Champions Card */}
       <div className="overflow-hidden rounded-[40px] border border-gray-100 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between bg-linear-to-r from-gray-50 to-white px-10 py-10 border-b border-gray-50">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-linear-to-r from-gray-50 to-white px-5 sm:px-10 py-6 sm:py-10 border-b border-gray-50 gap-4 sm:gap-0">
           <div>
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
               <span className="rounded-xl bg-orange-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-orange-600">
                 Top Consistency
               </span>
-              <h3 className="text-2xl font-black tracking-tight text-gray-900">Consistency Champions</h3>
+              <h3 className="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
+                Consistency Champions
+              </h3>
             </div>
-            <p className="text-sm text-gray-500">Global ranking based on consecutive days of learning.</p>
+            <p className="text-sm text-gray-500">
+              Global ranking based on consecutive days of learning.
+            </p>
           </div>
           <motion.div
             animate={{ rotate: [0, 3, -3, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="flex h-16 w-16 items-center justify-center rounded-3xl bg-orange-500 shadow-[0px_20px_25px_0px_#ffd6a8]">
-            <Flame className="h-8 w-8 text-white" />
+            className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-2xl sm:rounded-3xl bg-orange-500 shadow-[0px_20px_25px_0px_#ffd6a8] shrink-0">
+            <Flame className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
           </motion.div>
         </div>
 
         {/* Leaderboard rows */}
         <div>
           {loading && (
-            <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">Loading...</div>
+            <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
+              Loading...
+            </div>
           )}
           {!loading &&
-            streaksData?.topStreaks.map((user, i) => <StreakLeaderboardRow key={user.id} user={user} index={i} />)}
+            streaksData?.topStreaks.map((user, i) => (
+              <StreakLeaderboardRow key={user.id} user={user} index={i} />
+            ))}
         </div>
 
         {/* Dark footer */}
@@ -1111,10 +1290,13 @@ function StreakMastersContent({ streaksData, loading }: { streaksData: StreaksDa
                   initial={{ scaleX: 0 }}
                   animate={isInView ? { scaleX: 1 } : {}}
                   transition={{ delay: 0.7 + i * 0.08, duration: 0.3 }}
-                  className="h-2 w-10 rounded-full bg-orange-500"
+                  className="h-2 w-6 sm:w-10 rounded-full bg-orange-500"
                 />
               ) : (
-                <div key={i} className="h-2 w-10 rounded-full bg-white/10" />
+                <div
+                  key={i}
+                  className="h-2 w-6 sm:w-10 rounded-full bg-white/10"
+                />
               ),
             )}
           </div>
@@ -1126,7 +1308,13 @@ function StreakMastersContent({ streaksData, loading }: { streaksData: StreaksDa
 
 // ─── My Best Components ──────────────────────────────
 
-function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null; loading: boolean }) {
+function MyBestContent({
+  myBestData,
+  loading,
+}: {
+  myBestData: MyBestData | null;
+  loading: boolean;
+}) {
   const circumference = 2 * Math.PI * 40; // r=40
   const pct = myBestData?.progress.percent ?? 0;
   const dashOffset = circumference - (pct / 100) * circumference;
@@ -1144,22 +1332,28 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -40 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-12 space-y-16">
+      className="mt-8 sm:mt-12 space-y-10 sm:space-y-16">
       {/* 1. Active Standing */}
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-blue-600 rounded-full" />
-          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Active Standing</h2>
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+            Active Standing
+          </h2>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">Loading...</div>
+          <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold">
+            Loading...
+          </div>
         ) : (
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-6">
             {/* Level Progress Card */}
-            <div className="flex-1 rounded-[40px] border border-gray-100 bg-white p-10 shadow-sm flex items-center gap-10">
-              <div className="relative h-40 w-40 shrink-0">
-                <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
+            <div className="flex-1 rounded-[40px] border border-gray-100 bg-white p-6 sm:p-10 shadow-sm flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
+              <div className="relative h-32 w-32 sm:h-40 sm:w-40 shrink-0">
+                <svg
+                  className="h-full w-full -rotate-90 transform"
+                  viewBox="0 0 100 100">
                   <circle
                     className="text-gray-100 stroke-current"
                     strokeWidth="8"
@@ -1183,18 +1377,28 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-4xl font-black tracking-tight text-gray-900">{myBestData?.level ?? 0}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Level</span>
+                  <span className="text-4xl font-black tracking-tight text-gray-900">
+                    {myBestData?.level ?? 0}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    Level
+                  </span>
                 </div>
               </div>
               <div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-3xl font-black text-gray-900">{myBestData?.totalXp.toLocaleString() ?? 0}</span>
-                  <span className="text-sm font-bold text-gray-400">Total XP</span>
+                  <span className="text-3xl font-black text-gray-900">
+                    {myBestData?.totalXp.toLocaleString() ?? 0}
+                  </span>
+                  <span className="text-sm font-bold text-gray-400">
+                    Total XP
+                  </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-4 max-w-sm">
-                  {myBestData?.progress.current.toLocaleString()} / {myBestData?.progress.required.toLocaleString()} XP
-                  to next level — <span className="font-bold text-blue-600">{pct}%</span> there.
+                  {myBestData?.progress.current.toLocaleString()} /{" "}
+                  {myBestData?.progress.required.toLocaleString()} XP to next
+                  level —{" "}
+                  <span className="font-bold text-blue-600">{pct}%</span> there.
                 </p>
                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                   <motion.div
@@ -1208,14 +1412,20 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
             </div>
 
             {/* XP Snapshot Card */}
-            <div className="w-76 shrink-0 overflow-hidden rounded-[40px] bg-linear-to-br from-blue-600 to-indigo-700 p-10 text-center relative shadow-[0px_20px_25px_-5px_rgba(190,219,255,0.5)]">
+            <div className="w-full sm:w-76 sm:shrink-0 overflow-hidden rounded-[40px] bg-linear-to-br from-blue-600 to-indigo-700 p-8 sm:p-10 text-center relative shadow-[0px_20px_25px_-5px_rgba(190,219,255,0.5)]">
               <div className="absolute -top-20 -right-10 h-40 w-40 rounded-full bg-white/20 blur-3xl mix-blend-overlay" />
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20 shadow-xl border border-white/20 mb-6 backdrop-blur-md">
                 <Zap className="h-8 w-8 text-white" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">XP Earned</p>
-              <h3 className="text-3xl font-black text-white mb-2">{myBestData?.totalXp.toLocaleString() ?? 0}</h3>
-              <p className="text-xs text-blue-200/80">Keep learning to level up faster!</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">
+                XP Earned
+              </p>
+              <h3 className="text-3xl font-black text-white mb-2">
+                {myBestData?.totalXp.toLocaleString() ?? 0}
+              </h3>
+              <p className="text-xs text-blue-200/80">
+                Keep learning to level up faster!
+              </p>
             </div>
           </div>
         )}
@@ -1278,13 +1488,17 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-green-500 rounded-full" />
-          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Mastered History</h2>
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+            Mastered History
+          </h2>
         </div>
 
-        <div className="flex gap-12">
+        <div className="flex flex-col sm:flex-row gap-8 sm:gap-12">
           {/* Earned Badges */}
           <div className="flex-1">
-            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">Earned Badges</h3>
+            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+              Earned Badges
+            </h3>
             <div className="grid grid-cols-2 gap-4">
               {earnedBadges.map((badge, i) => (
                 <motion.div
@@ -1298,8 +1512,12 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50">
                     {badge.icon}
                   </div>
-                  <h4 className="font-bold text-gray-900 text-sm mb-1">{badge.title}</h4>
-                  <p className="text-[10px] text-gray-400">{badge.description}</p>
+                  <h4 className="font-bold text-gray-900 text-sm mb-1">
+                    {badge.title}
+                  </h4>
+                  <p className="text-[10px] text-gray-400">
+                    {badge.description}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -1307,7 +1525,9 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
 
           {/* Level History */}
           <div className="flex-1">
-            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">Level History</h3>
+            <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+              Level History
+            </h3>
             <div className="space-y-3">
               {levelHistoryData.map((lvl, i) => (
                 <motion.div
@@ -1322,7 +1542,9 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
                       {lvl.level}
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-800 text-sm">{lvl.title}</h4>
+                      <h4 className="font-bold text-gray-800 text-sm">
+                        {lvl.title}
+                      </h4>
                       <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-0.5">
                         Completed • {lvl.xp} XP
                       </p>
@@ -1338,25 +1560,31 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
 
       {/* 4. Badge Gallery */}
       <section>
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8">
           <div className="flex items-center gap-4">
             <div className="h-1 w-12 bg-indigo-600 rounded-full" />
-            <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Badge Gallery</h2>
+            <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+              Badge Gallery
+            </h2>
           </div>
           <div className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-gray-50 px-4 py-2">
             <div className="flex items-center gap-2">
               <div className="h-2.5 w-2.5 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.5)]" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">3 Earned</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">
+                3 Earned
+              </span>
             </div>
             <div className="h-4 w-px bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">5 Locked</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                5 Locked
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
           {galleryBadges.map((badge) => (
             <motion.div
               key={badge.id}
@@ -1383,7 +1611,8 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
                 }`}>
                 {badge.icon}
               </div>
-              <h4 className={`text-sm font-black mb-1 ${badge.locked ? "text-gray-500" : "text-gray-900"}`}>
+              <h4
+                className={`text-sm font-black mb-1 ${badge.locked ? "text-gray-500" : "text-gray-900"}`}>
                 {badge.title}
               </h4>
               <p className="text-[10px] font-bold text-gray-400 mb-4 h-8 leading-relaxed line-clamp-2">
@@ -1392,7 +1621,9 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
 
               {badge.earnedDate && (
                 <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-auto">
-                  <span className="text-[8px] font-black uppercase tracking-widest text-blue-600">Achieved</span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-blue-600">
+                    Achieved
+                  </span>
                   <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">
                     {badge.earnedDate}
                   </span>
@@ -1402,8 +1633,12 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
               {badge.progress && (
                 <div className="flex flex-col gap-1.5 border-t border-gray-50 pt-3 mt-auto">
                   <div className="flex items-center justify-between">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">Progress</span>
-                    <span className="text-[8px] font-black text-gray-900">{badge.progress.label}</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">
+                      Progress
+                    </span>
+                    <span className="text-[8px] font-black text-gray-900">
+                      {badge.progress.label}
+                    </span>
                   </div>
                   <div className="h-1 w-full overflow-hidden rounded-full bg-gray-200">
                     <div
@@ -1424,12 +1659,14 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
       <section>
         <div className="flex items-center gap-4 mb-8">
           <div className="h-1 w-12 bg-orange-500 rounded-full" />
-          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">Next Evolution</h2>
+          <h2 className="text-xl font-black uppercase tracking-wider text-gray-900">
+            Next Evolution
+          </h2>
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
           {/* Priority Challenge */}
-          <div className="relative overflow-hidden rounded-[40px] bg-gray-900 p-8 shadow-xl flex items-center gap-8">
+          <div className="relative overflow-hidden rounded-[40px] bg-gray-900 p-6 sm:p-8 shadow-xl flex items-center gap-5 sm:gap-8">
             <div className="absolute -top-25 -right-20 h-64 w-64 rounded-full bg-blue-600/20 blur-[100px]" />
             <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[32px] border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm">
               <Brain className="h-10 w-10 text-white/80" />
@@ -1437,10 +1674,16 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
             <div className="relative z-10 flex-1">
               <div className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-3 py-1 mb-4">
                 <Target className="h-3 w-3 text-white" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white">Priority Challenge</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-white">
+                  Priority Challenge
+                </span>
               </div>
-              <h3 className="text-2xl font-black text-white mb-2">Analytical Genius</h3>
-              <p className="text-sm text-gray-400 max-w-62.5 mb-6">Maintained low cognitive load for 3 hours</p>
+              <h3 className="text-2xl font-black text-white mb-2">
+                Analytical Genius
+              </h3>
+              <p className="text-sm text-gray-400 max-w-62.5 mb-6">
+                Maintained low cognitive load for 3 hours
+              </p>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
                   <span className="text-blue-200">Requirement</span>
@@ -1509,7 +1752,9 @@ function MyBestContent({ myBestData, loading }: { myBestData: MyBestData | null;
 
 const Ranks = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("global");
-  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(null);
+  const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(
+    null,
+  );
   const [topThreeData, setTopThreeData] = useState<LeaderboardUser[]>([]);
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>([]);
   const [weeklyRival, setWeeklyRival] = useState<LeaderboardUser | null>(null);
@@ -1603,19 +1848,28 @@ const Ranks = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}>
               {/* 3. Podium */}
-              <Podium topThree={topThreeData} onProfileClick={setSelectedUser} />
+              <Podium
+                topThree={topThreeData}
+                onProfileClick={setSelectedUser}
+              />
 
               {/* 4. Main content area */}
-              <div className="mt-12 flex gap-6">
+              <div className="mt-12 flex flex-col lg:flex-row gap-6">
                 {/* Left column — Leaderboard */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   {/* Table header */}
-                  <AnimatedSection className="flex items-center justify-between rounded-2xl bg-gray-50 px-8 py-3">
+                  <AnimatedSection className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 sm:px-8 py-3">
                     <div className="flex gap-12">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Rank</span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Learner</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Rank
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                        Learner
+                      </span>
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Total XP</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                      Total XP
+                    </span>
                   </AnimatedSection>
 
                   {/* Leaderboard card */}
@@ -1633,7 +1887,12 @@ const Ranks = () => {
                       leaderboardData
                         .filter((u) => !u.isCurrentUser && u.rank < 5)
                         .map((user, i) => (
-                          <LeaderboardRow key={user.rank} user={user} index={i} onProfileClick={setSelectedUser} />
+                          <LeaderboardRow
+                            key={user.rank}
+                            user={user}
+                            index={i}
+                            onProfileClick={setSelectedUser}
+                          />
                         ))}
 
                     {/* "Your" blue card with mastery */}
@@ -1645,20 +1904,24 @@ const Ranks = () => {
                             <motion.div
                               key={user.rank}
                               initial={{ opacity: 0, scale: 0.92 }}
-                              animate={leaderboardInView ? { opacity: 1, scale: 1 } : {}}
+                              animate={
+                                leaderboardInView
+                                  ? { opacity: 1, scale: 1 }
+                                  : {}
+                              }
                               transition={{
                                 delay: 0.15,
                                 duration: 0.6,
                                 ease: [0.22, 1, 0.36, 1],
                               }}
-                              className="rounded-3xl bg-blue-600 p-6 shadow-[0px_25px_50px_0px_#bedbff]">
+                              className="rounded-3xl bg-blue-600 p-4 sm:p-6 shadow-[0px_25px_50px_0px_#bedbff]">
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-5">
-                                  <motion.div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-white/20 text-base font-black text-white">
+                                <div className="flex items-center gap-2 sm:gap-5">
+                                  <motion.div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-[12px] sm:rounded-[14px] bg-white/20 text-sm sm:text-base font-black text-white">
                                     #{user.rank}
                                   </motion.div>
                                   <motion.div className="relative">
-                                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/40 bg-blue-500 text-lg font-black text-white">
+                                    <div className="flex h-10 w-10 sm:h-14 sm:w-14 items-center justify-center rounded-xl sm:rounded-2xl border-2 border-white/40 bg-blue-500 text-base sm:text-lg font-black text-white">
                                       {user.avatar}
                                     </div>
                                     <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-[10px] bg-white shadow-sm">
@@ -1667,7 +1930,9 @@ const Ranks = () => {
                                   </motion.div>
                                   <div>
                                     <div className="flex items-center gap-2">
-                                      <p className="text-lg font-black text-white">{user.name}</p>
+                                      <p className="text-base sm:text-lg font-black text-white">
+                                        {user.name}
+                                      </p>
                                       <motion.span
                                         animate={{ opacity: [1, 0.5, 1] }}
                                         transition={{
@@ -1682,12 +1947,16 @@ const Ranks = () => {
                                       <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200">
                                         Level {user.level}
                                       </span>
-                                      <PositionBadge change={user.positionChange} />
+                                      <PositionBadge
+                                        change={user.positionChange}
+                                      />
                                     </div>
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <p className="text-2xl font-black text-white">{user.xp.toLocaleString()}</p>
+                                  <p className="text-xl sm:text-2xl font-black text-white">
+                                    {user.xp.toLocaleString()}
+                                  </p>
                                   <p className="text-[10px] font-black uppercase tracking-widest text-blue-200">
                                     Total XP
                                   </p>
@@ -1703,31 +1972,54 @@ const Ranks = () => {
                       leaderboardData
                         .filter((u) => !u.isCurrentUser && u.rank > 5)
                         .map((user, i) => (
-                          <LeaderboardRow key={user.rank} user={user} index={i + 2} onProfileClick={setSelectedUser} />
+                          <LeaderboardRow
+                            key={user.rank}
+                            user={user}
+                            index={i + 2}
+                            onProfileClick={setSelectedUser}
+                          />
                         ))}
                   </div>
                 </div>
 
                 {/* Right column — Sidebar */}
-                <div className="w-76 shrink-0 space-y-6">
+                <div className="w-full lg:w-76 lg:shrink-0 space-y-6">
                   <XpOverdriveCard />
-                  <WeeklyRivalCard rival={weeklyRival} onProfileClick={setSelectedUser} />
+                  <WeeklyRivalCard
+                    rival={weeklyRival}
+                    onProfileClick={setSelectedUser}
+                  />
                 </div>
               </div>
             </motion.div>
           )}
 
           {activeTab === "streak" && (
-            <StreakMastersContent key="streak" streaksData={streaksData} loading={loadingStreaks} />
+            <StreakMastersContent
+              key="streak"
+              streaksData={streaksData}
+              loading={loadingStreaks}
+            />
           )}
 
-          {activeTab === "best" && <MyBestContent key="best" myBestData={myBestData} loading={loadingMyBest} />}
+          {activeTab === "best" && (
+            <MyBestContent
+              key="best"
+              myBestData={myBestData}
+              loading={loadingMyBest}
+            />
+          )}
         </AnimatePresence>
       </main>
 
       {/* Profile Details Modal */}
       <AnimatePresence>
-        {selectedUser && <ProfileModal user={selectedUser} onClose={() => setSelectedUser(null)} />}
+        {selectedUser && (
+          <ProfileModal
+            user={selectedUser}
+            onClose={() => setSelectedUser(null)}
+          />
+        )}
       </AnimatePresence>
     </div>
   );
