@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { ChevronRight, Trophy, Award, Medal } from "lucide-react";
 import type { HomeProgressSummary } from "@/api/home";
+import { Link } from "react-router-dom";
 
 interface Props {
   summary?: HomeProgressSummary;
@@ -20,10 +21,12 @@ export function Progress({ summary }: Props) {
             <p className="text-gray-700 text-sm leading-relaxed">
               You are doing better than 85% of students in your grade.
             </p>
-            <button className="text-blue-900 font-bold text-sm flex items-center gap-1 focus:underline">
+            <Link
+              to="/progress"
+              className="text-blue-900 font-bold text-sm flex items-center gap-1 focus:underline">
               See Learning Path{" "}
               <ChevronRight size={16} className="text-blue-900" />
-            </button>
+            </Link>
           </div>
 
           {/* Courses Completed Card */}
