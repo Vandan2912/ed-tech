@@ -1,63 +1,95 @@
 import { motion } from "motion/react";
 import {
   Zap,
-  FlaskConical,
-  Dna,
   ChevronRight,
   ChartColumn,
   Atom,
+  FlaskConical,
+  Dna,
   Layers,
   Globe,
-  Flame,
+  BookOpen,
+  Calculator,
+  Microscope,
+  Languages,
+  Music,
+  Palette,
+  Code2,
+  HeartPulse,
+  Leaf,
+  Landmark,
+  type LucideIcon,
 } from "lucide-react";
+import { useAppSelector } from "@/store/store";
+import { useNavigate } from "react-router-dom";
+
+const SUBJECT_COLORS: Record<string, string> = {
+  maths: "bg-[#155DFC]",
+  mathematics: "bg-[#155DFC]",
+  physics: "bg-[#4F39F6]",
+  chemistry: "bg-[#009966]",
+  biology: "bg-[#EC003F]",
+  history: "bg-[#F54900]",
+  geography: "bg-[#009689]",
+  english: "bg-[#7C3AED]",
+  literature: "bg-[#7C3AED]",
+  computer: "bg-[#0EA5E9]",
+  science: "bg-[#0EA5E9]",
+  music: "bg-[#DB2777]",
+  art: "bg-[#F59E0B]",
+  economics: "bg-[#10B981]",
+  health: "bg-[#EF4444]",
+  environment: "bg-[#22C55E]",
+  civics: "bg-[#6366F1]",
+};
+
+const FALLBACK_COLORS = [
+  "bg-[#155DFC]",
+  "bg-[#4F39F6]",
+  "bg-[#009966]",
+  "bg-[#EC003F]",
+  "bg-[#F54900]",
+  "bg-[#009689]",
+  "bg-[#7C3AED]",
+  "bg-[#DB2777]",
+];
+
+const SUBJECT_ICONS: Record<string, LucideIcon> = {
+  maths: ChartColumn,
+  mathematics: ChartColumn,
+  calculus: Calculator,
+  physics: Atom,
+  chemistry: FlaskConical,
+  biology: Dna,
+  history: Layers,
+  geography: Globe,
+  english: Languages,
+  literature: Languages,
+  computer: Code2,
+  science: Microscope,
+  music: Music,
+  art: Palette,
+  economics: Landmark,
+  health: HeartPulse,
+  environment: Leaf,
+  civics: Landmark,
+};
+
+function getSubjectColor(name: string, idx: number): string {
+  const key = name.toLowerCase().split(" ")[0];
+  return SUBJECT_COLORS[key] ?? FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
+}
+
+function getSubjectIcon(name: string): LucideIcon {
+  const key = name.toLowerCase().split(" ")[0];
+  return SUBJECT_ICONS[key] ?? BookOpen;
+}
 
 export function ConsistencyQuest() {
-  const subjects = [
-    {
-      name: "Maths",
-      subheading: "Mastery",
-      isStreak: false,
-      icon: <ChartColumn size={20} className="text-white" />,
-      color: "bg-[#155DFC]",
-    },
-    {
-      name: "Physics",
-      subheading: null,
-      isStreak: true,
-      streak: "12D",
-      icon: <Atom size={20} className="text-white" />,
-      color: "bg-[#4F39F6]",
-    },
-    {
-      name: "Chemistry",
-      subheading: null,
-      isStreak: true,
-      streak: "28D",
-      icon: <FlaskConical size={20} className="text-white" />,
-      color: "bg-[#009966]",
-    },
-    {
-      name: "Biology",
-      subheading: "Mastery",
-      isStreak: false,
-      icon: <Dna size={20} className="text-white" />,
-      color: "bg-[#EC003F]",
-    },
-    {
-      name: "History",
-      subheading: "Mastery",
-      isStreak: false,
-      icon: <Layers size={20} className="text-white" />,
-      color: "bg-[#F54900]",
-    },
-    {
-      name: "Geography",
-      subheading: "Mastery",
-      isStreak: false,
-      icon: <Globe size={20} className="text-white" />,
-      color: "bg-[#009689]",
-    },
-  ];
+  const subjects = useAppSelector((state) => state.course.subjects);
+  const navigate = useNavigate();
+
+  if (subjects.length === 0) return null;
 
   return (
     <section className="px-6 py-5 md:py-16 relative">
@@ -90,7 +122,9 @@ export function ConsistencyQuest() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-6">
-            <button className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-2xl font-bold text-xs hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-100 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
+            <button
+              onClick={() => navigate("/courses")}
+              className="w-full sm:w-auto px-8 py-3.5 bg-gray-900 text-white rounded-2xl font-bold text-xs hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-100 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-200">
               Join Challenge <ChevronRight size={16} />
             </button>
           </div>
@@ -98,31 +132,35 @@ export function ConsistencyQuest() {
 
         <div className="shrink-0 md:min-w-[40%] md:w-auto w-full">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full lg:w-auto">
-            {subjects.map((sub, idx) => (
+            {subjects.slice(0, 6).map((subject, idx) => (
               <motion.div
-                key={idx}
+                key={subject.id}
                 whileHover={{ scale: 1.05 }}
+                onClick={() => navigate(`/courses/${subject.id}`)}
                 className="bg-[#F9FAFB80] rounded-2xl p-4.25 flex flex-col items-center justify-center text-center gap-4 border border-[#00000000] transition-all hover:shadow-md cursor-pointer">
-                <div
-                  className={`shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-9 h-9 justify-center items-center rounded-[14px] ${sub.color}`}>
-                  {sub.icon}
-                </div>
+                {(() => {
+                  const Icon = getSubjectIcon(subject.name);
+                  return (
+                    <div
+                      className={`shadow-[0_1px_3px_0_rgba(0,0,0,0.10),0_1px_2px_-1px_rgba(0,0,0,0.10)] flex w-9 h-9 justify-center items-center rounded-[14px] ${getSubjectColor(subject.name, idx)}`}>
+                      <Icon size={20} className="text-white" />
+                    </div>
+                  );
+                })()}
                 <div>
                   <div className="text-[#101828] text-center text-xs not-italic font-bold leading-4">
-                    {sub.name}
+                    {subject.name}
                   </div>
-                  {sub.isStreak ? (
-                    <div className="flex items-center justify-center gap-1 text-[#FF6900] text-center text-[8px] not-italic font-black leading-3 tracking-[1.006px] uppercase">
-                      <Flame size={8} className="fill-[#FF6900]" /> {sub.streak}{" "}
-                      STREAK
-                    </div>
-                  ) : (
-                    <div className="text-[#99A1AF] text-center text-[8px] not-italic font-bold leading-3 tracking-[1.006px] uppercase">
-                      {sub.subheading}
-                    </div>
-                  )}
+                  <div className="text-[#99A1AF] text-center text-[8px] not-italic font-bold leading-3 tracking-[1.006px] uppercase">
+                    {subject.topics?.length ?? 0} Topics
+                  </div>
                 </div>
-                <button className="text-center text-blue-600 bg-[#EFF6FF] text-[8px] font-black uppercase leading-3 tracking-wide inline-flex justify-center items-center border pl-[16.938px] pr-[16.063px] pt-[9.5px] pb-[8.5px] rounded-[14px] border-solid border-[rgba(219,234,254,0.50)]">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/courses/${subject.id}`);
+                  }}
+                  className="text-center text-blue-600 bg-[#EFF6FF] text-[8px] font-black uppercase leading-3 tracking-wide inline-flex justify-center items-center border pl-[16.938px] pr-[16.063px] pt-[9.5px] pb-[8.5px] rounded-[14px] border-solid border-[rgba(219,234,254,0.50)]">
                   Enroll Now
                 </button>
               </motion.div>
