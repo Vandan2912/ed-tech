@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Brain, ChevronRight } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 import type { CognitiveMetrics } from "@/api/home";
+import { Link } from "react-router-dom";
 
 const chartData = [
   { load: 40 },
@@ -65,9 +66,11 @@ export function CognitiveLoad({ metrics }: Props) {
                 HOURS LEARNED
               </div>
             </div>
-            <button className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-blue-900/20 leading-normal">
+            <Link
+              to="/stats"
+              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-blue-900/20 leading-normal">
               VIEW ANALYTICS <ChevronRight size={18} />
-            </button>
+            </Link>
           </div>
         </div>
 
