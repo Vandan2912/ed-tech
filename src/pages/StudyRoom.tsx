@@ -1,14 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Users,
-  Clock,
-  Target,
-  LogOut,
-  Brain,
-  UserPlus,
-} from "lucide-react";
+import { Users, Clock, Target, LogOut, Brain, UserPlus } from "lucide-react";
 import { leaveRoom, getRoomDetails, type RoomDetails } from "@/api/room";
 import InviteLearnersModal from "@/components/InviteLearnersModal";
 
@@ -37,8 +30,7 @@ function LeaveRoomPanel({ onConfirm }: { onConfirm: () => void }) {
       </div>
       <button
         onClick={onConfirm}
-        className="w-full py-2.5 bg-red-500 hover:bg-red-600 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-colors focus-visible:outline-none"
-      >
+        className="w-full py-2.5 bg-red-500 hover:bg-red-600 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-colors focus-visible:outline-none">
         Confirm Leave
       </button>
     </div>
@@ -52,6 +44,7 @@ export default function StudyRoom() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [details, setDetails] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const hasLeft = useRef(false);
 
   useEffect(() => {
     if (!roomId) return;
@@ -61,8 +54,18 @@ export default function StudyRoom() {
       .finally(() => setLoading(false));
   }, [roomId]);
 
+  useEffect(() => {
+    return () => {
+      if (roomId && !hasLeft.current) {
+        hasLeft.current = true;
+        leaveRoom(Number(roomId)).catch(() => {});
+      }
+    };
+  }, [roomId]);
+
   const handleLeave = async () => {
-    if (roomId) {
+    if (roomId && !hasLeft.current) {
+      hasLeft.current = true;
       try {
         await leaveRoom(Number(roomId));
       } catch {
@@ -75,7 +78,9 @@ export default function StudyRoom() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-        <p className="text-gray-400 font-semibold text-[14px]">Loading room...</p>
+        <p className="text-gray-400 font-semibold text-[14px]">
+          Loading room...
+        </p>
       </main>
     );
   }
@@ -83,12 +88,15 @@ export default function StudyRoom() {
   if (!details) {
     return (
       <main className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-        <p className="text-gray-400 font-semibold text-[14px]">Room not found.</p>
+        <p className="text-gray-400 font-semibold text-[14px]">
+          Room not found.
+        </p>
       </main>
     );
   }
 
-  const { room, host, learners, participants, session, goals, user_role } = details;
+  const { room, host, learners, participants, session, goals, user_role } =
+    details;
   const isHost = user_role === "host";
 
   return (
@@ -104,8 +112,7 @@ export default function StudyRoom() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative bg-linear-to-br from-[#1C398E] via-[#2250C4] to-[#3B5FD4] rounded-3xl px-8 py-8 text-white overflow-hidden"
-          >
+            className="relative bg-linear-to-br from-[#1C398E] via-[#2250C4] to-[#3B5FD4] rounded-3xl px-8 py-8 text-white overflow-hidden">
             <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none" />
             <div className="absolute -bottom-8 left-1/3 w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
 
@@ -130,7 +137,8 @@ export default function StudyRoom() {
                 {room.topic}
               </h1>
               <p className="text-[13px] text-white/60 font-medium mb-6">
-                Hosted by <span className="text-white font-bold">{host.name}</span>
+                Hosted by{" "}
+                <span className="text-white font-bold">{host.name}</span>
               </p>
 
               <div className="flex flex-wrap gap-2">
@@ -149,8 +157,7 @@ export default function StudyRoom() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-          >
+            transition={{ delay: 0.05 }}>
             <LeaveRoomPanel onConfirm={handleLeave} />
           </motion.div>
         </div>
@@ -161,8 +168,7 @@ export default function StudyRoom() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.08 }}
-            className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm"
-          >
+            className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Users size={16} className="text-gray-500" />
@@ -179,8 +185,7 @@ export default function StudyRoom() {
               {participants.map((p) => (
                 <div
                   key={p.user_id}
-                  className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-black text-gray-600"
-                >
+                  className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-black text-gray-600">
                   {initials(p.name)}
                 </div>
               ))}
@@ -190,8 +195,7 @@ export default function StudyRoom() {
               {participants.map((p) => (
                 <div
                   key={p.user_id}
-                  className="flex items-center gap-3 px-3 py-2.5 bg-gray-50 rounded-xl"
-                >
+                  className="flex items-center gap-3 px-3 py-2.5 bg-gray-50 rounded-xl">
                   <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-black text-gray-600 shrink-0">
                     {initials(p.name)}
                   </div>
@@ -216,8 +220,7 @@ export default function StudyRoom() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-emerald-50 border border-emerald-100 rounded-2xl p-5 shadow-sm"
-          >
+            className="bg-emerald-50 border border-emerald-100 rounded-2xl p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-1">
               <Target size={16} className="text-emerald-600" />
               <span className="text-[12px] font-black uppercase tracking-widest text-emerald-700">
@@ -232,8 +235,7 @@ export default function StudyRoom() {
               {goals.map((g, i) => (
                 <div
                   key={g.id}
-                  className="flex items-start gap-3 bg-white/70 border border-emerald-100 rounded-xl px-4 py-3"
-                >
+                  className="flex items-center gap-3 bg-white/70 border border-emerald-100 rounded-xl px-4 py-3">
                   <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black shrink-0 mt-0.5">
                     {i + 1}
                   </div>
@@ -252,8 +254,7 @@ export default function StudyRoom() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.13 }}
-            className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col"
-          >
+            className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center">
@@ -280,8 +281,7 @@ export default function StudyRoom() {
               <div className="mt-4">
                 <button
                   onClick={() => navigate(`/study/${roomId}/chat`)}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-violet-600 hover:bg-violet-700 text-white text-[12px] font-black uppercase tracking-wider rounded-xl transition-colors focus-visible:outline-none"
-                >
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-violet-600 hover:bg-violet-700 text-white text-[12px] font-black uppercase tracking-wider rounded-xl transition-colors focus-visible:outline-none">
                   <Brain size={14} />
                   Start AI Chat
                 </button>
@@ -290,8 +290,7 @@ export default function StudyRoom() {
               <div className="mt-4">
                 <button
                   onClick={() => navigate(`/study/${roomId}/chat`)}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[12px] font-black uppercase tracking-wider rounded-xl transition-colors border border-violet-200 focus-visible:outline-none"
-                >
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[12px] font-black uppercase tracking-wider rounded-xl transition-colors border border-violet-200 focus-visible:outline-none">
                   <Brain size={14} />
                   View AI Insights
                 </button>
@@ -303,8 +302,7 @@ export default function StudyRoom() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.16 }}
-            className="bg-blue-50 border border-blue-100 rounded-2xl px-6 py-4 flex flex-col justify-center shadow-sm"
-          >
+            className="bg-blue-50 border border-blue-100 rounded-2xl px-6 py-4 flex flex-col justify-center shadow-sm">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
                 <UserPlus size={18} className="text-blue-600" />
@@ -320,8 +318,7 @@ export default function StudyRoom() {
             </div>
             <button
               onClick={() => setInviteOpen(true)}
-              className="flex items-center justify-center gap-1.5 w-full py-3 text-[12px] font-black uppercase tracking-wider text-white bg-[#1C398E] hover:bg-[#162d72] transition-colors rounded-xl focus-visible:outline-none"
-            >
+              className="flex items-center justify-center gap-1.5 w-full py-3 text-[12px] font-black uppercase tracking-wider text-white bg-[#1C398E] hover:bg-[#162d72] transition-colors rounded-xl focus-visible:outline-none">
               <UserPlus size={14} />+ Add Members
             </button>
           </motion.div>
