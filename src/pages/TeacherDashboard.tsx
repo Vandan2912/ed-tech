@@ -16,7 +16,6 @@ import {
   sendReminder,
   dismissAlert,
   type Alert,
-  type AlertsSummary,
 } from "@/api/alerts";
 
 function formatLastActive(
@@ -50,11 +49,6 @@ export default function TeacherDashboard() {
   const { user } = useAuth();
   const [activeFilter, setActiveFilter] = useState("all");
   const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [summary, setSummary] = useState<AlertsSummary>({
-    totalAlerts: 0,
-    inactiveCount: 0,
-    failedTwiceCount: 0,
-  });
   const [loading, setLoading] = useState(true);
   const [remindedIds, setRemindedIds] = useState<Set<string>>(new Set());
   const [sendingIds, setSendingIds] = useState<Set<string>>(new Set());
@@ -63,11 +57,11 @@ export default function TeacherDashboard() {
 
   useEffect(() => {
     getAlerts()
-      .then(({ summary, alerts }) => {
-        setSummary(summary);
-        setAlerts(alerts);
+      .then(({ alerts }) => {
+        const active = alerts.filter((a) => !a.isDismissed);
+        setAlerts(active);
         setRemindedIds(
-          new Set(alerts.filter((a) => a.isReminded).map((a) => a.userId)),
+          new Set(active.filter((a) => a.isReminded).map((a) => a.userId)),
         );
       })
       .catch(() => {})
@@ -75,11 +69,18 @@ export default function TeacherDashboard() {
   }, []);
 
   const visibleAlerts = alerts.filter((a) => !dismissedIds.has(a.userId));
+  const totalAlerts = visibleAlerts.length;
+  const inactiveCount = visibleAlerts.filter(
+    (a) => a.type === "inactive",
+  ).length;
+  const failedTwiceCount = visibleAlerts.filter(
+    (a) => a.type === "failed",
+  ).length;
 
   const tabs = [
-    { id: "all", label: `All (${summary.totalAlerts})` },
-    { id: "inactive", label: `Inactive (${summary.inactiveCount})` },
-    { id: "failed", label: `Failed Twice (${summary.failedTwiceCount})` },
+    { id: "all", label: `All (${totalAlerts})` },
+    { id: "inactive", label: `Inactive (${inactiveCount})` },
+    { id: "failed", label: `Failed Twice (${failedTwiceCount})` },
   ];
 
   const filteredAlerts =
@@ -146,9 +147,9 @@ export default function TeacherDashboard() {
               <p className="text-blue-100 text-base">
                 {loading
                   ? "Loading alerts..."
-                  : summary.totalAlerts === 0
+                  : totalAlerts === 0
                     ? "All students are on track."
-                    : `You have ${summary.totalAlerts} student${summary.totalAlerts !== 1 ? "s" : ""} requiring immediate attention.`}
+                    : `You have ${totalAlerts} student${totalAlerts !== 1 ? "s" : ""} requiring immediate attention.`}
               </p>
             </div>
 
@@ -156,8 +157,8 @@ export default function TeacherDashboard() {
               <Bell size={24} className="text-white shrink-0" />
               <div>
                 <p className="font-black text-base leading-tight">
-                  {summary.totalAlerts} Active Alert
-                  {summary.totalAlerts !== 1 ? "s" : ""}
+                  {totalAlerts} Active Alert
+                  {totalAlerts !== 1 ? "s" : ""}
                 </p>
                 <p className="text-blue-200 text-xs">Review and take action</p>
               </div>
@@ -176,7 +177,7 @@ export default function TeacherDashboard() {
             </div>
             <div>
               <div className="text-[#82181a] text-3xl font-black tracking-wide leading-none mb-1">
-                {loading ? "—" : summary.totalAlerts}
+                {loading ? "—" : totalAlerts}
               </div>
               <div className="text-[#fb2c36] text-[10px] font-bold">
                 Require attention
@@ -193,7 +194,7 @@ export default function TeacherDashboard() {
             </div>
             <div>
               <div className="text-[#7b3306] text-3xl font-black tracking-wide leading-none mb-1">
-                {loading ? "—" : summary.inactiveCount}
+                {loading ? "—" : inactiveCount}
               </div>
               <div className="text-[#e17100] text-[10px] font-bold">
                 Students offline
@@ -210,7 +211,7 @@ export default function TeacherDashboard() {
             </div>
             <div>
               <div className="text-[#7e2a0c] text-3xl font-black tracking-wide leading-none mb-1">
-                {loading ? "—" : summary.failedTwiceCount}
+                {loading ? "—" : failedTwiceCount}
               </div>
               <div className="text-[#f54900] text-[10px] font-bold">
                 Topic failures

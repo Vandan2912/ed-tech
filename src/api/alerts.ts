@@ -9,6 +9,7 @@ export interface Alert {
   daysInactive: number | null;
   lastActiveDate: string | null;
   isReminded: boolean;
+  isDismissed: boolean;
   quizId: number | null;
 }
 
@@ -32,6 +33,7 @@ interface ApiAlert {
   days_inactive: number | null;
   last_active_date: string | null;
   is_reminded: boolean;
+  is_dismissed: boolean;
   quiz_id: number | null;
 }
 
@@ -71,6 +73,7 @@ export const getAlerts = async (): Promise<AlertsResponse> => {
       daysInactive: a.days_inactive,
       lastActiveDate: a.last_active_date,
       isReminded: a.is_reminded,
+      isDismissed: a.is_dismissed,
       quizId: a.quiz_id,
     })),
   };

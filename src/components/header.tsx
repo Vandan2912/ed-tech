@@ -40,7 +40,8 @@ export function Header() {
       label: "Alerts",
       path: "/",
       icon: Bell,
-      badge: unreadAlerts,
+      badge:
+        unreadAlerts > 0 ? (unreadAlerts > 9 ? "9+" : unreadAlerts) : undefined,
     },
     {
       id: "pin-message",
