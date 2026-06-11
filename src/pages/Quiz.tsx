@@ -31,6 +31,8 @@ const Quiz = () => {
 
   const [timeLeft, setTimeLeft] = useState(120); // 120s per question
   const [isTimeUp, setIsTimeUp] = useState(false);
+  const [timeSpent, setTimeSpent] = useState(0);
+  const [startedAt] = useState(() => new Date().toISOString());
 
   const nextQuestion = () => {
     setShowAnswer(false);
@@ -70,13 +72,14 @@ const Quiz = () => {
     return () => clearInterval(timer);
   }, [timeLeft, showResult, showAnswer, current]);
 
-  const handleAutoSubmit = async () => {
-    // Logic for final quiz submission
+  const handleAutoSubmit = async (extraTime = 0) => {
     try {
       const response = await api.post(
         `/course/quiz/${questions[0]?.quiz_id || questions[current]?.quiz_id}/submit`,
         {
           answers: answers,
+          time_spent: timeSpent + extraTime,
+          started_at: startedAt,
         },
         {
           headers: {
@@ -129,6 +132,7 @@ const Quiz = () => {
       selected_option_ids: selected.map((s) => s.id),
     };
     setAnswers((prev) => [...prev, newAnswer]);
+    setTimeSpent((prev) => prev + (120 - timeLeft));
 
     if (isCurrentCorrect) {
       toast.custom(
@@ -421,9 +425,10 @@ const Quiz = () => {
               onClick={() => {
                 if (isTimeUp && !showAnswer) {
                   if (current < questions.length - 1) {
+                    setTimeSpent((prev) => prev + 120);
                     nextQuestion();
                   } else {
-                    handleAutoSubmit();
+                    handleAutoSubmit(120);
                   }
                 } else {
                   handleSubmit();
