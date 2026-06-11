@@ -1,4 +1,4 @@
-import { Banner } from "@/components/home/banner";
+// import { Banner } from "@/components/home/banner";
 import { CognitiveLoad } from "@/components/home/cognitive_load";
 import { ConsistencyQuest } from "@/components/home/consistency_quest";
 import { ContinueLearning } from "@/components/home/continue_learning";
@@ -35,9 +35,9 @@ const Home = () => {
   }
   return (
     <div className="home min-h-screen bg-white text-gray-900">
-      <main className="max-w-7xl mx-auto space-y-12 md:pb-24">
+      <main className="max-w-7xl mx-auto space-y-12">
         <Hero />
-        <Banner />
+        {/* <Banner /> */}
         <ResumeLearning courses={overview?.continue_learning} />
         <ContinueLearning courses={overview?.continue_learning} />
         {/* <ProblemOfTheDay /> */}

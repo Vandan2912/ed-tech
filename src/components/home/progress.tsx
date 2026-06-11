@@ -45,7 +45,7 @@ export function Progress({ summary }: Props) {
               {summary?.courses_completed ?? "—"}
             </div>
             <a
-              href="#"
+              href="/progress"
               className="inline-flex items-center gap-1 text-[#1C398E] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
               VIEW PROGRESS <ChevronRight size={14} />
             </a>
@@ -57,7 +57,7 @@ export function Progress({ summary }: Props) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="bg-purple-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-start">
+            className="bg-purple-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-between">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#59168B] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
                 CERTIFICATES
@@ -69,6 +69,11 @@ export function Progress({ summary }: Props) {
                 {summary?.certificates_earned ?? "—"}
               </div>
             </div>
+            <a
+              href="/certificates"
+              className="inline-flex items-center gap-1 text-[#59168B] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
+              VIEW certificates <ChevronRight size={14} />
+            </a>
           </motion.div>
 
           {/* Global Rank Card */}
@@ -77,7 +82,7 @@ export function Progress({ summary }: Props) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="flex-1 bg-orange-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-start">
+            className="flex-1 bg-orange-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-between">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#7E2A0C] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
                 GLOBAL RANK
@@ -89,6 +94,11 @@ export function Progress({ summary }: Props) {
                 {summary?.global_rank != null ? `#${summary.global_rank}` : "—"}
               </div>
             </div>
+            <a
+              href="/ranks"
+              className="inline-flex items-center gap-1 text-[#7E2A0C] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
+              VIEW RANK <ChevronRight size={14} />
+            </a>
           </motion.div>
         </div>
       </div>

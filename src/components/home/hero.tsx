@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Trophy, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Hero() {
   return (
@@ -26,14 +27,16 @@ export function Hero() {
           </h1>
 
           <p className="not-italic font-normal tracking-[-0.312px] pr-16 text-sm md:text-base text-blue-50 max-w-md leading-relaxed">
-            Join 50,000+ students mastering subjects with personalized paths and
+            Join 2+ students mastering subjects with personalized paths and
             cognitive pressure analytics.
           </p>
 
           <div className="flex flex-wrap items-center gap-6 pt-2">
-            <button className="bg-white hover:bg-gray-50 px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-[#1C398E] text-center text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
-              Enroll Now
-            </button>
+            <Link
+              to="/courses"
+              className="bg-white hover:bg-gray-50 px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-[#1C398E] text-center text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
+              Get Started
+            </Link>
           </div>
         </div>
 
