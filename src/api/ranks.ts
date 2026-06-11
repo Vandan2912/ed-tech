@@ -1,5 +1,37 @@
 import { api } from "@/lib/api";
 
+export interface ClassLeaderboardUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  name: string;
+  profile_image: string | null;
+  rank: number;
+  xp: number;
+  level: number;
+  rank_change: string;
+  rank_color: string;
+  xp_to_next_level: number;
+  is_current_user: boolean;
+}
+
+export interface ClassLeaderboardResponse {
+  success: boolean;
+  class: string;
+  my_rank: ClassLeaderboardUser;
+  top_three: ClassLeaderboardUser[];
+  leaderboard: ClassLeaderboardUser[];
+}
+
+export const getClassLeaderboard = async (period: "all" | "week" | "month" = "all"): Promise<ClassLeaderboardResponse> => {
+  const token = localStorage.getItem("token");
+  const res = await api.get("/leaderboard/class", {
+    params: { period },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
 export interface ApiLeaderboardUser {
   id: string;
   name: string;
