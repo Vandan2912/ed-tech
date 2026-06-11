@@ -54,14 +54,14 @@ export default function StudyRoom() {
       .finally(() => setLoading(false));
   }, [roomId]);
 
-  useEffect(() => {
-    return () => {
-      if (roomId && !hasLeft.current) {
-        hasLeft.current = true;
-        leaveRoom(Number(roomId)).catch(() => {});
-      }
-    };
-  }, [roomId]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (roomId && !hasLeft.current) {
+  //       hasLeft.current = true;
+  //       leaveRoom(Number(roomId)).catch(() => {});
+  //     }
+  //   };
+  // }, [roomId]);
 
   const handleLeave = async () => {
     if (roomId && !hasLeft.current) {
