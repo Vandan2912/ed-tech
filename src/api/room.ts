@@ -72,10 +72,15 @@ export interface RoomDetails {
     time_ago: string;
   };
   goals: RoomGoal[];
-  feed: Record<string, Array<{ id: number; prompt: string; response: string; created_at: string }>>;
+  feed: Record<
+    string,
+    Array<{ id: number; prompt: string; response: string; created_at: string }>
+  >;
 }
 
-export const getRoomDetails = async (id: number | string): Promise<RoomDetails> => {
+export const getRoomDetails = async (
+  id: number | string,
+): Promise<RoomDetails> => {
   const res = await api.get(`/room/${id}`);
   return res.data;
 };
@@ -89,4 +94,30 @@ export interface CreateRoomPayload {
 export const createRoom = async (payload: CreateRoomPayload): Promise<Room> => {
   const res = await api.post("/room", payload);
   return res.data;
+};
+
+export interface InviteUser {
+  id: string;
+  first_name?: string;
+  last_name?: string;
+  avatar?: string;
+  level?: number;
+  subject?: string;
+}
+
+export const getInviteUsers = async (
+  roomId: number | string,
+): Promise<InviteUser[]> => {
+  const res = await api.get(`/room/${roomId}/invite-users`);
+  const payload = res.data;
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.data)) return payload.data;
+  return [];
+};
+
+export const inviteUser = async (
+  roomId: number | string,
+  userId: string,
+): Promise<void> => {
+  await api.post(`/room/${roomId}/invite`, { userId });
 };
