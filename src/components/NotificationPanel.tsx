@@ -4,10 +4,12 @@ import {
   AlertTriangle,
   Bell,
   Brain,
+  Check,
   Loader2,
   PlayCircle,
   Sparkles,
   Trophy,
+  Users,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -19,21 +21,24 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import {
+  acceptRoomInvite,
   getNotifications,
   getPinnedMessages,
   loadReadIds,
   markNotificationRead,
   notifyNotificationsUpdated,
   persistReadIds,
+  rejectRoomInvite,
   type AppNotificationItem,
   type PinnedMessage,
 } from "@/api/notifications";
 
-type NotificationType = "urgent" | "quiz" | "lesson" | "info" | "warning" | "reward";
+type NotificationType = "urgent" | "quiz" | "lesson" | "info" | "warning" | "reward" | "invite";
 
 interface AppNotification {
   id: string;
   type: NotificationType;
+  rawType: string;
   badge: string;
   time: string;
   title: string;
@@ -88,6 +93,13 @@ const typeConfig: Record<
     dot: "bg-[#16a34a]",
     badgeUnread: "bg-[#16a34a] text-white",
   },
+  invite: {
+    icon: Users,
+    accent: "text-[#2b7fff]",
+    cardUnread: "bg-[#eff6ff] border-[#bedbff]",
+    dot: "bg-[#2b7fff]",
+    badgeUnread: "bg-[#2b7fff] text-white",
+  },
 };
 
 function humanizeTitle(raw: string): string {
@@ -111,6 +123,8 @@ function fromApiType(apiType: string): { type: NotificationType; badge: string }
       return { type: "lesson", badge: "Lesson" };
     case "system":
       return { type: "info", badge: "System" };
+    case "study_room_invite":
+      return { type: "invite", badge: "Room Invite" };
     default:
       return { type: "info", badge: humanizeTitle(apiType) };
   }
@@ -121,6 +135,7 @@ function toAppNotificationFromApi(n: AppNotificationItem): AppNotification {
   return {
     id: n.id,
     type,
+    rawType: n.type,
     badge,
     time: formatRelativeTime(n.createdAt),
     title: humanizeTitle(n.title),
@@ -152,6 +167,7 @@ function toAppNotification(
   return {
     id: message.id,
     type: "urgent",
+    rawType: "pinned",
     badge: "Pinned",
     time: formatRelativeTime(message.createdAt),
     title: message.title,
@@ -164,14 +180,45 @@ function toAppNotification(
 function NotificationCard({
   notification,
   onClick,
+  onAccept,
+  onReject,
 }: {
   notification: AppNotification;
   onClick?: () => void;
+  onAccept?: () => Promise<void>;
+  onReject?: () => Promise<void>;
 }) {
+  const [accepting, setAccepting] = useState(false);
+  const [rejecting, setRejecting] = useState(false);
+  const [resolved, setResolved] = useState<"accepted" | "rejected" | null>(null);
+
   const config = typeConfig[notification.type];
   const Icon = config.icon;
   const { read } = notification;
-  const clickable = !read && !!onClick;
+  const isInvite = notification.rawType === "study_room_invite";
+  const clickable = !read && !!onClick && !isInvite;
+
+  const handleAccept = async () => {
+    if (!onAccept || accepting || rejecting) return;
+    setAccepting(true);
+    try {
+      await onAccept();
+      setResolved("accepted");
+    } finally {
+      setAccepting(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!onReject || accepting || rejecting) return;
+    setRejecting(true);
+    try {
+      await onReject();
+      setResolved("rejected");
+    } finally {
+      setRejecting(false);
+    }
+  };
 
   return (
     <div
@@ -238,6 +285,39 @@ function NotificationCard({
         <p className="text-[10px] font-black uppercase tracking-[1.12px] text-[#99a1af]">
           From: {notification.from}
         </p>
+
+        {isInvite && !read && (
+          resolved ? (
+            <div className={cn(
+              "mt-1 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider",
+              resolved === "accepted" ? "text-[#16a34a]" : "text-[#6a7282]",
+            )}>
+              <Check size={12} />
+              {resolved === "accepted" ? "Accepted" : "Declined"}
+            </div>
+          ) : (
+            <div className="mt-1 flex gap-2">
+              <button
+                type="button"
+                onClick={handleAccept}
+                disabled={accepting || rejecting}
+                className="flex items-center gap-1.5 rounded-xl bg-[#1C398E] px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-white transition-colors hover:bg-[#162d72] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none"
+              >
+                {accepting ? <Loader2 size={11} className="animate-spin" /> : <Check size={11} />}
+                Accept
+              </button>
+              <button
+                type="button"
+                onClick={handleReject}
+                disabled={accepting || rejecting}
+                className="flex items-center gap-1.5 rounded-xl border border-[#e5e7eb] bg-white px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-[#6a7282] transition-colors hover:bg-[#f9fafb] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none"
+              >
+                {rejecting ? <Loader2 size={11} className="animate-spin" /> : <X size={11} />}
+                Decline
+              </button>
+            </div>
+          )
+        )}
       </div>
     </div>
   );
@@ -512,6 +592,22 @@ export function NotificationPanel({ onClose }: { onClose?: () => void }) {
                   key={notification.id}
                   notification={notification}
                   onClick={() => markActivityRead(notification.id)}
+                  onAccept={
+                    notification.rawType === "study_room_invite"
+                      ? async () => {
+                          await acceptRoomInvite(notification.id);
+                          markActivityRead(notification.id);
+                        }
+                      : undefined
+                  }
+                  onReject={
+                    notification.rawType === "study_room_invite"
+                      ? async () => {
+                          await rejectRoomInvite(notification.id);
+                          markActivityRead(notification.id);
+                        }
+                      : undefined
+                  }
                 />
               ))
             )}

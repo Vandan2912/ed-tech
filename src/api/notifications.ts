@@ -177,6 +177,14 @@ export const markNotificationRead = async (id: string): Promise<void> => {
   await api.patch(`/notifications/${id}/read`);
 };
 
+export const acceptRoomInvite = async (id: string): Promise<void> => {
+  await api.post(`/notifications/${id}/accept-invite`);
+};
+
+export const rejectRoomInvite = async (id: string): Promise<void> => {
+  await api.post(`/notifications/${id}/reject-invite`);
+};
+
 export const pinMessage = async (payload: {
   title: string;
   message: string;
