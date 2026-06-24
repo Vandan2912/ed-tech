@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "@/i18n/useTranslation";
 import {
   getRoomDashboard,
   getRooms,
@@ -73,6 +74,7 @@ function StatCard({
 
 function RoomCard({ room }: { room: Room }) {
   const navigate = useNavigate();
+  const t = useTranslation();
   const [joining, setJoining] = useState(false);
   const styles = subjectStyle(room.subject);
   const current = parseInt(room.learners, 10);
@@ -106,7 +108,7 @@ function RoomCard({ room }: { room: Room }) {
           </span>
           {room.is_private && (
             <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-full">
-              <Lock size={9} /> Private
+              <Lock size={9} /> {t.study.private}
             </span>
           )}
         </div>
@@ -128,12 +130,12 @@ function RoomCard({ room }: { room: Room }) {
             <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500">
               <Users size={12} />
               <span>
-                {current}/{room.max_learners} Learners
+                {current}/{room.max_learners} {t.study.learners}
               </span>
             </div>
             {full && (
               <span className="text-[9px] font-black uppercase tracking-wider text-red-500 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
-                Full
+                {t.study.full}
               </span>
             )}
           </div>
@@ -153,7 +155,7 @@ function RoomCard({ room }: { room: Room }) {
           onClick={handleJoin}
           className="w-full flex items-center justify-center gap-2 bg-[#101828] hover:bg-[#1C398E] disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-white text-[13px] font-black uppercase tracking-wider py-3 rounded-xl">
           <Users size={14} />
-          {joining ? "Joining..." : full ? "Room Full" : "Join Session"}
+          {joining ? t.study.joining : full ? t.study.roomFull : t.study.joinSession}
         </button>
       </div>
     </motion.div>
@@ -162,19 +164,20 @@ function RoomCard({ room }: { room: Room }) {
 
 // ─── Tab bar ──────────────────────────────────────────────────────────────────
 
-const TABS = [
-  { id: "study-rooms", label: "Study Rooms", icon: Users },
-  { id: "homework", label: "Homework", icon: ClipboardList },
-  { id: "leaderboard", label: "Leaderboard", icon: Trophy },
-] as const;
-
-type TabId = (typeof TABS)[number]["id"];
+type TabId = "study-rooms" | "homework" | "leaderboard";
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function Study() {
   const navigate = useNavigate();
+  const t = useTranslation();
   const [activeTab, setActiveTab] = useState<TabId>("study-rooms");
+
+  const TABS = [
+    { id: "study-rooms" as const, label: t.study.studyRooms, icon: Users },
+    { id: "homework" as const, label: t.study.homework, icon: ClipboardList },
+    { id: "leaderboard" as const, label: t.study.leaderboard, icon: Trophy },
+  ];
   const [search, setSearch] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("ALL");
   const [hostModalOpen, setHostModalOpen] = useState(false);
@@ -255,10 +258,10 @@ export default function Study() {
                   </div>
                   <div>
                     <h1 className="text-[16px] font-black text-[#101828] tracking-tight">
-                      STUDY ROOMS
+                      {t.study.studyRoomsTitle}
                     </h1>
                     <p className="text-[12px] text-gray-400 font-medium">
-                      Invite learners · Set goals · Study together
+                      {t.study.studyRoomsSubtitle}
                     </p>
                   </div>
                 </div>
@@ -266,7 +269,7 @@ export default function Study() {
                   onClick={() => setHostModalOpen(true)}
                   className="flex items-center justify-center gap-2 bg-[#1C398E] hover:bg-[#162d72] text-white text-[12px] font-black uppercase tracking-wider px-4 py-2.5 rounded-xl transition-colors w-full sm:w-auto">
                   <Plus size={14} />
-                  Host a Session
+                  {t.study.hostSession}
                 </button>
               </div>
 
@@ -274,7 +277,7 @@ export default function Study() {
               <div className="flex gap-4 mb-8">
                 <StatCard
                   value={roomStats?.activeRooms ?? null}
-                  label="Active Rooms"
+                  label={t.study.activeRooms}
                   color="text-blue-600"
                 />
                 <StatCard

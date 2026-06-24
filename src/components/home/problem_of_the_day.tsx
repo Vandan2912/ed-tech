@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Brain, ChevronDown, Sparkles, TrendingUp } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 const subjects = [
   { label: "Maths", emoji: "📐" },
@@ -36,6 +37,7 @@ const topicsBySubject: Record<string, string[]> = {
 };
 
 export function ProblemOfTheDay() {
+  const t = useTranslation();
   const [selectedSubject, setSelectedSubject] = useState("Maths");
   const [selectedTopic, setSelectedTopic] = useState("Trigonometry");
   const [subjectOpen, setSubjectOpen] = useState(false);
@@ -121,12 +123,12 @@ export function ProblemOfTheDay() {
                   className="text-[28px] font-black text-gray-900 leading-tight tracking-tight"
                   style={{ fontFamily: "inherit" }}
                 >
-                  Problem of the Day
+                  {t.problemOfTheDay.title}
                 </h2>
                 <Sparkles className="shrink-0 text-[#8b5cf6]" />
               </div>
               <p className="text-sm text-[#6A7282] mt-0.5 font-normal leading-5">
-                Challenge yourself with the toughest question from your grade
+                {t.problemOfTheDay.subtitle}
               </p>
             </div>
           </div>
@@ -136,7 +138,7 @@ export function ProblemOfTheDay() {
             {/* 1. Choose Subject */}
             <div>
               <p className="text-[11px] font-black uppercase tracking-[1.2px] text-[#374151] mb-3">
-                1. Choose Subject
+                {t.problemOfTheDay.chooseSubject}
               </p>
               <div className="relative">
                 <button
@@ -213,7 +215,7 @@ export function ProblemOfTheDay() {
             {/* 2. Choose Topic */}
             <div>
               <p className="text-[11px] font-black uppercase tracking-[1.2px] text-[#374151] mb-3">
-                2. Choose Topic
+                {t.problemOfTheDay.chooseTopic}
               </p>
               <div className="relative">
                 <button
@@ -295,7 +297,7 @@ export function ProblemOfTheDay() {
               }}
             >
               <TrendingUp size={20} className="text-white" />
-              START CHALLENGE
+              {t.problemOfTheDay.startChallenge}
             </motion.button>
           </div>
         </div>

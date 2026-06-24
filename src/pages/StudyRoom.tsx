@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Users, Clock, Target, LogOut, Brain, UserPlus } from "lucide-react";
 import { leaveRoom, getRoomDetails, type RoomDetails } from "@/api/room";
 import InviteLearnersModal from "@/components/InviteLearnersModal";
@@ -15,6 +16,7 @@ function initials(name: string) {
 }
 
 function LeaveRoomPanel({ onConfirm }: { onConfirm: () => void }) {
+  const t = useTranslation();
   return (
     <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex flex-col items-center text-center gap-3 h-full">
       <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
@@ -22,16 +24,16 @@ function LeaveRoomPanel({ onConfirm }: { onConfirm: () => void }) {
       </div>
       <div>
         <p className="text-[14px] font-black text-red-600 uppercase tracking-wider">
-          Leave Room
+          {t.studyRoom.leaveRoom}
         </p>
         <p className="text-[12px] text-red-400 font-medium mt-0.5">
-          Your progress is saved
+          {t.studyRoom.progressSaved}
         </p>
       </div>
       <button
         onClick={onConfirm}
         className="w-full py-2.5 bg-red-500 hover:bg-red-600 text-white text-[12px] font-black uppercase tracking-widest rounded-xl transition-colors focus-visible:outline-none">
-        Confirm Leave
+        {t.studyRoom.confirmLeave}
       </button>
     </div>
   );
@@ -40,6 +42,7 @@ function LeaveRoomPanel({ onConfirm }: { onConfirm: () => void }) {
 export default function StudyRoom() {
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>();
+  const t = useTranslation();
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [details, setDetails] = useState<RoomDetails | null>(null);
@@ -79,7 +82,7 @@ export default function StudyRoom() {
     return (
       <main className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
         <p className="text-gray-400 font-semibold text-[14px]">
-          Loading room...
+          {t.studyRoom.loading}
         </p>
       </main>
     );
@@ -89,7 +92,7 @@ export default function StudyRoom() {
     return (
       <main className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
         <p className="text-gray-400 font-semibold text-[14px]">
-          Room not found.
+          {t.studyRoom.notFound}
         </p>
       </main>
     );
@@ -122,11 +125,11 @@ export default function StudyRoom() {
                 {session.is_live ? (
                   <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 px-3 py-1 rounded-full w-fit">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Live Session
+                    {t.studyRoom.liveSession}
                   </span>
                 ) : (
                   <span className="text-[10px] font-black uppercase tracking-widest bg-white/10 border border-white/20 text-white/60 px-3 py-1 rounded-full">
-                    Ended
+                    {t.studyRoom.ended}
                   </span>
                 )}
               </div>
@@ -138,14 +141,14 @@ export default function StudyRoom() {
                 {room.topic}
               </h1>
               <p className="text-[13px] text-white/60 font-medium mb-6">
-                Hosted by{" "}
+                {t.studyRoom.hostedBy}{" "}
                 <span className="text-white font-bold">{host.name}</span>
               </p>
 
               <div className="flex flex-wrap gap-2">
                 <span className="flex items-center gap-1.5 text-[11px] font-bold bg-white/10 border border-white/15 text-white/80 px-3 py-1.5 rounded-full">
                   <Users size={12} />
-                  {learners.current}/{learners.max} Learners
+                  {learners.current}/{learners.max} {t.study.learners}
                 </span>
                 <span className="flex items-center gap-1.5 text-[11px] font-bold bg-white/10 border border-white/15 text-white/80 px-3 py-1.5 rounded-full">
                   <Clock size={12} />
@@ -174,7 +177,7 @@ export default function StudyRoom() {
               <div className="flex items-center gap-2">
                 <Users size={16} className="text-gray-500" />
                 <span className="text-[12px] font-black uppercase tracking-widest text-gray-500">
-                  In Room
+                  {t.studyRoom.inRoom}
                 </span>
               </div>
               <span className="text-[12px] font-black text-gray-400">
@@ -205,11 +208,11 @@ export default function StudyRoom() {
                   </span>
                   {p.is_host ? (
                     <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full">
-                      Host
+                      {t.studyRoom.host}
                     </span>
                   ) : (
                     <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
-                      Joined
+                      {t.studyRoom.joined}
                     </span>
                   )}
                 </div>
@@ -225,7 +228,7 @@ export default function StudyRoom() {
             <div className="flex items-center gap-2 mb-1">
               <Target size={16} className="text-emerald-600" />
               <span className="text-[12px] font-black uppercase tracking-widest text-emerald-700">
-                Session Goals
+                {t.studyRoom.sessionGoals}
               </span>
             </div>
             <p className="text-[11px] text-emerald-500 font-semibold mb-4">

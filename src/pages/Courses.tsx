@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { iconMap } from "@/lib/icons";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { fetchCourses } from "@/store/slices/courseSlice";
+import { useTranslation } from "@/i18n/useTranslation";
+import { useLocalizeContent } from "@/i18n/localizeContent";
 
 const colors = [
   "bg-blue-600",
@@ -19,6 +21,8 @@ const Courses = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { subjects, loading, error } = useAppSelector((state) => state.course);
+  const t = useTranslation();
+  const { localizeSubject } = useLocalizeContent();
 
   useEffect(() => {
     if (subjects.length === 0) {
@@ -30,7 +34,7 @@ const Courses = () => {
     return (
       <main className="min-h-[50vh]">
         <div className="py-12 p-6 md:pl-28">
-          <p className="text-gray-500">Loading courses...</p>
+          <p className="text-gray-500">{t.courses.loading}</p>
         </div>
       </main>
     );
@@ -40,7 +44,7 @@ const Courses = () => {
     return (
       <main className="min-h-[50vh]">
         <div className="py-12 p-6 md:pl-28">
-          <p className="text-red-500">Error: {error}</p>
+          <p className="text-red-500">{t.courses.error}: {error}</p>
         </div>
       </main>
     );
@@ -51,10 +55,10 @@ const Courses = () => {
       <div className="pt-12 pb-0 md:pb-12">
         <div className="p-6 pb-0 md:pb-6 md:px-28">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            What do you want to learn?
+            {t.courses.heading}
           </h2>
           <p className="text-gray-500 mb-8">
-            Select a subject to begin your journey
+            {t.courses.subtitle}
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {subjects.map((course, index) => {
@@ -83,10 +87,10 @@ const Courses = () => {
 
                   <div>
                     <h3 className="font-bold text-gray-900 capitalize">
-                      {course.name}
+                      {localizeSubject(course.name)}
                     </h3>
                     <p className="text-xs text-gray-400 mt-1">
-                      {topicCount} Topics
+                      {topicCount} {t.courses.topics}
                     </p>
                   </div>
                 </div>

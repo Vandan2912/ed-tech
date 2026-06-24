@@ -25,6 +25,8 @@ import { CoursesDropdown } from "./courses_drawer";
 import { UpgradeModal } from "./UpgradeModal";
 import { NotificationBell } from "./NotificationPanel";
 import { useUnreadAlertsCount } from "@/api/notifications";
+import { LanguageToggle } from "./LanguageToggle";
+import { useTranslation } from "@/i18n/useTranslation";
 
 export function Header() {
   const navigate = useNavigate();
@@ -33,11 +35,12 @@ export function Header() {
   const [imgError, setImgError] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const unreadAlerts = useUnreadAlertsCount(user?.role === "teacher");
+  const t = useTranslation();
 
   const teacherTabs = [
     {
       id: "alerts",
-      label: "Alerts",
+      label: t.header.alerts,
       path: "/",
       icon: Bell,
       badge:
@@ -45,17 +48,17 @@ export function Header() {
     },
     {
       id: "pin-message",
-      label: "Pin Message",
+      label: t.header.pinMessage,
       path: "/pin-message",
       icon: Pin,
     },
     {
       id: "engagement",
-      label: "Engagement",
+      label: t.header.engagement,
       path: "/engagement",
       icon: BarChart3,
     },
-    { id: "content", label: "Content", path: "/content", icon: BookOpen },
+    { id: "content", label: t.header.content, path: "/content", icon: BookOpen },
   ];
 
   return (
@@ -75,7 +78,7 @@ export function Header() {
                 SmartLearn
               </span>
               <span className="text-[#4f39f6] text-[10px] font-black uppercase tracking-[1.1172px]">
-                Teacher Portal
+                {t.header.teacherPortal}
               </span>
             </div>
           ) : (
@@ -87,7 +90,7 @@ export function Header() {
                 </span>
               </span>
               <span className="text-[#6A7282] text-[11px] font-medium leading-tight mt-0.5">
-                Your Learning Journey
+                {t.header.learningJourney}
               </span>
             </div>
           )}
@@ -148,7 +151,7 @@ export function Header() {
                     : "hover:text-[#1C398E]"
                 }`
               }>
-              HOME
+              {t.header.home}
             </NavLink>
             <CoursesDropdown />
 
@@ -161,7 +164,7 @@ export function Header() {
                     : "hover:text-[#1C398E]"
                 }`
               }>
-              RANKS
+              {t.header.ranks}
             </NavLink>
             <NavLink
               to="/stats"
@@ -172,7 +175,7 @@ export function Header() {
                     : "hover:text-[#1C398E]"
                 }`
               }>
-              STATS
+              {t.header.stats}
             </NavLink>
             <NavLink
               to="/progress"
@@ -183,7 +186,7 @@ export function Header() {
                     : "hover:text-[#1C398E]"
                 }`
               }>
-              PROGRESS
+              {t.header.progress}
             </NavLink>
             <NavLink
               to="/study"
@@ -194,7 +197,7 @@ export function Header() {
                     : "hover:text-[#1C398E]"
                 }`
               }>
-              <Users size={16} className="me-1.75" /> STUDY
+              <Users size={16} className="me-1.75" /> {t.header.study}
             </NavLink>
           </nav>
         )}
@@ -202,6 +205,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           {user?.role !== "teacher" && (
             <>
+              <LanguageToggle />
               <div className="hidden md:flex items-center gap-1 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full text-sm group text-[#F54900] text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[0.064px] border border-[#FFD6A8CC]">
                 <Flame size={16} className="group-hover:scale-110" /> 7
               </div>
@@ -251,7 +255,7 @@ export function Header() {
                 {user?.first_name || ""}
               </span>
               <span className="text-[#615fff] text-[10px] font-bold uppercase tracking-[1.1172px] leading-tight mt-0.5">
-                Teacher
+                {t.header.teacher}
               </span>
             </div>
           )}
@@ -278,7 +282,7 @@ export function Header() {
               <div className="px-5 py-3 border-b border-gray-50 mb-2 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
-                    Active {user?.role}
+                    {t.header.activeRole} {user?.role}
                   </p>
                   <p className="font-bold text-gray-900">
                     {user?.first_name} {user?.last_name}
@@ -290,19 +294,19 @@ export function Header() {
                   onClick={() => setUpgradeOpen(true)}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-2xl transition-all mb-1 group/upgrade focus-visible:outline-none">
                   <Zap fill="currentColor" className="size-4" />
-                  <span className="shrink-0">Upgrade to Unlimited</span>
+                  <span className="shrink-0">{t.header.upgradeUnlimited}</span>
                 </button>
                 <button
                   onClick={() => navigate("/profile")}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-2xl transition-all focus-visible:outline-none">
                   <Settings className="size-4" />
-                  Profile Settings
+                  {t.header.profileSettings}
                 </button>
                 <button
                   onClick={() => navigate("/certificates")}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-2xl transition-all focus-visible:outline-none">
                   <Award className="size-4" />
-                  My Certificates
+                  {t.header.myCertificates}
                 </button>
                 <div className="pt-1.5 mt-1.5 border-t border-gray-50">
                   <button
@@ -311,7 +315,7 @@ export function Header() {
                       logout();
                     }}>
                     <LogOut stroke="currentColor" className="size-4" />
-                    Logout
+                    {t.header.logout}
                   </button>
                 </div>
               </div>

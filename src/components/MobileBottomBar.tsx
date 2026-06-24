@@ -11,6 +11,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/auth/useAuth";
+import { useTranslation } from "@/i18n/useTranslation";
 
 type NavItem = {
   to: string;
@@ -20,23 +21,25 @@ type NavItem = {
   badge?: number;
 };
 
-const studentItems: NavItem[] = [
-  { to: "/", label: "Home", icon: Home, end: true },
-  { to: "/courses", label: "Courses", icon: BookOpen },
-  { to: "/ranks", label: "Ranks", icon: Trophy },
-  { to: "/progress", label: "Progress", icon: Target },
-  { to: "/study", label: "Study", icon: Users },
-];
-
-const teacherItems: NavItem[] = [
-  { to: "/", label: "Alerts", icon: Bell, end: true, badge: 5 },
-  { to: "/pin-message", label: "Pin", icon: Pin },
-  { to: "/engagement", label: "Engage", icon: BarChart3 },
-  { to: "/content", label: "Content", icon: BookOpen },
-];
-
 export function MobileBottomBar() {
   const { user } = useAuth();
+  const t = useTranslation();
+
+  const studentItems: NavItem[] = [
+    { to: "/", label: t.mobileBar.home, icon: Home, end: true },
+    { to: "/courses", label: t.mobileBar.courses, icon: BookOpen },
+    { to: "/ranks", label: t.mobileBar.ranks, icon: Trophy },
+    { to: "/progress", label: t.mobileBar.progress, icon: Target },
+    { to: "/study", label: t.mobileBar.study, icon: Users },
+  ];
+
+  const teacherItems: NavItem[] = [
+    { to: "/", label: t.mobileBar.alerts, icon: Bell, end: true, badge: 5 },
+    { to: "/pin-message", label: t.mobileBar.pin, icon: Pin },
+    { to: "/engagement", label: t.mobileBar.engage, icon: BarChart3 },
+    { to: "/content", label: t.mobileBar.content, icon: BookOpen },
+  ];
+
   const items = user?.role === "teacher" ? teacherItems : studentItems;
 
   return (

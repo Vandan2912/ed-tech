@@ -1,8 +1,10 @@
 import { motion } from "motion/react";
 import { Trophy, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "@/i18n/useTranslation";
 
 export function Hero() {
+  const t = useTranslation();
   return (
     <section className="p-6">
       <motion.div
@@ -17,25 +19,24 @@ export function Hero() {
           <div className="w-fit relative bg-white/10 rounded-full outline-1 -outline-offset-1 outline-white/20 flex gap-2 items-center px-3 py-1 backdrop-blur-md border border-white/20 uppercase tracking-wider">
             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
             <div className="justify-start text-white text-[11px]  font-bold uppercase leading-4 tracking-wide">
-              Enrollment Open for 2026
+              {t.hero.enrollmentBadge}
             </div>
           </div>
 
           <h1 className="text-white not-italic text-3xl md:text-4xl lg:text-[42px] font-black leading-[1.1] tracking-tight">
-            Unlock Your Potential <br />
-            with <span className="text-[#BEDBFF]">AI Intelligence</span>
+            {t.hero.headline} <br />
+            <span className="text-[#BEDBFF]">{t.hero.headlineSub}</span>
           </h1>
 
           <p className="not-italic font-normal tracking-[-0.312px] pr-16 text-sm md:text-base text-blue-50 max-w-md leading-relaxed">
-            Join 2+ students mastering subjects with personalized paths and
-            cognitive pressure analytics.
+            {t.hero.subtitle}
           </p>
 
           <div className="flex flex-wrap items-center gap-6 pt-2">
             <Link
               to="/courses"
               className="bg-white hover:bg-gray-50 px-8 py-4 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-[#1C398E] text-center text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
-              Get Started
+              {t.hero.getStarted}
             </Link>
           </div>
         </div>
@@ -52,7 +53,7 @@ export function Hero() {
               </div>
               <div className="flex flex-col">
                 <div className="text-[#BEDBFF] text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
-                  Level
+                  {t.hero.level}
                 </div>
                 <div className="text-white text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
                   18
@@ -61,7 +62,7 @@ export function Hero() {
             </div>
             <div className="flex flex-col items-end">
               <span className="text-[#BEDBFF] text-right text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
-                Rank
+                {t.hero.rank}
               </span>
               <span className="text-[#DAB2FF] text-right text-sm not-italic font-bold leading-5 tracking-[-0.15px]">
                 #42
@@ -78,13 +79,13 @@ export function Hero() {
                 650 XP
               </span>
               <span className="text-[rgba(219,234,254,0.60)] text-[9px] not-italic font-bold leading-[13.5px] tracking-[0.167px] uppercase">
-                Next: Lvl 19
+                {t.hero.nextLevel}
               </span>
             </div>
           </div>
 
           <button className="w-full flex justify-center items-start gap-[9.195px] self-stretch border p-2 rounded-[10px] border-solid border-[rgba(255,255,255,0.05)] text-[rgba(255,255,255,0.80)] text-[11px] not-italic font-bold leading-[16.5px] tracking-[0.064px] bg-[#FFFFFF0D]">
-            Continue Learning <ChevronRight size={18} />
+            {t.hero.continueLearning} <ChevronRight size={18} />
           </button>
         </motion.div>
       </motion.div>

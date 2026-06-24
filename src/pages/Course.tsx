@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import { fetchCourses } from "@/store/slices/courseSlice";
 import { iconMap } from "@/lib/icons";
 import { ChevronRight } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 const colors = [
   "bg-blue-600",
@@ -21,6 +22,7 @@ const Course = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { subjects, loading } = useAppSelector((state) => state.course);
+  const t = useTranslation();
 
   useEffect(() => {
     if (subjects.length === 0) {
@@ -31,10 +33,10 @@ const Course = () => {
   const course = subjects.find((c) => c.id === Number(courseId));
 
   if (loading && subjects.length === 0) {
-    return <h2 className="p-6 min-h-[50vh]">Loading...</h2>;
+    return <h2 className="p-6 min-h-[50vh]">{t.course.loading}</h2>;
   }
 
-  if (!course) return <h2 className="p-6 min-h-[50vh]">Course not found</h2>;
+  if (!course) return <h2 className="p-6 min-h-[50vh]">{t.course.notFound}</h2>;
 
   const iconKey = course.icon?.replace(/\.[^/.]+$/, "");
   const normalizedIconKey = iconKey
@@ -55,7 +57,7 @@ const Course = () => {
           <button
             onClick={() => navigate("/courses")}
             className="flex items-center gap-2 text-gray-500 mb-6 hover:text-gray-900">
-            ← Back to Subjects
+            {t.course.backToSubjects}
           </button>
 
           {/* 📘 Header */}
@@ -69,7 +71,7 @@ const Course = () => {
                 {course.name}
               </h2>
               <p className="text-gray-500">
-                {course.topics?.length || 0} topics available
+                {course.topics?.length || 0} {t.course.topicsAvailable}
               </p>
             </div>
           </div>

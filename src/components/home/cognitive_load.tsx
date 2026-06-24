@@ -3,6 +3,7 @@ import { Brain, ChevronRight } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 import type { CognitiveMetrics } from "@/api/home";
 import { Link } from "react-router-dom";
+import { useTranslation } from "@/i18n/useTranslation";
 
 const chartData = [
   { load: 40 },
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function CognitiveLoad({ metrics }: Props) {
+  const t = useTranslation();
   return (
     <section className="px-6 py-5 md:py-20 relative">
       <motion.div
@@ -33,18 +35,16 @@ export function CognitiveLoad({ metrics }: Props) {
         <div className="lg:w-1/2 relative z-10 flex flex-col items-start gap-4">
           <div className="inline-flex items-center gap-2 bg-[#2B7FFF1A] rounded-full px-4 py-1.5 text-xs uppercase text-[#51A2FF] text-[10px] not-italic font-bold leading-3.75 tracking-[0.117px]">
             <Brain size={14} className="text-blue-400" />
-            <span>COGNITIVE TRACKING</span>
+            <span>{t.cognitiveLoad.badge}</span>
           </div>
 
           <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight">
-            Understand Your <br />
-            <span className="text-[#51A2FF]">Cognitive Load</span>
+            {t.cognitiveLoad.heading} <br />
+            <span className="text-[#51A2FF]">{t.cognitiveLoad.headingHighlight}</span>
           </h2>
 
           <p className="max-w-md text-[#99A1AF] text-xs not-italic font-normal leading-[19.5px]">
-            Our AI analyzes your response patterns and time to answer to
-            determine real-time mental pressure. Our syllabus adapts while
-            minimizing peak cognitive load.
+            {t.cognitiveLoad.description}
           </p>
 
           <div className="flex items-center gap-8">
@@ -53,7 +53,7 @@ export function CognitiveLoad({ metrics }: Props) {
                 {metrics?.efficiency ?? "—"}
               </div>
               <div className="text-[#6A7282] text-center text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
-                EFFICIENCY
+                {t.cognitiveLoad.efficiency}
               </div>
             </div>
             <div>
@@ -63,13 +63,13 @@ export function CognitiveLoad({ metrics }: Props) {
                   : "—"}
               </div>
               <div className="text-[#6A7282] text-center text-[9px] not-italic font-bold leading-[13.5px] tracking-[1.067px] uppercase">
-                HOURS LEARNED
+                {t.cognitiveLoad.hoursLearned}
               </div>
             </div>
             <Link
               to="/stats"
               className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-blue-900/20 leading-normal">
-              VIEW ANALYTICS <ChevronRight size={18} />
+              {t.cognitiveLoad.viewAnalytics} <ChevronRight size={18} />
             </Link>
           </div>
         </div>
