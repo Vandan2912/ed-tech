@@ -194,7 +194,7 @@ export default function StudyRoomChat() {
                   <Bot size={16} className="text-white" />
                 </div>
                 <p className="text-[14px] font-black text-white tracking-tight">
-                  {"SmartLearn AI"}
+                  {"Mastishq.ai"}
                 </p>
               </div>
               <div className="flex items-center gap-2 bg-[rgba(89,22,139,0.4)] border border-[rgba(130,0,219,0.5)] rounded-[14px] px-3 py-2.5">

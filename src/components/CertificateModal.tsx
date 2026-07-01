@@ -95,7 +95,7 @@ export function CertificateModal({
                 >
                   <Icon size={24} className="text-white" />
                 </div>
-                <span className="text-[12px] text-[#6a7282]">SmartLearn AI</span>
+                <span className="text-[12px] text-[#6a7282]">Mastishq.ai</span>
               </div>
               <div className="flex flex-col items-end gap-1">
                 <span className="text-[12px] text-[#6a7282]">Topics</span>

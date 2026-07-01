@@ -406,7 +406,7 @@ export default function TeacherDashboard() {
                 AI Alert Engine
               </h4>
               <p className="text-[#99a1af] text-xs leading-relaxed max-w-4xl">
-                SmartLearn AI automatically monitors student activity. Alerts
+                Mastishq.ai automatically monitors student activity. Alerts
                 fire when a student hasn't logged in for 3+ days or fails the
                 same topic quiz twice. Send an instant reminder with one click.
               </p>

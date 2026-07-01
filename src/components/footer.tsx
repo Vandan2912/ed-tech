@@ -97,7 +97,7 @@ export function Footer() {
       </div> */}
 
       <div className="max-w-7xl mx-auto border-t border-gray-100 pt-8 text-center text-sm font-medium text-gray-400">
-        © 2026 SmartLearn AI Education Platform. All rights reserved.
+        © 2026 Mastishq.ai Education Platform. All rights reserved.
       </div>
     </footer>
   );

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import brain from "@/assets/brain.svg";
 import Forgot from "@/components/Login/forgot";
 import ForgotOtp from "@/components/Login/forgot_otp";
 import CreateNewPassword from "@/components/Login/new_password";
@@ -46,15 +45,15 @@ export default function Login() {
   /* ---- Main login content ---- */
   const renderLoginContent = () => (
     <>
-      {/* Brain Icon */}
-      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-900 rounded-[20px] sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-xl shadow-blue-100 transition-colors duration-300">
-        <img src={brain} alt="Brain Icon" className="w-8 h-8 sm:w-10 sm:h-10" />
+      {/* Logo */}
+      <div className="flex justify-center mb-2 sm:mb-4">
+        <img src="/favicon.svg" alt="Mastishq.ai" className="h-10 w-auto" />
       </div>
 
       {/* Title & Subtitle */}
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl! font-black! text-gray-900! mb-2 sm:mb-3! mt-0! tracking-tight!">
-          SmartLearn AI
+          Mastishq.ai
         </h1>
         <p className="text-sm sm:text-base text-gray-500 font-medium!">
           Join the next generation of learners.{" "}
@@ -82,8 +81,7 @@ export default function Login() {
         {/* Terms */}
         <div
           className="text-[10px] text-gray-400 font-bold! uppercase tracking-widest leading-loose"
-          style={{ gap: 0 }}
-        >
+          style={{ gap: 0 }}>
           <p className="text-center">By continuing, you agree to our</p>
           <p className="text-center">
             <a href="#" className="text-blue-900 cursor-pointer">
@@ -105,13 +103,12 @@ export default function Login() {
   return (
     <div
       className="min-h-dvh w-screen flex flex-col items-center justify-center relative overflow-x-hidden p-4 sm:p-8"
-      style={{ background: "#F9FAFB" }}
-    >
+      style={{ background: "#F9FAFB" }}>
       {loader && <Loader />}
 
       {/* Background blurred circles */}
       <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -right-24 -top-48 hidden sm:block" />
-      <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -left-48 -bottom-48 hidden sm:block" />
+      {/* <div className="absolute pointer-events-none w-[24rem] h-96 rounded-full bg-blue-100/50 blur-3xl -left-48 -bottom-48 hidden sm:block" /> */}
 
       {/* Card */}
       <div className="bg-white rounded-[24px] sm:rounded-[40px] p-6 sm:p-10 w-full max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 text-center relative z-10 mx-auto">

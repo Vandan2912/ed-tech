@@ -32,7 +32,7 @@ export function Features() {
     <section className="px-8 py-5 md:py-24 text-center">
       <div className="max-w-3xl mx-auto mb-16">
         <h2 className="md:text-4xl mb-6 text-[#101828] text-center text-3xl not-italic font-black leading-9 tracking-[0.396px]">
-          Why Choose SmartLearn AI?
+          Why Choose Mastishq.ai?
         </h2>
         <p className="max-w-2xl mx-auto text-[#364153] text-center text-base not-italic font-normal leading-6 tracking-[-0.312px]">
           We combine advanced artificial intelligence with cognitive science to create the most effective learning environment for 5th to 12th-grade students.

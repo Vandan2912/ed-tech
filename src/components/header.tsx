@@ -3,7 +3,6 @@ import {
   BarChart3,
   Bell,
   BookOpen,
-  Brain,
   Flame,
   LogOut,
   Settings,
@@ -66,30 +65,11 @@ export function Header() {
           onClick={() => {
             navigate("/");
           }}>
-          <div className="bg-[#1C398E] p-2 rounded-xl text-white">
-            <Brain size={20} />
-          </div>
-          {user?.role === "teacher" ? (
-            <div className="flex flex-col">
-              <span className="text-[#101828] text-[18px] font-black leading-4.5 tracking-[-0.4395px] -mt-0.5">
-                SmartLearn
-              </span>
-              <span className="text-[#4f39f6] text-[10px] font-black uppercase tracking-[1.1172px]">
-                Teacher Portal
-              </span>
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              <span className="text-[#101828] text-base not-italic font-black leading-5 tracking-[-0.712px] flex items-center gap-1.5">
-                SmartLearn
-                <span className="bg-[#DBEAFE] px-1.5 py-0.5 text-[#1447E6] text-[9px] not-italic font-black leading-[13.5px] tracking-[1.067px] uppercase rounded-[8px]">
-                  AI
-                </span>
-              </span>
-              <span className="text-[#6A7282] text-[11px] font-medium leading-tight mt-0.5">
-                Your Learning Journey
-              </span>
-            </div>
+          <img src="/logo.svg" alt="Mastishq.ai" className="h-5 w-auto" />
+          {user?.role === "teacher" && (
+            <span className="text-[#4f39f6] text-[10px] font-black uppercase tracking-[1.1172px]">
+              Teacher Portal
+            </span>
           )}
         </div>
 
