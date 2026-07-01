@@ -22,6 +22,7 @@ const Quiz = () => {
 
   const { questions, loading } = useAppSelector((state) => state.quiz);
 
+  const [lang, setLang] = useState<"en" | "hi">("en");
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<Option[]>([]);
   const [answers, setAnswers] = useState<
@@ -29,7 +30,7 @@ const Quiz = () => {
   >([]);
   const [showAnswer, setShowAnswer] = useState(false);
 
-  const [timeLeft, setTimeLeft] = useState(120); // 120s per question
+  const [timeLeft, setTimeLeft] = useState(60);
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [timeSpent, setTimeSpent] = useState(0);
   const [startedAt] = useState(() => new Date().toISOString());
@@ -38,7 +39,7 @@ const Quiz = () => {
     setShowAnswer(false);
     setSelected([]);
     setIsTimeUp(false);
-    setTimeLeft(120);
+    setTimeLeft(60);
     setCurrent((prev) => prev + 1);
   };
 
@@ -132,7 +133,7 @@ const Quiz = () => {
       selected_option_ids: selected.map((s) => s.id),
     };
     setAnswers((prev) => [...prev, newAnswer]);
-    setTimeSpent((prev) => prev + (120 - timeLeft));
+    setTimeSpent((prev) => prev + (60 - timeLeft));
 
     if (isCurrentCorrect) {
       toast.custom(
@@ -311,6 +312,22 @@ const Quiz = () => {
                 </span>
               </div>
 
+              {/* Language Toggle */}
+              <div className="flex bg-[#f3f4f6] rounded-[12px] p-[3px] shrink-0">
+                {(["en", "hi"] as const).map((l) => (
+                  <button
+                    key={l}
+                    onClick={() => setLang(l)}
+                    className={`px-3 py-1.5 rounded-[10px] text-[11px] font-black transition-all ${
+                      lang === l
+                        ? "bg-white shadow-sm text-[#101828]"
+                        : "text-[#99a1af]"
+                    }`}>
+                    {l === "en" ? "EN" : "हि"}
+                  </button>
+                ))}
+              </div>
+
               <button
                 onClick={() => setOpenAbort(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
@@ -335,7 +352,7 @@ const Quiz = () => {
         {/* ❓ Question */}
         <div className="bg-white p-5 sm:p-8 rounded-[24px] sm:rounded-3xl shadow-sm border border-gray-100">
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">
-            {q.question_text}
+            {lang === "hi" && q.question_hi ? q.question_hi : q.question_text}
           </h2>
           <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
             {q.question_type === "multiple"
@@ -392,7 +409,9 @@ const Quiz = () => {
                     {String.fromCharCode(65 + i)}
                   </div>
                   <span className="font-semibold flex-1 text-sm sm:text-base">
-                    {opt.option_text}
+                    {lang === "hi" && opt.hi
+                      ? opt.hi
+                      : opt.en || opt.option_text}
                   </span>
                   {isSelected && !showAnswer && (
                     <CircleCheck size={20} className="text-blue-600" />
@@ -425,10 +444,10 @@ const Quiz = () => {
               onClick={() => {
                 if (isTimeUp && !showAnswer) {
                   if (current < questions.length - 1) {
-                    setTimeSpent((prev) => prev + 120);
+                    setTimeSpent((prev) => prev + 60);
                     nextQuestion();
                   } else {
-                    handleAutoSubmit(120);
+                    handleAutoSubmit(60);
                   }
                 } else {
                   handleSubmit();
@@ -463,7 +482,8 @@ const Quiz = () => {
               Abort this quiz?
             </h3>
             <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-              Your progress on this quiz will be lost and no XP will be awarded. You can retake it anytime.
+              Your progress on this quiz will be lost and no XP will be awarded.
+              You can retake it anytime.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
