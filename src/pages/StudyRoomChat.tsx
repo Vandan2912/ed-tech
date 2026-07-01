@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "@/i18n/useTranslation";
 import {
   Brain,
   Bot,
@@ -31,7 +30,6 @@ export default function StudyRoomChat() {
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>();
   const { user } = useAuth();
-  const t = useTranslation();
 
   const [details, setDetails] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -154,7 +152,7 @@ export default function StudyRoomChat() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[#030712] flex items-center justify-center">
-        <p className="text-gray-500 font-semibold text-[14px]">{t.studyRoomChat.connecting}</p>
+        <p className="text-gray-500 font-semibold text-[14px]">{"Connecting..."}</p>
       </main>
     );
   }
@@ -163,13 +161,13 @@ export default function StudyRoomChat() {
     return (
       <main className="min-h-screen bg-[#030712] flex items-center justify-center flex-col gap-4">
         <p className="text-red-400 font-bold text-[15px]">
-          {roomError ?? t.studyRoomChat.notFound}
+          {roomError ?? "Room not found."}
         </p>
         <button
           onClick={() => navigate(`/study/${roomId}`)}
           className="px-5 py-2.5 bg-[#155dfc] text-white text-[12px] font-black uppercase tracking-wider rounded-xl"
         >
-          {t.studyRoomChat.backToRoom}
+          {"Back to Room"}
         </button>
       </main>
     );
@@ -196,13 +194,13 @@ export default function StudyRoomChat() {
                   <Bot size={16} className="text-white" />
                 </div>
                 <p className="text-[14px] font-black text-white tracking-tight">
-                  {t.studyRoomChat.aiName}
+                  {"SmartLearn AI"}
                 </p>
               </div>
               <div className="flex items-center gap-2 bg-[rgba(89,22,139,0.4)] border border-[rgba(130,0,219,0.5)] rounded-[14px] px-3 py-2.5">
                 <span className="w-2 h-2 rounded-full bg-[#c27aff] shrink-0" />
                 <p className="text-[10px] font-black uppercase tracking-widest text-[#dab2ff] leading-[1.4]">
-                  {t.studyRoomChat.viewingChats} {host.name}'s {t.studyRoomChat.chats}
+                  {"Viewing"} {host.name}'s {"chats"}
                 </p>
               </div>
             </div>
@@ -273,10 +271,10 @@ export default function StudyRoomChat() {
               </div>
               <div className="min-w-0">
                 <p className="text-[14px] font-black text-white tracking-tight truncate">
-                  {host.name}'s {t.studyRoomChat.aiChat}
+                  {host.name}'s {"AI Chat"}
                 </p>
                 <p className="text-[9px] text-[#6a7282] tracking-wide">
-                  {messages.length} {t.studyRoomChat.messages} · {session.time_ago}
+                  {messages.length} {"messages"} · {session.time_ago}
                 </p>
               </div>
             </div>

@@ -2,14 +2,11 @@ import { motion } from "motion/react";
 import { ChevronRight, Trophy, Award, Medal } from "lucide-react";
 import type { HomeProgressSummary } from "@/api/home";
 import { Link } from "react-router-dom";
-import { useTranslation } from "@/i18n/useTranslation";
-
 interface Props {
   summary?: HomeProgressSummary;
 }
 
 export function Progress({ summary }: Props) {
-  const t = useTranslation();
   return (
     <section className="px-6 pb-5 md:pb-16 relative overflow-hidden bg-gray-50/50">
       <div className="lg:flex-row gap-16 max-w-7xl mx-auto relative z-10 flex w-full flex-col items-start border border-blue-50 rounded-[40px] border-solid bg-white p-8 md:p-12 shadow-2xl shadow-blue-50/50 ">
@@ -18,15 +15,15 @@ export function Progress({ summary }: Props) {
             <h3
               id="progress-snapshot-heading"
               className="text-xl font-bold text-gray-900">
-              {t.homeProgress.heading}
+              Your Progress
             </h3>
             <p className="text-gray-700 text-sm leading-relaxed">
-              {t.homeProgress.description}
+              You are doing better than 85% of students in your grade.
             </p>
             <Link
               to="/progress"
               className="text-blue-900 font-bold text-sm flex items-center gap-1 focus:underline">
-              {t.homeProgress.seeLearningPath}{" "}
+              See Learning Path{" "}
               <ChevronRight size={16} className="text-blue-900" />
             </Link>
           </div>
@@ -39,7 +36,7 @@ export function Progress({ summary }: Props) {
             className="relative overflow-hidden bg-blue-100 p-6 rounded-3xl flex flex-col gap-4">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#1C398E] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
-                {t.homeProgress.coursesCompleted}
+                COURSES COMPLETED
               </span>
               <Trophy size={16} className="text-blue-500" />
             </div>
@@ -49,7 +46,7 @@ export function Progress({ summary }: Props) {
             <a
               href="/progress"
               className="inline-flex items-center gap-1 text-[#1C398E] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
-              {t.homeProgress.viewProgress} <ChevronRight size={14} />
+              VIEW PROGRESS <ChevronRight size={14} />
             </a>
           </motion.div>
 
@@ -62,7 +59,7 @@ export function Progress({ summary }: Props) {
             className="bg-purple-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-between">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#59168B] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
-                {t.homeProgress.certificates}
+                CERTIFICATES
               </span>
               <Award size={16} className="text-purple-500" />
             </div>
@@ -74,7 +71,7 @@ export function Progress({ summary }: Props) {
             <a
               href="/certificates"
               className="inline-flex items-center gap-1 text-[#59168B] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
-              {t.homeProgress.viewCertificates} <ChevronRight size={14} />
+              VIEW certificates <ChevronRight size={14} />
             </a>
           </motion.div>
 
@@ -87,7 +84,7 @@ export function Progress({ summary }: Props) {
             className="flex-1 bg-orange-100 rounded-[2rem] p-6 relative overflow-hidden flex flex-col justify-between">
             <div className="flex justify-between items-start mb-4">
               <span className="text-[#7E2A0C] text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
-                {t.homeProgress.globalRank}
+                GLOBAL RANK
               </span>
               <Medal size={16} className="text-orange-500" />
             </div>
@@ -99,7 +96,7 @@ export function Progress({ summary }: Props) {
             <a
               href="/ranks"
               className="inline-flex items-center gap-1 text-[#7E2A0C] text-center text-xs not-italic font-black leading-4 tracking-[1.2px] uppercase">
-              {t.homeProgress.viewRank} <ChevronRight size={14} />
+              VIEW RANK <ChevronRight size={14} />
             </a>
           </motion.div>
         </div>

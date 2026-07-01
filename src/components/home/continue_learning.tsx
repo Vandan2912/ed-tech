@@ -3,8 +3,6 @@ import { Clock, Play } from "lucide-react";
 import type { ContinueLearningItem } from "@/api/home";
 import { useAppSelector } from "@/store/store";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "@/i18n/useTranslation";
-
 interface Props {
   courses?: ContinueLearningItem[];
 }
@@ -12,7 +10,6 @@ interface Props {
 export function ContinueLearning({ courses }: Props) {
   const subjects = useAppSelector((state) => state.course.subjects);
   const navigate = useNavigate();
-  const t = useTranslation();
 
   const inProgress = courses?.filter((c) => c.progress_percent < 100) ?? [];
 
@@ -35,8 +32,8 @@ export function ContinueLearning({ courses }: Props) {
           <Clock stroke="currentColor" className="size-6 " />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{t.continueLearning.heading}</h2>
-          <p className="text-sm text-gray-500">{t.continueLearning.subtitle}</p>
+          <h2 className="text-2xl font-bold text-gray-900">Continue Learning</h2>
+          <p className="text-sm text-gray-500">Pick up where you left off</p>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -67,7 +64,7 @@ export function ContinueLearning({ courses }: Props) {
 
             <div className="space-y-3 mb-8">
               <div className="flex justify-between text-sm font-semibold">
-                <span className="text-[#99A1AF] text-xs not-italic font-bold leading-4">{t.continueLearning.progress}</span>
+                <span className="text-[#99A1AF] text-xs not-italic font-bold leading-4">Progress</span>
                 <span className="text-blue-600">{course.progress_percent}%</span>
               </div>
               <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
@@ -80,7 +77,7 @@ export function ContinueLearning({ courses }: Props) {
             <button
               onClick={() => handleResume(course.subject_id)}
               className="w-full bg-[#0F172A] hover:bg-[#1E293B] py-4 rounded-xl flex items-center justify-center gap-2 transition-colors text-white text-center text-base not-italic font-bold leading-6 tracking-[-0.312px]">
-              <Play size={18} className="fill-white" /> {t.continueLearning.resumeLesson}
+              <Play size={18} className="fill-white" /> Resume Lesson
             </button>
           </motion.div>
         ))}

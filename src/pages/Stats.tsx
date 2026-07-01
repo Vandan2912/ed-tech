@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useTranslation } from "@/i18n/useTranslation";
 import {
   Brain,
   Target,
@@ -50,12 +49,11 @@ const STATUS_STYLES: Record<
 export default function Stats() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const t = useTranslation();
 
   const STATUS_DESCRIPTIONS: Record<ErrorPatternStatus, string> = {
-    critical: t.stats.frequentMistakes,
-    improving: t.stats.showingProgress,
-    fixed: t.stats.misconceptionResolved,
+    critical: "Frequent mistakes detected — needs immediate attention.",
+    improving: "Showing progress — keep practicing to master this topic.",
+    fixed: "Misconception resolved — great work!",
   };
 
   useEffect(() => {
@@ -96,8 +94,8 @@ export default function Stats() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1">
-            <h1 className="text-[#101828] text-[30px] font-black tracking-[0.4px]">{t.stats.heading}</h1>
-            <p className="text-[#6a7282] text-[16px]">{t.stats.subtitle}</p>
+            <h1 className="text-[#101828] text-[30px] font-black tracking-[0.4px]">{"Learning Analytics"}</h1>
+            <p className="text-[#6a7282] text-[16px]">{"AI-driven insights into your study patterns"}</p>
           </div>
 
           <div className="bg-[#ecfdf5] border border-[#d0fae5] rounded-[16px] px-4 py-3 flex items-center gap-3">

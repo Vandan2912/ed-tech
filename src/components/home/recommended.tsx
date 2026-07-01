@@ -2,8 +2,6 @@ import { motion } from "motion/react";
 import { ChevronRight, BookOpen } from "lucide-react";
 import { useAppSelector } from "@/store/store";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "@/i18n/useTranslation";
-
 const CARD_COLORS = [
   "bg-[#DBEAFE]",
   "bg-[#E0E7FF]",
@@ -25,7 +23,6 @@ const ICON_COLORS = [
 export function Recommended() {
   const subjects = useAppSelector((state) => state.course.subjects);
   const navigate = useNavigate();
-  const t = useTranslation();
 
   if (subjects.length === 0) return null;
 
@@ -34,14 +31,14 @@ export function Recommended() {
       <div className="flex justify-between items-end mb-10">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            {t.recommended.heading}
+            Recommended for You
           </h2>
-          <p className="text-gray-500">{t.recommended.subtitle}</p>
+          <p className="text-gray-500">Based on your curriculum</p>
         </div>
         <button
           onClick={() => navigate("/courses")}
           className="text-blue-600 font-bold hover:underline">
-          {t.recommended.viewAllSubjects}
+          View All Subjects
         </button>
       </div>
 
@@ -63,7 +60,7 @@ export function Recommended() {
                 />
               </div>
               <div className="bg-gray-100 text-gray-900 text-[11px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-gray-200">
-                {subject.topics?.length ?? 0} {t.recommended.topics}
+                {subject.topics?.length ?? 0} TOPICS
               </div>
             </div>
 
@@ -72,7 +69,7 @@ export function Recommended() {
                 {subject.name}
               </h3>
               <p className="text-[#364153] text-sm not-italic font-normal leading-[22.75px] tracking-[-0.15px]">
-                {t.recommended.masterFundamentals} {subject.name.toLowerCase()} {t.recommended.withAi}
+                Master the fundamentals of {subject.name.toLowerCase()} with our AI-guided structured modules.
               </p>
             </div>
 
@@ -80,7 +77,7 @@ export function Recommended() {
               <button
                 onClick={() => navigate(`/courses/${subject.id}`)}
                 className="bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl text-sm flex items-center gap-1 transition-colors text-[#1C398E] text-center text-[11px] not-italic font-black leading-[16.5px] tracking-[1.164px] uppercase">
-                {t.recommended.startLearning} <ChevronRight size={16} />
+                START LEARNING <ChevronRight size={16} />
               </button>
             </div>
           </motion.div>

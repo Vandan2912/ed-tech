@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useTranslation } from "@/i18n/useTranslation";
 import {
   motion,
   AnimatePresence,
@@ -48,7 +47,6 @@ import {
 type Topic = ProgressTopic;
 
 export default function Progress() {
-  const t = useTranslation();
   const [filter, setFilter] = useState<Topic["status"] | "all">("all");
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [showExplainer, setShowExplainer] = useState(false);
@@ -92,10 +90,10 @@ export default function Progress() {
         {/* Header Section */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-[#101828] tracking-tight">
-            {t.progress.heading}
+            {"My Learning Hub"}
           </h1>
           <p className="text-[#6a7282] text-[16px]">
-            {t.progress.subtitle}
+            {"Track progress, set goals, and discover what to learn next"}
           </p>
         </div>
 
@@ -106,7 +104,7 @@ export default function Progress() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
-                    {t.progress.knowledgeMap}
+                    {"Knowledge Map"}
                   </h3>
                   <button
                     onClick={() => setShowExplainer(!showExplainer)}
@@ -116,7 +114,7 @@ export default function Progress() {
                   </button>
                 </div>
                 <p className="text-[12px] text-[#6a7282]">
-                  {t.progress.knowledgeMapSub}
+                  {"Visual mastery zones across all topics"}
                 </p>
               </div>
             </div>
@@ -163,42 +161,42 @@ export default function Progress() {
                 active={filter === "all"}
                 onClick={() => setFilter("all")}
               >
-                {t.progress.allTopics} ({topics.length})
+                {"All Topics"} ({topics.length})
               </FilterButton>
               <FilterButton
                 active={filter === "mastered"}
                 onClick={() => setFilter("mastered")}
                 color="#00bc7d"
               >
-                {t.progress.mastered} ({stats.mastered})
+                {"Mastered"} ({stats.mastered})
               </FilterButton>
               <FilterButton
                 active={filter === "in-progress"}
                 onClick={() => setFilter("in-progress")}
                 color="#fe9a00"
               >
-                {t.progress.inProgress} ({stats.inProgress})
+                {"In Progress"} ({stats.inProgress})
               </FilterButton>
               <FilterButton
                 active={filter === "needs-work"}
                 onClick={() => setFilter("needs-work")}
                 color="#fb2c36"
               >
-                {t.progress.needsWork} ({stats.needsWork})
+                {"Needs Work"} ({stats.needsWork})
               </FilterButton>
               <FilterButton
                 active={filter === "not-started"}
                 onClick={() => setFilter("not-started")}
                 color="#d1d5dc"
               >
-                {t.progress.notStarted} ({stats.notStarted})
+                {"Not Started"} ({stats.notStarted})
               </FilterButton>
             </div>
 
             {loading && (
               <div className="flex items-center justify-center py-8 gap-2 text-gray-400">
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span className="text-sm font-bold">{t.progress.loading}</span>
+                <span className="text-sm font-bold">{"Loading..."}</span>
               </div>
             )}
 
@@ -207,10 +205,10 @@ export default function Progress() {
               <div className="bg-white border border-[#f3f4f6] rounded-[16px] p-5">
                 <div className="flex gap-2 mb-3">
                   <span className="font-black text-[10px] text-[#99a1af] uppercase tracking-[1.1px]">
-                    {t.progress.overallMastery}
+                    {"Overall Mastery"}
                   </span>
                   <span className="font-bold text-[10px] text-[#99a1af]">
-                    {overallMastery}{t.progress.complete}
+                    {overallMastery}{"% complete"}
                   </span>
                 </div>
                 {(() => {
@@ -266,19 +264,19 @@ export default function Progress() {
                       <div className="flex flex-wrap gap-4">
                         <LegendItem
                           color="#00bc7d"
-                          label={`${stats.mastered} ${t.progress.mastered}`}
+                          label={`${stats.mastered} ${"Mastered"}`}
                         />
                         <LegendItem
                           color="#fe9a00"
-                          label={`${stats.inProgress} ${t.progress.inProgress}`}
+                          label={`${stats.inProgress} ${"In Progress"}`}
                         />
                         <LegendItem
                           color="#fb2c36"
-                          label={`${stats.needsWork} ${t.progress.needsWork}`}
+                          label={`${stats.needsWork} ${"Needs Work"}`}
                         />
                         <LegendItem
                           color="#d1d5dc"
-                          label={`${stats.notStarted} ${t.progress.notStarted}`}
+                          label={`${stats.notStarted} ${"Not Started"}`}
                         />
                       </div>
                     </>
@@ -290,7 +288,7 @@ export default function Progress() {
             {/* Grid */}
             {!loading && filteredTopics.length === 0 && (
               <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold rounded-[16px] border border-gray-100">
-                {t.progress.noTopicsForFilter}
+                {"No topics found for this filter."}
               </div>
             )}
             {!loading && filteredTopics.length > 0 && (
@@ -316,10 +314,10 @@ export default function Progress() {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
-                  {t.progress.subjectMastery}
+                  {"Subject Mastery"}
                 </h3>
                 <p className="text-[12px] text-[#6a7282]">
-                  {t.progress.subjectMasterySub}
+                  {"Your proficiency across subjects"}
                 </p>
               </div>
               {/* <Medal size={20} className="text-[#155dfc]" /> */}
@@ -363,10 +361,10 @@ export default function Progress() {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
-                  {t.progress.xpGrowth}
+                  {"XP Growth"}
                 </h3>
                 <p className="text-[12px] text-[#6a7282]">
-                  {t.progress.xpGrowthSub}
+                  {"Monthly XP accumulation"}
                 </p>
               </div>
               {/* <Flame size={20} className="text-[#fe9a00]" /> */}
@@ -374,7 +372,7 @@ export default function Progress() {
             <div className="h-[250px] w-full">
               {xpData.length === 0 ? (
                 <div className="h-full flex items-center justify-center text-sm text-gray-400 font-bold">
-                  {t.progress.noXpData}
+                  {"No XP data yet — start learning to see growth!"}
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
@@ -414,7 +412,7 @@ export default function Progress() {
             </div>
             <div>
               <h3 className="text-[#dbeafe] text-[14px] font-black uppercase tracking-[1.2px] mb-1">
-                {t.progress.aiInsight}
+                {"AI Insight"}
               </h3>
               <p className="text-white text-[14px] leading-relaxed max-w-3xl">
                 Your Geography mastery is at 55% - the lowest among your
@@ -437,15 +435,15 @@ export default function Progress() {
                 </div>
                 <div>
                   <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
-                    {t.progress.adaptiveGoals}
+                    {"Adaptive Goals"}
                   </h3>
                   <p className="text-[12px] text-[#6a7282]">
-                    {t.progress.adaptiveGoalsSub}
+                    {"AI-personalized based on performance"}
                   </p>
                 </div>
               </div>
               <div className="bg-[#fff7ed] border border-[#ffedd4] px-3 py-1 rounded-full text-[#f54900] text-[10px] font-black uppercase tracking-wider">
-                {t.progress.activeGoals}
+                {"4 Active"}
               </div>
             </div>
             <div className="p-6 space-y-4">
@@ -493,16 +491,16 @@ export default function Progress() {
                 </div>
                 <div>
                   <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
-                    {t.progress.suggestedNext}
+                    {"Suggested Next"}
                   </h3>
                   <p className="text-[12px] text-[#6a7282]">
-                    {t.progress.suggestedNextSub}
+                    {"AI-curated modules for your path"}
                   </p>
                 </div>
               </div>
               <div className="bg-[#faf5ff] border border-[#f3e8ff] px-3 py-1 rounded-full text-[#9810fa] text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5">
                 <Brain size={14} />
-                {t.progress.aiPowered}
+                {"AI Powered"}
               </div>
             </div>
             <div className="p-6 space-y-4">
@@ -554,17 +552,17 @@ export default function Progress() {
             </div>
             <div>
               <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
-                {t.progress.myCertificates}
+                {"My Certificates"}
               </h3>
               <p className="text-[12px] text-[#6a7282]">
-                {t.progress.myCertificatesSub}
+                {"Share your achievements on social media"}
               </p>
             </div>
           </div>
 
           {certificates.length === 0 && !loading ? (
             <div className="flex items-center justify-center py-10 text-sm text-gray-400 font-bold rounded-[32px] border border-gray-100">
-              {t.progress.noCertificates}
+              {"No certificates yet — complete topics to earn them!"}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -667,35 +665,34 @@ function LegendItem({ color, label }: { color: string; label: string }) {
 }
 
 function TopicCard({ topic, onClick }: { topic: Topic; onClick: () => void }) {
-  const t = useTranslation();
   const statusConfig = {
     mastered: {
       bg: "#d0fae5",
       border: "#5ee9b5",
       text: "#006045",
       iconColor: "#00bc7d",
-      label: t.progress.statusMastered,
+      label: "Mastered",
     },
     "in-progress": {
       bg: "#fef3c6",
       border: "#ffd230",
       text: "#973c00",
       iconColor: "#fe9a00",
-      label: t.progress.statusInProgress,
+      label: "In Progress",
     },
     "needs-work": {
       bg: "#ffe2e2",
       border: "#ffa2a2",
       text: "#9f0712",
       iconColor: "#fb2c36",
-      label: t.progress.statusNeedsWork,
+      label: "Needs Work",
     },
     "not-started": {
       bg: "#f3f4f6",
       border: "#e5e7eb",
       text: "#6a7282",
       iconColor: "#d1d5dc",
-      label: t.progress.statusNotStarted,
+      label: "Not Started",
     },
   };
   const config = statusConfig[topic.status];
@@ -868,7 +865,6 @@ function CertificateCard({
   color,
   icon,
 }: any) {
-  const t = useTranslation();
   return (
     <div className="bg-white border border-[#f3f4f6] rounded-[32px] p-6 shadow-sm hover:shadow-md transition-all group">
       <div className="flex items-start justify-between mb-8">
@@ -888,12 +884,12 @@ function CertificateCard({
       <div className="flex items-center justify-between">
         <div className="flex gap-2">
           <div className="bg-[#f9fafb] px-3 py-1 rounded-xl text-[10px] font-black text-[#4a5565]">
-            {t.progress.score}: {score}%
+            {"Score"}: {score}%
           </div>
           {distinction && (
             <div className="bg-[#ecfdf5] px-3 py-1 rounded-xl text-[10px] font-black text-[#009966] flex items-center gap-1">
               <Star size={12} fill="currentColor" />
-              {t.progress.distinction}
+              {"Distinction"}
             </div>
           )}
         </div>
@@ -912,35 +908,34 @@ function TopicDetailModal({
   topic: Topic;
   onClose: () => void;
 }) {
-  const t = useTranslation();
   const statusConfig: any = {
     mastered: {
       bg: "#d0fae5",
       text: "#006045",
       accent: "#00bc7d",
       icon: <CheckCircle2 size={14} />,
-      label: t.progress.statusMastered,
+      label: "Mastered",
     },
     "in-progress": {
       bg: "#fef3c6",
       text: "#973c00",
       accent: "#fe9a00",
       icon: <RotateCcw size={14} />,
-      label: t.progress.statusInProgress,
+      label: "In Progress",
     },
     "needs-work": {
       bg: "#ffe2e2",
       text: "#9f0712",
       accent: "#fb2c36",
       icon: <Target size={14} />,
-      label: t.progress.statusNeedsWork,
+      label: "Needs Work",
     },
     "not-started": {
       bg: "#f3f4f6",
       text: "#4a5565",
       accent: "#d1d5dc",
       icon: <Play size={14} />,
-      label: t.progress.statusNotStarted,
+      label: "Not Started",
     },
   };
   const config = statusConfig[topic.status];
@@ -1032,7 +1027,7 @@ function TopicDetailModal({
             <div className="space-y-4">
               <div>
                 <p className="text-[9px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
-                  {t.progress.attempts}
+                  {"Attempts"}
                 </p>
                 <p className="text-[16px] font-black text-[#101828]">
                   {topic.attempts || "0"}
@@ -1040,10 +1035,10 @@ function TopicDetailModal({
               </div>
               <div>
                 <p className="text-[9px] font-black text-[#99a1af] uppercase tracking-[1.1px]">
-                  {t.progress.lastStudied}
+                  {"Last Studied"}
                 </p>
                 <p className="text-[16px] font-black text-[#101828]">
-                  {topic.lastStudied || t.progress.notYet}
+                  {topic.lastStudied || "Not yet"}
                 </p>
               </div>
             </div>
@@ -1072,7 +1067,7 @@ function TopicDetailModal({
             className="w-full h-[48px] rounded-[16px] bg-[#155dfc] text-white font-black text-[12px] uppercase tracking-[1.2px] shadow-lg flex items-center justify-center gap-2"
             style={{ backgroundColor: config.accent }}
           >
-            {t.progress.practiceNow} <ArrowRight size={16} />
+            {"Practice Now"} <ArrowRight size={16} />
           </button>
         </div>
       </motion.div>
@@ -1106,11 +1101,10 @@ function WeeklyActivity({
 }: {
   weeklyActivity: { day: string; val: number }[];
 }) {
-  const t = useTranslation();
   const weeklyTabs = [
-    { key: "minutes", label: t.progress.studyMinutes },
-    { key: "score", label: t.progress.avgScore },
-    { key: "topics", label: t.progress.topicsCovered },
+    { key: "minutes", label: "STUDY MINUTES" },
+    { key: "score", label: "AVG SCORE" },
+    { key: "topics", label: "TOPICS COVERED" },
   ];
   const [active, setActive] = useState<"minutes" | "score" | "topics">(
     "minutes",
@@ -1130,10 +1124,10 @@ function WeeklyActivity({
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="font-black text-[14px] text-[#101828] uppercase tracking-[0.5px]">
-            {t.progress.weeklyActivity}
+            {"Weekly Activity"}
           </h3>
           <p className="text-[12px] text-[#6a7282]">
-            {t.progress.weeklyActivitySub}
+            {"Your learning patterns this week"}
           </p>
         </div>
 

@@ -24,8 +24,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { fetchCourses } from "@/store/slices/courseSlice";
-import { useTranslation } from "@/i18n/useTranslation";
-import { useLocalizeContent } from "@/i18n/localizeContent";
 
 const IconMap: Record<string, any> = {
   BarChart3,
@@ -42,8 +40,6 @@ export function CoursesDropdown() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const isActive = window.location.pathname.startsWith("/courses");
-  const t = useTranslation();
-  const { localizeSubject, localizeDifficulty } = useLocalizeContent();
 
   const dispatch = useAppDispatch();
   const { subjects, loading } = useAppSelector((state) => state.course);
@@ -63,7 +59,7 @@ export function CoursesDropdown() {
               : "hover:text-[#1C398E]"
             }`}
         >
-          {t.coursesDropdown.label}
+          COURSES
           <ChevronDown
             size={12}
             className={`ms-1 ${open ? "rotate-180" : ""} transition-transform`}
@@ -77,7 +73,7 @@ export function CoursesDropdown() {
       >
         {loading && subjects.length === 0 ? (
           <div className="p-4 text-center text-sm text-gray-400">
-            {t.coursesDropdown.loading}
+            Loading courses...
           </div>
         ) : (
           subjects.map((course) => {
@@ -97,20 +93,20 @@ export function CoursesDropdown() {
                   className="flex items-center gap-3 rounded-xl px-3 py-2 focus:bg-gray-100 data-[state=open]:bg-gray-100 group cursor-pointer"
                 >
                   <Icon size={16} className="group-hover:stroke-[#155DFC]" />
-                  <span className="capitalize">{localizeSubject(course.name)}</span>
+                  <span className="capitalize">{course.name}</span>
                 </DropdownMenuSubTrigger>
 
                 <DropdownMenuSubContent className="w-65 p-3 rounded-2xl ml-3">
                   <div className="text-xs text-[#155DFC] mb-0.5 text-[10px] not-italic font-black leading-3.75 tracking-[1.117px] uppercase px-3">
-                    {t.coursesDropdown.learningPath}
+                    LEARNING PATH
                   </div>
                   <div className="flex justify-between items-center mb-4 px-3">
                     <div className="text-[#101828] text-sm not-italic font-black leading-5 tracking-[-0.15px] capitalize">
-                      {localizeSubject(course.name)}
+                      {course.name}
                     </div>
                     <div className="flex justify-center items-center px-2 py-1 rounded-[10px] bg-[#F9FAFB]">
                       <p className="text-[#99A1AF] text-[9px] not-italic font-bold leading-[13.5px] tracking-[-0.283px] uppercase">
-                        {course.topics?.length || 0} {t.coursesDropdown.modules}
+                        {course.topics?.length || 0} MODULES
                       </p>
                     </div>
                   </div>
@@ -143,7 +139,7 @@ export function CoursesDropdown() {
                                     : "text-green-500"
                               }
                             >
-                              {localizeDifficulty(topic.difficulty ?? "")}
+                              {topic.difficulty ?? ""}
                             </span>
                           </div>
                         </div>
@@ -166,7 +162,7 @@ export function CoursesDropdown() {
           }}
         >
           <Layers size={16} className="text-[#155DFC]" />
-          {t.coursesDropdown.exploreAll}
+          EXPLORE ALL SUBJECTS
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

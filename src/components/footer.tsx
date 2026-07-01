@@ -1,7 +1,4 @@
-import { useTranslation } from "@/i18n/useTranslation";
-
 export function Footer() {
-  const t = useTranslation();
   return (
     <footer className="bg-white border-t border-gray-100 pt-12 pb-19 md:pb-12 md:mt-20">
       {/* <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -100,7 +97,7 @@ export function Footer() {
       </div> */}
 
       <div className="max-w-7xl mx-auto border-t border-gray-100 pt-8 text-center text-sm font-medium text-gray-400">
-        {t.footer.copyright}
+        © 2026 SmartLearn AI Education Platform. All rights reserved.
       </div>
     </footer>
   );

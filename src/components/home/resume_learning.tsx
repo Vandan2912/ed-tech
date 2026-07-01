@@ -2,8 +2,6 @@ import { Clock, Play } from "lucide-react";
 import type { ContinueLearningItem } from "@/api/home";
 import { useAppSelector } from "@/store/store";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "@/i18n/useTranslation";
-
 interface Props {
   courses?: ContinueLearningItem[];
 }
@@ -11,7 +9,6 @@ interface Props {
 export function ResumeLearning({ courses }: Props) {
   const subjects = useAppSelector((state) => state.course.subjects);
   const navigate = useNavigate();
-  const t = useTranslation();
 
   const next = courses?.find((c) => c.progress_percent < 100);
   if (!next) return null;
@@ -36,7 +33,7 @@ export function ResumeLearning({ courses }: Props) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[9px] font-black text-blue-300 uppercase tracking-widest leading-normal">
-              {t.resumeLearning.pickUp}
+              Pick up where you left off
             </p>
             <p className="font-bold text-sm truncate">
               {next.subject_name}
@@ -50,7 +47,7 @@ export function ResumeLearning({ courses }: Props) {
             className="shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white text-blue-900 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-50 transition-all active:scale-95 shadow-lg"
             aria-label={`Resume ${next.subject_name}`}>
             <Play size={14} className="fill-blue-900" />
-            {t.resumeLearning.resume}
+            Resume
           </button>
         </div>
       </div>

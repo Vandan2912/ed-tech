@@ -5,7 +5,6 @@ import { fetchCourses } from "@/store/slices/courseSlice";
 import { api } from "@/lib/api";
 import { Clock, Play, Zap, BarChart3, BookOpen, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "@/i18n/useTranslation";
 
 interface QuizMode {
   id: number;
@@ -79,7 +78,6 @@ const Topic = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { subjects, loading } = useAppSelector((state) => state.course);
-  const t = useTranslation();
 
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
@@ -152,11 +150,11 @@ const Topic = () => {
   }, [topicId]);
 
   if (loading && subjects.length === 0) {
-    return <h2 className="p-6 min-h-[55vh]">{t.course.loading}</h2>;
+    return <h2 className="p-6 min-h-[55vh]">Loading...</h2>;
   }
 
   if (!course || !topic)
-    return <h2 className="p-6 min-h-[55vh]">{t.course.notFound}</h2>;
+    return <h2 className="p-6 min-h-[55vh]">Course not found</h2>;
 
   return (
     <div className="min-h-screen bg-[#f9fafb] pb-24 md:pb-12">
@@ -215,11 +213,11 @@ const Topic = () => {
                     className="group-hover:scale-110 transition-transform"
                   />
                 </div>
-                {t.topic.takeQuiz}
+                Take Quiz
               </button>
               <div className="flex items-center gap-2 text-[#99a1af] text-[10px]">
                 <Zap size={12} className="text-[#99a1af]" />
-                <span>{t.topic.xpPerAnswer}</span>
+                <span>+25 XP per correct answer</span>
               </div>
             </div>
           </div>
@@ -232,25 +230,25 @@ const Topic = () => {
               </div>
               <div>
                 <h3 className="text-[12px] font-black text-[#101828] uppercase tracking-[0.6px]">
-                  {t.topic.quizAttemptsToday}
+                  Quiz Attempts Today
                 </h3>
                 <p className="text-[10px] text-[#99a1af]">
                   {quizModes.length > 0
-                    ? `${quizModes[0].max_attempts_per_day} ${t.topic.attemptsDesc}`
-                    : t.topic.resetsDaily}
+                    ? `${quizModes[0].max_attempts_per_day} attempts per difficulty level · resets daily`
+                    : "Resets daily"}
                 </p>
               </div>
             </div>
 
             {modesLoading ? (
               <div className="text-[12px] text-[#6a7282] py-4">
-                {t.topic.loadingAttempts}
+                Loading attempts...
               </div>
             ) : modesError ? (
               <div className="text-[12px] text-red-500 py-4">{modesError}</div>
             ) : quizModes.length === 0 ? (
               <div className="text-[12px] text-[#6a7282] py-4">
-                {t.topic.noQuizzesYet}
+                No quizzes available yet.
               </div>
             ) : (
               <div
@@ -292,7 +290,7 @@ const Topic = () => {
                 <BookOpen size={16} className="text-[#00bc7d]" />
               </div>
               <h3 className="text-[14px] font-black text-[#101828] uppercase tracking-[0.55px]">
-                {t.topic.whatYoullLearn}
+                What You'll Learn
               </h3>
             </div>
 
@@ -364,20 +362,19 @@ function DifficultyModal({
   onSelect,
   onStart,
 }: DifficultyModalProps) {
-  const t = useTranslation();
   const selectedMode = modes.find((m) => m.id === selectedQuizId) || null;
   const anyExhausted = modes.some(
     (m) => m.total_attempts >= m.max_attempts_per_day,
   );
   const diffTitleMap: Record<string, string> = {
-    easy: t.topic.easy,
-    medium: t.topic.medium,
-    hard: t.topic.hard,
+    easy: "Easy",
+    medium: "Medium",
+    hard: "Hard",
   };
   const diffDescMap: Record<string, string> = {
-    easy: t.topic.easyDesc,
-    medium: t.topic.mediumDesc,
-    hard: t.topic.hardDesc,
+    easy: "Core concepts · perfect for first-time learners",
+    medium: "Applied knowledge · moderate challenge",
+    hard: "Advanced reasoning · for mastery seekers",
   };
   const selectedTitle = selectedMode
     ? diffTitleMap[selectedMode.difficulty] || selectedMode.difficulty
@@ -394,15 +391,15 @@ function DifficultyModal({
           onClick={onClose}
           className="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-1.5 sm:gap-2 text-[#99a1af] text-[12px] sm:text-sm font-medium hover:text-[#101828] transition-colors">
           <ArrowLeft size={16} />
-          <span className="hidden sm:inline">{t.topic.backToLesson}</span>
-          <span className="sm:hidden">{t.topic.back}</span>
+          <span className="hidden sm:inline">Back to Lesson</span>
+          <span className="sm:hidden">Back</span>
         </button>
 
         <div className="flex flex-col items-center mt-10 sm:mt-12 mb-8 sm:mb-12">
           <div className="bg-[#eff6ff] border border-[#dbeafe] px-3 sm:px-4 py-1.5 rounded-full flex items-center gap-2 mb-3 sm:mb-4">
             <Zap size={14} className="text-[#155dfc]" />
             <span className="text-[10px] font-black text-[#155dfc] uppercase tracking-[1.1px]">
-              {t.topic.teacherQuizTitle}
+              Teacher-Created Quiz
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-[32px] font-black text-[#101828] mb-3 sm:mb-4 text-center px-2">
@@ -410,20 +407,20 @@ function DifficultyModal({
           </h2>
           <p className="text-[#6a7282] text-[13px] sm:text-[14px] text-center max-w-112.5 px-2">
             {modes.length > 0
-              ? `This quiz was created by your teacher with ${modes.length} difficulty ${modes.length === 1 ? "level" : "levels"}. ${t.topic.teacherQuizSub}`
-              : t.topic.teacherQuizSub}
+              ? `This quiz was created by your teacher with ${modes.length} difficulty ${modes.length === 1 ? "level" : "levels"}. Choose your challenge level and earn XP!`
+              : "Choose your challenge level and earn XP!"}
           </p>
         </div>
 
         {loading ? (
           <div className="text-center text-[#6a7282] py-12">
-            {t.topic.loadingModes}
+            Loading quiz modes...
           </div>
         ) : error ? (
           <div className="text-center text-red-500 py-12">{error}</div>
         ) : modes.length === 0 ? (
           <div className="text-center text-[#6a7282] py-12">
-            {t.topic.noQuizzesForTopic}
+            No quizzes available for this topic yet.
           </div>
         ) : (
           <div
@@ -477,15 +474,15 @@ function DifficultyModal({
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="text-[13px] sm:text-[14px] font-black text-[#973c00] leading-tight sm:leading-none mb-1">
-                  {t.topic.attemptsExhausted}
+                  Daily Attempts Exhausted
                 </h4>
                 <p className="text-[10px] font-medium text-[#e17100]">
-                  {t.topic.upgradeDesc}
+                  Upgrade to Premium for unlimited daily attempts across all difficulty levels.
                 </p>
               </div>
             </div>
             <button className="bg-[#fe9a00] h-8 px-6 rounded-[14px] text-white text-[10px] font-black uppercase tracking-[1.1px] hover:shadow-lg hover:scale-105 active:scale-95 transition-all w-full sm:w-auto shrink-0">
-              {t.topic.upgrade}
+              Upgrade
             </button>
           </div>
         )}
@@ -499,8 +496,8 @@ function DifficultyModal({
               : "bg-[#155dfc]/10 text-[#155dfc]/40 cursor-not-allowed"
           }`}>
           {selectedTitle
-            ? `${t.topic.takeQuiz}: ${selectedTitle}`
-            : t.topic.selectDifficulty}
+            ? `Take Quiz: ${selectedTitle}`
+            : "Select a Difficulty to Continue"}
         </button>
       </motion.div>
     </div>
@@ -534,7 +531,6 @@ function DifficultyCard({
   exhausted,
   onClick,
 }: DifficultyCardProps) {
-  const t = useTranslation();
   return (
     <motion.div
       whileHover={exhausted ? undefined : { y: -4 }}
@@ -560,12 +556,12 @@ function DifficultyCard({
       <div className="mt-auto space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-[9px] font-bold text-[#99a1af] uppercase">
-            {questions} {t.topic.questions}
+            {questions} Questions
           </span>
 
           {exhausted && (
             <div className="bg-[#ffc760] px-2 py-0.5 rounded-lg shadow-sm text-[8px] font-black text-[#815a12] uppercase tracking-[0.5px]">
-              {t.topic.upgrade}
+              Upgrade
             </div>
           )}
           <div
@@ -606,8 +602,8 @@ function DifficultyCard({
           className="text-[9px] font-bold"
           style={{ color: isSelected ? "#155dfc" : color }}>
           {exhausted
-            ? t.topic.noAttemptsToday
-            : `${attemptsLeft}/${attempts} ${t.topic.left}`}
+            ? "No attempts left today"
+            : `${attemptsLeft}/${attempts} left`}
         </div>
       </div>
     </motion.div>
@@ -633,7 +629,6 @@ function AttemptCard({
   left,
   total,
 }: AttemptCardProps) {
-  const t = useTranslation();
   const used = Math.max(0, total - left);
   return (
     <div
@@ -661,7 +656,7 @@ function AttemptCard({
         })}
       </div>
       <p className="text-[9px] font-bold" style={{ color }}>
-        {left === 0 ? t.topic.noAttemptsLeft : `${left} ${t.topic.left}`}
+        {left === 0 ? "No attempts left" : `${left} left`}
       </p>
     </div>
   );

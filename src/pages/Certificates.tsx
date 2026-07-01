@@ -24,7 +24,6 @@ import {
   CertificateModal,
   type CertificateData,
 } from "@/components/CertificateModal";
-import { useTranslation } from "@/i18n/useTranslation";
 
 const TITLE_GRADIENT =
   "linear-gradient(90deg, rgb(21, 93, 252) 0%, rgb(152, 16, 250) 100%)";
@@ -65,7 +64,6 @@ const iconFor = (subject: string): LucideIcon =>
 
 export default function Certificates() {
   const { user } = useAuth();
-  const t = useTranslation();
   const [data, setData] = useState<SubjectCertificate[]>([]);
   const [summary, setSummary] = useState({
     certified: 0,
@@ -91,9 +89,9 @@ export default function Certificates() {
     [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "Student";
 
   const stats = [
-    { icon: Award, iconColor: "#007a55", bg: "#ecfdf5", value: summary.certified, label: t.certificates.certified },
-    { icon: Clock, iconColor: "#f54900", bg: "#fff7ed", value: summary.pending, label: t.certificates.pending },
-    { icon: BookOpen, iconColor: "#155dfc", bg: "#eff6ff", value: summary.topicsCompleted, label: t.certificates.topicsCompleted },
+    { icon: Award, iconColor: "#007a55", bg: "#ecfdf5", value: summary.certified, label: "Certified" },
+    { icon: Clock, iconColor: "#f54900", bg: "#fff7ed", value: summary.pending, label: "Pending" },
+    { icon: BookOpen, iconColor: "#155dfc", bg: "#eff6ff", value: summary.topicsCompleted, label: "Topics Completed" },
   ];
 
   return (
@@ -102,10 +100,10 @@ export default function Certificates() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-[24px] font-semibold leading-8 tracking-[0.07px] text-[#101828]">
-            {t.certificates.heading}
+            {"My Certificates"}
           </h1>
           <p className="mt-1 text-[14px] tracking-[-0.15px] text-[#6a7282]">
-            {t.certificates.subtitle}
+            {"Track your progress and earned certifications"}
           </p>
         </div>
 
@@ -139,14 +137,14 @@ export default function Certificates() {
         {loading && (
           <div className="flex items-center justify-center gap-2 py-16 text-gray-400">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span className="text-sm font-bold">{t.certificates.loading}</span>
+            <span className="text-sm font-bold">{"Loading certificates..."}</span>
           </div>
         )}
 
         {/* Empty */}
         {!loading && data.length === 0 && (
           <div className="flex items-center justify-center rounded-[16px] border border-gray-100 py-16 text-sm font-bold text-gray-400">
-            {t.certificates.empty}
+            {"No certificates yet — complete topics to earn them!"}
           </div>
         )}
 
@@ -182,7 +180,7 @@ export default function Certificates() {
                       <div className="flex items-center gap-1.5 rounded-[10px] bg-[#ecfdf5] px-2.5 py-1">
                         <CheckCircle2 size={14} className="text-[#007a55]" />
                         <span className="text-[12px] font-medium text-[#007a55]">
-                          {t.certificates.certified}
+                          {"Certified"}
                         </span>
                       </div>
                     )}
@@ -196,7 +194,7 @@ export default function Certificates() {
                   {/* Progress */}
                   <div className="mt-4 flex items-center justify-between">
                     <span className="text-[14px] tracking-[-0.15px] text-[#4a5565]">
-                      {t.certificates.progress}
+                      {"Progress"}
                     </span>
                     <span className="text-[14px] font-medium tracking-[-0.15px] text-[#101828]">
                       {cert.completedTopics}/{cert.totalTopics}
@@ -209,7 +207,7 @@ export default function Certificates() {
                     />
                   </div>
                   <p className="mt-2 text-[12px] text-[#6a7282]">
-                    {percent}{t.certificates.complete}
+                    {percent}{"% complete"}
                   </p>
 
                   {/* Footer */}
@@ -218,7 +216,7 @@ export default function Certificates() {
                       <>
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-[12px] text-[#6a7282]">{t.certificates.grade}</p>
+                            <p className="text-[12px] text-[#6a7282]">{"Grade"}</p>
                             <p className="text-[20px] font-semibold leading-7 tracking-[-0.45px] text-[#101828]">
                               {cert.grade ?? "—"}
                             </p>
@@ -240,7 +238,7 @@ export default function Certificates() {
                             className="flex h-8 items-center gap-2 rounded-[10px] bg-[#101828] px-4 text-[12px] font-medium text-white transition-colors hover:bg-[#1d2939] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] focus-visible:ring-offset-2"
                           >
                             <Eye size={16} />
-                            {t.certificates.view}
+                            {"View"}
                           </button>
                         </div>
                         {cert.date && (
@@ -251,7 +249,7 @@ export default function Certificates() {
                       </>
                     ) : (
                       <p className="text-[14px] tracking-[-0.15px] text-[#4a5565]">
-                        {cert.remainingTopics} {t.certificates.moreTopics}
+                        {cert.remainingTopics} {"more topics to certify"}
                       </p>
                     )}
                   </div>

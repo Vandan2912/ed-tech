@@ -18,7 +18,6 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Onboarding from "./pages/OnBoarding";
 import Home from "./pages/Home";
 import { AuthProvider } from "./auth/AuthProvider";
-import { LanguageProvider } from "./context/LanguageContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import Courses from "./pages/Courses";
 import Course from "./pages/Course";
@@ -41,7 +40,6 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID!}>
-      <LanguageProvider>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
@@ -211,7 +209,6 @@ function App() {
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
-      </LanguageProvider>
     </GoogleOAuthProvider>
   );
 }

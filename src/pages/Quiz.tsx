@@ -11,7 +11,6 @@ import {
 } from "@/store/slices/quizSlice";
 import { api } from "@/lib/api";
 import { useAuth } from "@/auth/useAuth";
-import { useTranslation } from "@/i18n/useTranslation";
 
 const Quiz = () => {
   const { courseId, topicId } = useParams();
@@ -20,7 +19,6 @@ const Quiz = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { token } = useAuth();
-  const t = useTranslation();
 
   const { questions, loading } = useAppSelector((state) => state.quiz);
 
@@ -115,9 +113,9 @@ const Quiz = () => {
     };
   }, [dispatch, topicId, quizId]);
 
-  if (loading) return <h2 className="p-6 min-h-[50vh]">{t.quiz.loading}</h2>;
+  if (loading) return <h2 className="p-6 min-h-[50vh]">Loading quiz...</h2>;
   if (!questions || questions.length === 0)
-    return <h2 className="p-6 min-h-[50vh]">{t.quiz.noQuestions}</h2>;
+    return <h2 className="p-6 min-h-[50vh]">No questions found</h2>;
 
   const q = questions[current];
 
@@ -145,10 +143,10 @@ const Quiz = () => {
             </div>
             <div className="flex flex-col items-start justify-center">
               <p className="font-black leading-[18px] text-[18px] text-white tracking-[-0.4395px] m-0">
-                {t.quiz.xpBonus}
+                +25 XP
               </p>
               <p className="font-bold leading-[15px] text-[#dcfce7] text-[10px] tracking-[1.1172px] uppercase m-0 mt-0.5">
-                {t.quiz.correctAnswer}
+                Correct Answer!
               </p>
             </div>
           </div>
@@ -190,14 +188,14 @@ const Quiz = () => {
 
         {/* Title */}
         <h2 className="text-[30px] font-bold text-[#101828] tracking-[0.3955px] mb-2">
-          {passedStatus ? t.quiz.questMastered : t.quiz.targetNotMet}
+          {passedStatus ? "Quest Mastered!" : "Target Not Met"}
         </h2>
 
         {/* Description */}
         <p className="text-[#6a7282] text-[16px] mb-10 text-center tracking-[-0.3125px] max-w-sm">
           {passedStatus
-            ? `${t.quiz.fantasticscore} ${finalPercentage}/100 ${t.quiz.scoredAnd}`
-            : `${t.quiz.youScored} ${finalPercentage}/100. ${t.quiz.minRequired}.`}
+            ? `Fantastic work! You scored ${finalPercentage}/100 and maintained your streak.`
+            : `You scored ${finalPercentage}/100. A minimum of 70 is required.`}
         </p>
 
         {/* Metrics Container */}
@@ -205,12 +203,12 @@ const Quiz = () => {
           {/* Main Metrics Box */}
           <div className="bg-[#f9fafb] border border-[#f3f4f6] p-6 rounded-[24px]">
             <h4 className="text-[14px] font-semibold text-[#6a7282] uppercase tracking-[0.5496px] text-center mb-6">
-              {t.quiz.challengeMetrics}
+              Challenge Metrics
             </h4>
 
             <div className="flex justify-between items-center mb-6">
               <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">
-                {t.quiz.questAccuracy}
+                Quest Accuracy
               </span>
               <span
                 className={`font-bold text-[16px] tracking-[-0.3125px] ${passedStatus ? "text-[#00a63e]" : "text-red-500"}`}>
@@ -220,7 +218,7 @@ const Quiz = () => {
 
             <div className="flex justify-between items-center mb-5">
               <span className="text-[#4a5565] text-[16px] tracking-[-0.3125px]">
-                {t.quiz.pointsEarned}
+                Points Earned
               </span>
               <span className="font-bold text-[#155dfc] text-[16px] tracking-[-0.3125px]">
                 +{passedStatus ? finalPercentage + 25 * quizResult.correct : 0}{" "}
@@ -232,7 +230,7 @@ const Quiz = () => {
             {passedStatus && (
               <div className="bg-[#d0fae5] rounded-[10px] py-[6px] w-full mt-2">
                 <p className="font-black text-[#007a55] text-[10px] uppercase text-center tracking-[0.1172px]">
-                  {t.quiz.misconceptionBonus}
+                  Misconception Fixed Bonus Included!
                 </p>
               </div>
             )}
@@ -246,10 +244,10 @@ const Quiz = () => {
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-[#ffedd4] text-[10px] sm:text-[12px] uppercase tracking-[1.2px]">
-                  {t.quiz.streakBonus}
+                  Streak Bonus
                 </span>
                 <span className="font-bold text-white text-[14px] sm:text-[16px] tracking-[-0.3125px] mt-0.5">
-                  {t.quiz.consistencyDay}
+                  Consistency +1 Day
                 </span>
               </div>
             </div>
@@ -263,10 +261,10 @@ const Quiz = () => {
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-[#d0fae5] text-[10px] sm:text-[12px] uppercase tracking-[1.2px]">
-                  {t.quiz.correctionStreak}
+                  Correction Streak
                 </span>
                 <span className="font-bold text-white text-[14px] sm:text-[16px] tracking-[-0.3125px] mt-0.5">
-                  {t.quiz.fixedMyth}
+                  Fixed Myth! +75 XP
                 </span>
               </div>
             </div>
@@ -284,7 +282,7 @@ const Quiz = () => {
               }
             }}
             className="w-full h-[56px] mt-4 bg-[#101828] text-white rounded-[16px] font-bold text-[16px] tracking-[-0.3125px] hover:bg-black transition-colors shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)]">
-            {passedStatus ? t.quiz.collectRewards : t.quiz.tryAgain}
+            {passedStatus ? "Collect Rewards" : "Try Again"}
           </button>
         </div>
       </div>
@@ -298,12 +296,12 @@ const Quiz = () => {
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
             <span className="text-xs sm:text-sm font-bold text-blue-600 uppercase tracking-widest">
-              {t.quiz.aiGenerated}
+              AI Generated Quiz
             </span>
 
             <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
               <span className="text-xs sm:text-sm text-gray-400 font-semibold">
-                {t.quiz.question} {current + 1} {t.quiz.of} {questions.length}
+                Question {current + 1} of {questions.length}
               </span>
 
               <div className="flex bg-[#fef2f2] border border-[#ffe2e2] items-center gap-1.5 h-[30.5px] px-3 rounded-[14px] shrink-0">
@@ -318,7 +316,7 @@ const Quiz = () => {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                 aria-label="Abort quiz">
                 <X size={14} />
-                {t.quiz.abort}
+                Abort
               </button>
             </div>
           </div>
@@ -341,8 +339,8 @@ const Quiz = () => {
           </h2>
           <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
             {q.question_type === "multiple"
-              ? t.quiz.selectAllAnswers
-              : t.quiz.selectAnAnswer}
+              ? "Select all correct answers below, then submit"
+              : "Select an answer below, then submit"}
           </p>
           <div className="grid gap-4">
             {q.options.map((opt, i) => {
@@ -403,7 +401,7 @@ const Quiz = () => {
                     <div className="flex items-center gap-2 text-sm">
                       {/* % picked (mock for now) */}
                       <span className="text-gray-400">
-                        {percentPicked}{t.quiz.percentPicked}
+                        {percentPicked}% picked
                       </span>
 
                       {/* Icons */}
@@ -439,17 +437,17 @@ const Quiz = () => {
               className="flex-1 py-3.5 sm:py-4 bg-blue-600 text-white rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2">
               <CircleCheck size={20} />
               {showAnswer
-                ? t.quiz.checking
+                ? "Checking..."
                 : isTimeUp
-                  ? t.quiz.timesUp
-                  : t.quiz.submitAnswer}
+                  ? "Time's Up - Next"
+                  : "Submit Answer"}
             </button>
 
             <button
               onClick={() => setOpenAbort(true)}
               className="w-full sm:w-auto px-6 py-3.5 sm:py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-[12px] sm:text-sm uppercase tracking-widest hover:bg-red-50 hover:text-red-600 border border-gray-200 hover:border-red-200 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               <X size={20} />
-              {t.quiz.abort}
+              Abort
             </button>
           </div>
         </div>
@@ -462,10 +460,10 @@ const Quiz = () => {
               <CircleAlert size={32} className="text-red-500" />
             </div>
             <h3 className="text-xl font-black text-gray-900 mb-2">
-              {t.quiz.abortTitle}
+              Abort this quiz?
             </h3>
             <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-              {t.quiz.abortDesc}
+              Your progress on this quiz will be lost and no XP will be awarded. You can retake it anytime.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
@@ -473,7 +471,7 @@ const Quiz = () => {
                 onClick={() => {
                   setOpenAbort(false);
                 }}>
-                {t.quiz.keepGoing}
+                Keep Going
               </button>
               <button
                 className="w-full py-3.5 bg-red-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-600 shadow-lg shadow-red-200 transition-all active:scale-95"
@@ -481,7 +479,7 @@ const Quiz = () => {
                   setOpenAbort(false);
                   navigate(-1);
                 }}>
-                {t.quiz.yesAbort}
+                Yes, Abort
               </button>
             </div>
           </div>
