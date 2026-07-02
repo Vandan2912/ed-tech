@@ -8,7 +8,6 @@ import Loader from "@/components/loader";
 import RoleToggle from "@/components/Login/role_toggle";
 import StudentLogin from "@/components/Login/student_login";
 import TeacherLoginForm from "@/components/Login/teacher_login";
-import SocialProof from "@/components/Login/social_proof";
 
 type Role = "student" | "teacher";
 
@@ -94,9 +93,6 @@ export default function Login() {
           </p>
         </div>
       </div>
-
-      {/* Social Proof */}
-      <SocialProof />
     </>
   );
 
