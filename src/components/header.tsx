@@ -3,6 +3,7 @@ import {
   BarChart3,
   Bell,
   BookOpen,
+  ClipboardList,
   Flame,
   LogOut,
   Settings,
@@ -41,6 +42,12 @@ export function Header() {
       icon: Bell,
       badge:
         unreadAlerts > 0 ? (unreadAlerts > 9 ? "9+" : unreadAlerts) : undefined,
+    },
+    {
+      id: "homework",
+      label: "Homework",
+      path: "/homework",
+      icon: ClipboardList,
     },
     {
       id: "pin-message",

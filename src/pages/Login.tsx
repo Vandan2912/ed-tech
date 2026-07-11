@@ -45,7 +45,7 @@ export default function Login() {
   const renderLoginContent = () => (
     <>
       {/* Logo */}
-      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#120B6E] rounded-[20px] sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-xl shadow-blue-100 transition-colors duration-300">
+      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#1C398E] rounded-[20px] sm:rounded-3xl flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-xl shadow-blue-100 transition-colors duration-300">
         <img src="/favicon.svg" alt="Mastishq.ai" className="h-10 w-auto" />
       </div>
 

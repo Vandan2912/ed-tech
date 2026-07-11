@@ -143,20 +143,17 @@ function QuestionAttachmentBar() {
     <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-gray-100">
       <button
         type="button"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors"
-      >
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors">
         <Mic size={12} /> Voice Note
       </button>
       <button
         type="button"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors"
-      >
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors">
         <Paperclip size={12} /> Attach File
       </button>
       <button
         type="button"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors"
-      >
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-gray-500 hover:text-[#1C398E] hover:bg-blue-50 rounded-lg transition-colors">
         <Link2 size={12} /> Add Link
       </button>
     </div>
@@ -177,8 +174,7 @@ function QuestionHeader({ q, index }: { q: HomeworkQuestion; index: number }) {
             palette.text,
             palette.bg,
             palette.border,
-          )}
-        >
+          )}>
           {q.subject}
         </span>
       )}
@@ -191,8 +187,7 @@ function QuestionHeader({ q, index }: { q: HomeworkQuestion; index: number }) {
           q.type === "MCQ"
             ? "text-blue-600 bg-blue-50 border-blue-100"
             : "text-violet-600 bg-violet-50 border-violet-100",
-        )}
-      >
+        )}>
         {q.type === "MCQ" ? "MCQ" : "Written"}
       </span>
     </div>
@@ -236,16 +231,14 @@ function MCQCard({
                   isSelected
                     ? "border-[#1C398E] bg-blue-50 text-[#1C398E]"
                     : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/40 text-[#101828]",
-                )}
-              >
+                )}>
                 <span
                   className={cn(
                     "w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] font-black shrink-0 transition-colors",
                     isSelected
                       ? "border-[#1C398E] bg-[#1C398E] text-white"
                       : "border-gray-300 text-gray-500",
-                  )}
-                >
+                  )}>
                   {label}
                 </span>
                 <span className="text-[13px] font-medium">
@@ -319,8 +312,7 @@ function SubmitResultScreen({
     <motion.div
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden"
-    >
+      className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
       <div className="px-6 pt-8 pb-6 flex flex-col items-center text-center gap-4">
         <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center">
           <CheckCircle2 size={32} className="text-emerald-500" />
@@ -373,8 +365,7 @@ function SubmitResultScreen({
 
         <button
           onClick={onBack}
-          className="mt-2 w-full py-3.5 rounded-2xl bg-[#1C398E] hover:bg-[#162d72] text-white text-[14px] font-black uppercase tracking-wider transition-colors"
-        >
+          className="mt-2 w-full py-3.5 rounded-2xl bg-[#1C398E] hover:bg-[#162d72] text-white text-[14px] font-black uppercase tracking-wider transition-colors">
           Back to Homework
         </button>
       </div>
@@ -554,8 +545,7 @@ function ActiveHomeworkCard({
             answeredCount === totalQ && totalQ > 0 && !submitting
               ? "bg-linear-to-r from-[#1C398E] via-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-200 hover:shadow-xl"
               : "bg-gray-100 text-gray-400 cursor-not-allowed",
-          )}
-        >
+          )}>
           <Send size={16} />
           {submitting
             ? "Submitting…"
@@ -574,8 +564,7 @@ function PastHomeworkRow({ hw }: { hw: Homework }) {
   return (
     <button
       type="button"
-      className="w-full bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-left overflow-hidden"
-    >
+      className="w-full bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-left overflow-hidden">
       <div className="flex items-center gap-4 px-5 py-4">
         <div className="w-2.5 h-2.5 rounded-full bg-gray-300 shrink-0" />
         <div className="flex-1 min-w-0">
@@ -725,8 +714,7 @@ export default function HomeworkTab() {
             key={`active-${active.id}`}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-          >
+            exit={{ opacity: 0 }}>
             <ActiveHomeworkCard
               hw={active}
               detail={detail}
@@ -739,8 +727,7 @@ export default function HomeworkTab() {
             key="empty"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white border border-gray-100 rounded-2xl shadow-sm px-6 py-10 text-center"
-          >
+            className="bg-white border border-gray-100 rounded-2xl shadow-sm px-6 py-10 text-center">
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 size={24} className="text-emerald-500" />
             </div>

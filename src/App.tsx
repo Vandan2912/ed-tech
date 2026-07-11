@@ -35,6 +35,8 @@ import Certificates from "./pages/Certificates";
 import StudyRoom from "./pages/StudyRoom";
 import StudyRoomChat from "./pages/StudyRoomChat";
 import TeacherDashboard from "./pages/TeacherDashboard";
+import Homework from "./pages/Homework";
+import HomeworkSubmissions from "./pages/HomeworkSubmissions";
 // import PublicRoute from "./auth/PublicRoute";
 
 function App() {
@@ -200,6 +202,24 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <TeacherDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/homework"
+                element={
+                  <ProtectedRoute>
+                    <Homework />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/homework/:homeworkId/submissions"
+                element={
+                  <ProtectedRoute>
+                    <HomeworkSubmissions />
                   </ProtectedRoute>
                 }
               />
