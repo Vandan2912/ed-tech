@@ -2,29 +2,9 @@ import { useState } from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { Check, Crown, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { plans, features } from "@/lib/premiumPlans";
 
 type Billing = "monthly" | "yearly";
-
-const plans = {
-  monthly: {
-    title: "Monthly Plan",
-    subtitle: "Flexible billing",
-    price: "$19",
-  },
-  yearly: {
-    title: "Yearly Plan",
-    subtitle: "Save $40 per year",
-    price: "$15",
-  },
-} as const;
-
-const features = [
-  "Unlimited AI-Generated Quizzes",
-  "Priority Cognitive Load Analysis",
-  "Exclusive 2026 Curriculum Access",
-  "Full PDF Resource Library",
-  "Personalized Learning Roadmap",
-];
 
 export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [billing, setBilling] = useState<Billing>("monthly");

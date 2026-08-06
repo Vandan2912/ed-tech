@@ -20,6 +20,7 @@ export type User = {
   state: string;
   country: string;
   contact_number: string;
+  is_premium?: boolean;
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

@@ -126,8 +126,7 @@ export default function AiChatFullViewModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()}
-            className="fixed inset-0 z-50 bg-[#030712] flex"
-          >
+            className="fixed inset-0 z-50 bg-[#030712] flex">
             {/* Sidebar */}
             <AnimatePresence initial={false}>
               {sidebarOpen && (
@@ -136,8 +135,7 @@ export default function AiChatFullViewModal({
                   animate={{ width: 280, opacity: 1 }}
                   exit={{ width: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="bg-[#101828] border-r border-[#1e2939] flex flex-col shrink-0 overflow-hidden"
-                >
+                  className="bg-[#101828] border-r border-[#1e2939] flex flex-col shrink-0 overflow-hidden">
                   <div className="border-b border-[#1e2939] p-4 flex flex-col gap-4 shrink-0">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-[14px] bg-[#155dfc] flex items-center justify-center">
@@ -168,8 +166,7 @@ export default function AiChatFullViewModal({
                               item.active
                                 ? "bg-[rgba(21,93,252,0.2)] border-[rgba(21,93,252,0.4)]"
                                 : "bg-transparent border-transparent hover:bg-[#1e2939]/40"
-                            }`}
-                          >
+                            }`}>
                             <MessageSquare
                               size={14}
                               className={
@@ -184,8 +181,7 @@ export default function AiChatFullViewModal({
                                   item.active
                                     ? "text-[#8ec5ff]"
                                     : "text-[#d1d5dc]"
-                                }`}
-                              >
+                                }`}>
                                 {item.title}
                               </p>
                               <div className="flex items-center gap-1 mt-0.5">
@@ -211,8 +207,7 @@ export default function AiChatFullViewModal({
                 <div className="flex items-center gap-3 min-w-0">
                   <button
                     onClick={() => setSidebarOpen((v) => !v)}
-                    className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#9ca3af] hover:bg-[#1e2939] transition-colors focus-visible:outline-none"
-                  >
+                    className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#9ca3af] hover:bg-[#1e2939] transition-colors focus-visible:outline-none">
                     {sidebarOpen ? (
                       <ArrowLeft size={16} />
                     ) : (
@@ -235,8 +230,7 @@ export default function AiChatFullViewModal({
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 rounded-[10px] bg-[#1e2939] hover:bg-[#2a3441] flex items-center justify-center text-[#9ca3af] transition-colors focus-visible:outline-none"
-                >
+                  className="w-8 h-8 rounded-[10px] bg-[#1e2939] hover:bg-[#2a3441] flex items-center justify-center text-[#9ca3af] transition-colors focus-visible:outline-none">
                   <X size={16} />
                 </button>
               </div>
@@ -266,8 +260,7 @@ export default function AiChatFullViewModal({
                     m.role === "user" ? (
                       <div
                         key={m.id}
-                        className="flex items-start gap-3 justify-end"
-                      >
+                        className="flex items-start gap-3 justify-end">
                         <div className="flex flex-col items-end gap-1 max-w-[70%]">
                           <div className="bg-[#155dfc] text-white rounded-2xl rounded-tr-lg px-5 py-3">
                             <p className="text-[14px] leading-relaxed">
