@@ -1,13 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
-import { Check, Crown, X, Zap } from "lucide-react";
+import { Check, Crown, Loader2, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { plans, features } from "@/lib/premiumPlans";
-
-type Billing = "monthly" | "yearly";
+import { billingSubtitle, features, formatPrice, groupPlansByBilling, yearlySavingsPercent, type Billing } from "@/lib/premiumPlans";
+import { getPremiumPlans, useRazorpayCheckout, type PremiumPlan } from "@/api/payment";
 
 export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [billing, setBilling] = useState<Billing>("monthly");
+  const [plans, setPlans] = useState<PremiumPlan[]>([]);
+  const { pay, loading, error } = useRazorpayCheckout();
+
+  useEffect(() => {
+    if (!open) return;
+    getPremiumPlans()
+      .then(setPlans)
+      .catch(() => {});
+  }, [open]);
+
+  const plansByBilling = groupPlansByBilling(plans);
+  const savings = yearlySavingsPercent(plansByBilling);
+  const selectedPlan = plansByBilling[billing];
+
+  const handleActivate = () => {
+    if (!selectedPlan) return;
+    pay(selectedPlan.id, () => onOpenChange(false));
+  };
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -65,22 +82,26 @@ export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChan
                     ? "bg-white text-[#155dfc] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]"
                     : "text-[#99a1af]",
                 )}>
-                Yearly <span className="text-[8px] tracking-[1.4px] text-[#00c950]">-20%</span>
+                Yearly
+                {savings !== null && (
+                  <span className="text-[8px] tracking-[1.4px] text-[#00c950]"> -{savings}%</span>
+                )}
               </button>
             </div>
 
             {/* plan cards */}
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {(["monthly", "yearly"] as const).map((key) => {
-                const plan = plans[key];
+                const plan = plansByBilling[key];
                 const selected = billing === key;
                 return (
                   <button
                     type="button"
                     key={key}
                     onClick={() => setBilling(key)}
+                    disabled={!plan}
                     className={cn(
-                      "relative overflow-clip rounded-[32px] border-2 p-8 text-left transition-colors",
+                      "relative overflow-clip rounded-[32px] border-2 p-8 text-left transition-colors disabled:opacity-50",
                       selected ? "border-[#2b7fff] bg-[#eff6ff]/30" : "border-[#f3f4f6] bg-white",
                     )}>
                     {key === "yearly" && (
@@ -88,11 +109,12 @@ export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChan
                         Best Value
                       </span>
                     )}
-                    <h3 className="text-lg font-black tracking-[-0.44px] text-[#101828]">{plan.title}</h3>
-                    <p className="mt-1 text-sm tracking-[-0.15px] text-[#6a7282]">{plan.subtitle}</p>
+                    <h3 className="text-lg font-black tracking-[-0.44px] text-[#101828]">{plan?.name ?? "—"}</h3>
+                    <p className="mt-1 text-sm tracking-[-0.15px] text-[#6a7282]">{billingSubtitle[key]}</p>
                     <div className="mt-4 flex items-end gap-1">
-                      <span className="text-3xl font-black tracking-[0.4px] text-[#101828]">{plan.price}</span>
-                      <span className="mb-1 text-sm font-bold tracking-[-0.15px] text-[#99a1af]">/mo</span>
+                      <span className="text-3xl font-black tracking-[0.4px] text-[#101828]">
+                        {plan ? formatPrice(plan.price) : "—"}
+                      </span>
                     </div>
                   </button>
                 );
@@ -111,12 +133,16 @@ export function UpgradeModal({ open, onOpenChange }: { open: boolean; onOpenChan
               ))}
             </ul>
 
+            {error && <p className="mt-4 text-center text-sm font-semibold text-red-500">{error}</p>}
+
             {/* CTA */}
             <button
               type="button"
-              className="mt-8 flex h-15 w-full items-center justify-center gap-3 rounded-[24px] bg-[#155dfc] text-sm font-black uppercase tracking-[2.6px] text-white transition-colors hover:bg-[#0e44c7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] focus-visible:ring-offset-2">
-              <Zap size={20} fill="currentColor" />
-              Activate Premium Now
+              onClick={handleActivate}
+              disabled={!selectedPlan || loading}
+              className="mt-8 flex h-15 w-full items-center justify-center gap-3 rounded-[24px] bg-[#155dfc] text-sm font-black uppercase tracking-[2.6px] text-white transition-colors hover:bg-[#0e44c7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60">
+              {loading ? <Loader2 size={20} className="animate-spin" /> : <Zap size={20} fill="currentColor" />}
+              {loading ? "Processing…" : "Activate Premium Now"}
             </button>
           </div>
 

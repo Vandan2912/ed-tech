@@ -1,12 +1,28 @@
-import { useState } from "react";
-import { Check, Crown, X, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Crown, Loader2, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { plans, features } from "@/lib/premiumPlans";
-
-type Billing = "monthly" | "yearly";
+import { billingSubtitle, features, formatPrice, groupPlansByBilling, yearlySavingsPercent, type Billing } from "@/lib/premiumPlans";
+import { getPremiumPlans, useRazorpayCheckout, type PremiumPlan } from "@/api/payment";
 
 export default function AiChatPaywall({ onClose }: { onClose: () => void }) {
   const [billing, setBilling] = useState<Billing>("monthly");
+  const [plans, setPlans] = useState<PremiumPlan[]>([]);
+  const { pay, loading, error } = useRazorpayCheckout();
+
+  useEffect(() => {
+    getPremiumPlans()
+      .then(setPlans)
+      .catch(() => {});
+  }, []);
+
+  const plansByBilling = groupPlansByBilling(plans);
+  const savings = yearlySavingsPercent(plansByBilling);
+  const selectedPlan = plansByBilling[billing];
+
+  const handleActivate = () => {
+    if (!selectedPlan) return;
+    pay(selectedPlan.id, onClose);
+  };
 
   return (
     <div className="relative flex-1 flex flex-col items-center justify-center overflow-y-auto px-6 py-10 hideScrollbar">
@@ -49,21 +65,23 @@ export default function AiChatPaywall({ onClose }: { onClose: () => void }) {
               billing === "yearly" ? "bg-[#155dfc] text-white" : "text-[#99a1af]",
             )}
           >
-            Yearly <span className="text-[8px] tracking-[1.4px] text-[#00c950]">-20%</span>
+            Yearly
+            {savings !== null && <span className="text-[8px] tracking-[1.4px] text-[#00c950]"> -{savings}%</span>}
           </button>
         </div>
 
         <div className="mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
           {(["monthly", "yearly"] as const).map((key) => {
-            const plan = plans[key];
+            const plan = plansByBilling[key];
             const selected = billing === key;
             return (
               <button
                 type="button"
                 key={key}
                 onClick={() => setBilling(key)}
+                disabled={!plan}
                 className={cn(
-                  "relative overflow-clip rounded-[24px] border p-6 text-left transition-colors",
+                  "relative overflow-clip rounded-[24px] border p-6 text-left transition-colors disabled:opacity-50",
                   selected
                     ? "border-[#2c3a60] bg-[#030712]"
                     : "bg-[rgba(239,246,255,0.05)] border-[#e9f2ff]/10",
@@ -74,11 +92,12 @@ export default function AiChatPaywall({ onClose }: { onClose: () => void }) {
                     Best Value
                   </span>
                 )}
-                <h3 className="text-[14px] font-black tracking-[-0.34px] text-white">{plan.title}</h3>
-                <p className="mt-1 text-[10px] tracking-[-0.12px] text-[#8d8d8d]">{plan.subtitle}</p>
+                <h3 className="text-[14px] font-black tracking-[-0.34px] text-white">{plan?.name ?? "—"}</h3>
+                <p className="mt-1 text-[10px] tracking-[-0.12px] text-[#8d8d8d]">{billingSubtitle[key]}</p>
                 <div className="mt-3 flex items-end gap-1">
-                  <span className="text-[23px] font-black tracking-[0.3px] text-white">{plan.price}</span>
-                  <span className="mb-0.5 text-[10px] font-bold tracking-[-0.12px] text-white">/mo</span>
+                  <span className="text-[23px] font-black tracking-[0.3px] text-white">
+                    {plan ? formatPrice(plan.price) : "—"}
+                  </span>
                 </div>
               </button>
             );
@@ -96,12 +115,16 @@ export default function AiChatPaywall({ onClose }: { onClose: () => void }) {
           ))}
         </ul>
 
+        {error && <p className="mt-4 text-[12px] font-semibold text-red-400 text-center">{error}</p>}
+
         <button
           type="button"
-          className="mt-8 flex h-[60px] w-full items-center justify-center gap-3 rounded-[24px] bg-[#155dfc] text-[14px] font-black uppercase tracking-[2.6px] text-white transition-colors hover:bg-[#0e44c7] focus-visible:outline-none"
+          onClick={handleActivate}
+          disabled={!selectedPlan || loading}
+          className="mt-8 flex h-[60px] w-full items-center justify-center gap-3 rounded-[24px] bg-[#155dfc] text-[14px] font-black uppercase tracking-[2.6px] text-white transition-colors hover:bg-[#0e44c7] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <Zap size={20} fill="currentColor" />
-          Activate Premium Now
+          {loading ? <Loader2 size={20} className="animate-spin" /> : <Zap size={20} fill="currentColor" />}
+          {loading ? "Processing…" : "Activate Premium Now"}
         </button>
       </div>
     </div>
