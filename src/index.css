@@ -95,6 +95,22 @@
   --sidebar-border: oklch(0.922 0 0);
 
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Auth/Onboarding design tokens (Figma "E-Learning app") */
+  --auth-primary: #3eaef0;
+  --auth-primary-dark-1: #0c6498;
+  --auth-primary-dark-2: #0f80c3;
+  --auth-primary-dark-3: #139ced;
+  --auth-primary-light: #cfebfb;
+  --auth-text: #0a0a0a;
+  --auth-neutral-200: #e8e8e8;
+  --auth-neutral-400: #bbbbbb;
+  --auth-neutral-500: #a4a4a4;
+  --auth-neutral-600: #8e8e8e;
+  --auth-neutral-700: #777777;
+  --auth-neutral-800: #606060;
+  --auth-neutral-900: #4a4a4a;
+  --auth-neutral-1000: #333333;
 }
 
 @media (prefers-color-scheme: dark) {

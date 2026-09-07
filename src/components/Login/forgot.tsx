@@ -1,10 +1,12 @@
-import { Field } from "@/components/Login/field";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Mail } from "lucide-react";
+/* Forgot-password: enter email (Figma: forgot-password-enter-email) */
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { forgotPassword } from "@/api/auth";
+import { FormField, authInputClassName } from "@/components/auth/FormField";
+import { getApiErrorMessage } from "@/lib/utils";
 
 const forgotSchema = z.object({
   email: z
@@ -15,133 +17,75 @@ const forgotSchema = z.object({
 
 type ForgotFormData = z.infer<typeof forgotSchema>;
 
-const Forgot = ({
-  setStage,
+export default function Forgot({
   onEmailSubmit,
+  onBackToLogin,
 }: {
-  setStage: React.Dispatch<
-    React.SetStateAction<{
-      forgot: boolean;
-      forgotOTP: boolean;
-      newPassword: boolean;
-    }>
-  >;
   onEmailSubmit: (email: string) => void;
-}) => {
-  const [loading, setLoading] = useState(false);
+  onBackToLogin: () => void;
+}) {
   const [apiError, setApiError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ForgotFormData>({
     resolver: zodResolver(forgotSchema),
   });
 
   const onSubmit = async (data: ForgotFormData) => {
     try {
-      setLoading(true);
       setApiError(null);
-
       await forgotPassword(data.email);
-
       onEmailSubmit(data.email);
-      setStage((prev) => ({ ...prev, forgotOTP: true }));
-    } catch (err: any) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Something went wrong. Please try again.";
-      setApiError(message);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setApiError(
+        getApiErrorMessage(err, "Something went wrong. Please try again."),
+      );
     }
   };
 
   return (
-    <>
-      {/* Back button */}
-      <button
-        onClick={() => {
-          setStage({ forgot: false, forgotOTP: false, newPassword: false });
-        }}
-        className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-gray-700 transition mb-6"
-      >
-        <ArrowLeft size={14} />
-        <div className="text-center justify-start text-gray-400 text-[10px] font-black uppercase leading-4 tracking-wide">
-          Back to Sign In
-        </div>
-      </button>
-
-      {/* Icon */}
-      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-xl sm:rounded-2xl inline-flex justify-center items-center mb-6">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M4 6H20V18H4V6Z"
-            stroke="#4F46E5"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M4 6L12 13L20 6"
-            stroke="#4F46E5"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-
-      {/* Heading */}
-      <h1 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2 sm:mb-3">
-        Forgot Password?
-      </h1>
-
-      {/* Subtitle */}
-      <p className="text-sm sm:text-base text-gray-500 font-medium mb-8 sm:mb-10 px-0 sm:px-8">
-        No worries! Enter your registered email and we'll send you a reset code.
+    <div className="flex flex-col items-center gap-5 w-full text-center">
+      <h1 className="text-2xl font-bold text-[#0a0a0a]">Forgot Password?</h1>
+      <p className="text-xs font-semibold text-[#6b7280] leading-[18px] max-w-[296px]">
+        Enter your registered email address and we&apos;ll send you a link to
+        reset your password.
       </p>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 items-center w-full pt-3">
         {apiError && (
           <div className="w-full px-4 py-3 bg-red-50 border border-red-100 rounded-2xl text-sm font-bold text-red-600 text-left">
             {apiError}
           </div>
         )}
 
-        <Field label="Email Address" error={errors.email?.message}>
-          <div className="relative w-full">
-            <Mail
-              size={16}
-              className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+        <FormField label="Email" error={errors.email?.message}>
+          <input
+            type="email"
+            className={authInputClassName}
+            placeholder="e.g akash@gmail.com"
+            {...register("email")}
+          />
+        </FormField>
 
-            <input
-              {...register("email")}
-              placeholder="you@school.edu"
-              className="w-full pl-12 pr-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:bg-white transition-all font-bold text-gray-900"
-            />
-          </div>
-        </Field>
-
-        {/* Button */}
         <button
           type="submit"
-          disabled={loading}
-          className="mt-4 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-white transition active:scale-[0.98] cursor-pointer hover:bg-blue-800 shadow-xl shadow-blue-100 disabled:opacity-60 disabled:cursor-not-allowed"
-          style={{
-            background: "linear-gradient(90deg,#4F46E5 0%,#4338CA 100%)",
-            boxShadow: "0 12px 30px rgba(79,70,229,0.35)",
-          }}
-        >
-          {loading ? "Sending..." : "Send Reset Code"}
+          disabled={isSubmitting}
+          className="mt-2 w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] flex items-center justify-center text-white text-base font-bold disabled:opacity-60 disabled:cursor-not-allowed transition active:scale-[0.98]">
+          {isSubmitting ? "Sending..." : "Send Reset Link"}
+        </button>
+
+        <button
+          type="button"
+          onClick={onBackToLogin}
+          className="text-[15px] font-semibold text-[#3eaef0]">
+          Back to Login
         </button>
       </form>
-    </>
+    </div>
   );
-};
-
-export default Forgot;
+}

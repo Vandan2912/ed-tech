@@ -11,6 +11,7 @@ function ScrollToTop() {
 }
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
 import { Toaster as Sonner } from "./components/ui/sonner";
@@ -52,6 +53,7 @@ function App() {
             <Routes>
               {/* PUBLIC ROUTES */}
               <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               <Route
                 path="/onboarding"
