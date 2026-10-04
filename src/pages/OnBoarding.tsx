@@ -4,7 +4,17 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
-import { saveAcademicDetails } from "@/api/user";
+import {
+  savePersonalDetails,
+  saveOnboardingAcademicDetails,
+  getOnboardingGoals,
+  setOnboardingGoal,
+  getOnboardingSubjects,
+  selectOnboardingSubjects,
+  type OnboardingGoal,
+  type OnboardingSubject,
+} from "@/api/onboarding";
+import { getApiErrorMessage } from "@/lib/utils";
 import type { User } from "@/auth/AuthProvider";
 import CountryCodeSelect from "@/components/CountryCodeSelect";
 import { Loader2, ArrowRight } from "lucide-react";
@@ -30,62 +40,6 @@ import featureGame from "@/assets/auth/feature-game.svg";
 /* ---------------- CONSTANTS ---------------- */
 
 const TOTAL_STEPS = 4;
-
-const GOAL_SUGGESTIONS = [
-  {
-    title: "NEET Preparation",
-    description: "Medical entrance for MBBS / BDS / AYUSH",
-  },
-  {
-    title: "JEE Preparation",
-    description: "Engineering entrance Mains & Advanced",
-  },
-  {
-    title: "Civil Services (UPSC)",
-    description: "IAS, IPS, IFS and allied services",
-  },
-  { title: "Board Exams", description: "CBSE, ICSE or State Board finals" },
-  {
-    title: "Olympiad / Competitive",
-    description: "National & international competitions",
-  },
-  {
-    title: "CA / Commerce",
-    description: "Chartered Accountancy and commerce streams",
-  },
-  {
-    title: "General Knowledge",
-    description: "Current affairs, GK and aptitude",
-  },
-  { title: "Other / Explore", description: "Just learning and growing" },
-];
-
-const SUBJECTS = [
-  "Mathematics",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "English",
-  "Hindi",
-  "History",
-  "Geography",
-  "Political Science",
-  "Economics",
-  "Computer Science",
-  "Accountancy",
-  "Business Studies",
-  "Environmental Science",
-  "Sanskrit",
-  "Psychology",
-  "Sociology",
-  "Physical Education",
-  "Art & Design",
-  "Music",
-  "Statistics",
-  "Legal Studies",
-  "Entrepreneurship",
-  "Information Practices",
-];
 
 const FEATURES = [
   {
@@ -169,14 +123,20 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [phase, setPhase] = useState<Phase>("form");
   const [goals, setGoals] = useState("");
+  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
+  const [goalOptions, setGoalOptions] = useState<OnboardingGoal[]>([]);
+  const [subjectOptions, setSubjectOptions] = useState<OnboardingSubject[]>([]);
+  // ai_subject_ids of the selected subjects
   const [subjects, setSubjects] = useState<string[]>([]);
   const [subjectSearch, setSubjectSearch] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     trigger,
+    getValues,
     setValue,
     watch,
     formState: { errors },
@@ -222,6 +182,17 @@ export default function Onboarding() {
     }
   }, [pinCodeValue, countryValue, setValue]);
 
+  useEffect(() => {
+    getOnboardingGoals()
+      .then(setGoalOptions)
+      .catch((err) => console.error("Failed to load goals", err));
+    getOnboardingSubjects()
+      .then(setSubjectOptions)
+      .catch((err) => console.error("Failed to load subjects", err));
+  }, []);
+
+  useEffect(() => setApiError(null), [step]);
+
   /* ---------------- STEP NAVIGATION ---------------- */
 
   const nextFromStep1 = async () => {
@@ -233,7 +204,34 @@ export default function Onboarding() {
       "password",
       "confirmPassword",
     ]);
-    if (valid) setStep(2);
+    if (!valid) return;
+
+    const data = getValues();
+    setSubmitting(true);
+    setApiError(null);
+    try {
+      await savePersonalDetails({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+        mobileNumber: data.phone,
+      });
+      setUser({
+        ...user,
+        first_name: data.firstName,
+        last_name: data.lastName,
+        mobile_number: data.phone,
+      } as User);
+      setStep(2);
+    } catch (err) {
+      setApiError(
+        getApiErrorMessage(err, "Couldn't save personal details. Try again."),
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const nextFromStep2 = async () => {
@@ -244,7 +242,35 @@ export default function Onboarding() {
       "state",
       "pinCode",
     ]);
-    if (valid) setStep(3);
+    if (!valid) return;
+
+    const data = getValues();
+    setSubmitting(true);
+    setApiError(null);
+    try {
+      await saveOnboardingAcademicDetails({
+        schoolName: data.schoolName,
+        courseOrStandard: data.standardOrCourse,
+        district: data.district,
+        state: data.state,
+        pincode: data.pinCode,
+      });
+      setUser({
+        ...user,
+        school_name: data.schoolName,
+        std: data.standardOrCourse,
+        district: data.district,
+        state: data.state,
+        pincode: data.pinCode,
+      } as User);
+      setStep(3);
+    } catch (err) {
+      setApiError(
+        getApiErrorMessage(err, "Couldn't save academic details. Try again."),
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const toggleSubject = (subject: string) => {
@@ -255,43 +281,54 @@ export default function Onboarding() {
     );
   };
 
-  const applyGoalSuggestion = (title: string) => {
-    setGoals((prev) => (prev ? `${prev}\n${title}` : title));
+  const toggleGoal = (id: string) => {
+    setSelectedGoalId((prev) => (prev === id ? null : id));
   };
 
-  const onFinish = async (data: FormData) => {
+  const nextFromStep3 = async () => {
+    const description =
+      goals.trim() ||
+      goalOptions.find((g) => g.id === selectedGoalId)?.title ||
+      "";
+    if (!description) {
+      setApiError("Pick a goal or describe your own.");
+      return;
+    }
+
     setSubmitting(true);
+    setApiError(null);
     try {
-      const formattedPhone = `${data.countryCode.replace("+", "")} ${data.phone}`;
-
-      const payload = {
-        id: user?.id,
-        first_name: data.firstName,
-        last_name: data.lastName,
-        school_name: data.schoolName,
-        std: data.standardOrCourse,
-        pincode: data.pinCode,
-        district: data.district,
-        state: data.state,
-        country: data.country,
-        contact_number: `+${formattedPhone}`,
-      };
-
-      // Backend doesn't accept goals/subjects/password yet — persist what it
-      // already supports and keep the new fields client-side for now.
-      await saveAcademicDetails(payload);
-
-      setUser({ ...user, ...payload, isOnboarded: true } as User);
+      await setOnboardingGoal({
+        goalId: selectedGoalId,
+        goalDescription: description,
+      });
+      setStep(4);
     } catch (err) {
-      console.error("Onboarding failed", err);
+      setApiError(getApiErrorMessage(err, "Couldn't save your goal. Try again."));
     } finally {
       setSubmitting(false);
-      setPhase("processing");
     }
   };
 
-  const visibleSubjects = SUBJECTS.filter((s) =>
-    s.toLowerCase().includes(subjectSearch.trim().toLowerCase()),
+  // Steps 1–3 are saved as the user advances; the final step saves subjects.
+  const onFinish = async () => {
+    setSubmitting(true);
+    setApiError(null);
+    try {
+      await selectOnboardingSubjects(subjects);
+      setUser({ ...user, is_onboarded: true, isOnboarded: true } as User);
+      setPhase("processing");
+    } catch (err) {
+      setApiError(
+        getApiErrorMessage(err, "Couldn't save your subjects. Try again."),
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const visibleSubjects = subjectOptions.filter((s) =>
+    s.name.toLowerCase().includes(subjectSearch.trim().toLowerCase()),
   );
 
   /* ---------------- PROCESSING / WELCOME PHASES ---------------- */
@@ -379,6 +416,12 @@ export default function Onboarding() {
             {step === 4 && "Pick Your Favourite Subjects"}
           </h2>
 
+          {apiError && (
+            <div className="mb-2 w-full px-4 py-3 bg-red-50 border border-red-100 rounded-2xl text-sm font-bold text-red-600 text-left">
+              {apiError}
+            </div>
+          )}
+
           <p className="text-sm sm:text-base text-gray-500 font-medium">
             {step === 4
               ? "Choose as many as you like."
@@ -458,8 +501,9 @@ export default function Onboarding() {
                 <button
                   type="button"
                   onClick={nextFromStep1}
-                  className="w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] text-white text-base font-bold transition active:scale-[0.98]">
-                  Next
+                  disabled={submitting}
+                  className="w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] text-white text-base font-bold transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                  {submitting ? "Saving..." : "Next"}
                 </button>
                 <button
                   type="button"
@@ -535,8 +579,9 @@ export default function Onboarding() {
                 <button
                   type="button"
                   onClick={nextFromStep2}
-                  className="w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] text-white text-base font-bold transition active:scale-[0.98]">
-                  Next
+                  disabled={submitting}
+                  className="w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] text-white text-base font-bold transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                  {submitting ? "Saving..." : "Next"}
                 </button>
                 <button
                   type="button"
@@ -567,13 +612,13 @@ export default function Onboarding() {
                   Goal Suggestions
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {GOAL_SUGGESTIONS.map((g) => (
+                  {goalOptions.map((g) => (
                     <GoalCard
-                      key={g.title}
+                      key={g.id}
                       title={g.title}
                       description={g.description}
-                      selected={goals.includes(g.title)}
-                      onClick={() => applyGoalSuggestion(g.title)}
+                      selected={selectedGoalId === g.id}
+                      onClick={() => toggleGoal(g.id)}
                     />
                   ))}
                 </div>
@@ -582,9 +627,10 @@ export default function Onboarding() {
               <div className="flex flex-col gap-4 mt-2">
                 <button
                   type="button"
-                  onClick={() => setStep(4)}
-                  className="w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] text-white text-base font-bold transition active:scale-[0.98]">
-                  Next
+                  onClick={nextFromStep3}
+                  disabled={submitting}
+                  className="w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] text-white text-base font-bold transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                  {submitting ? "Saving..." : "Next"}
                 </button>
                 <button
                   type="button"
@@ -619,10 +665,10 @@ export default function Onboarding() {
               <div className="flex flex-wrap gap-2.5">
                 {visibleSubjects.map((subject) => (
                   <SubjectChip
-                    key={subject}
-                    label={subject}
-                    selected={subjects.includes(subject)}
-                    onClick={() => toggleSubject(subject)}
+                    key={subject.id}
+                    label={subject.name}
+                    selected={subjects.includes(subject.id)}
+                    onClick={() => toggleSubject(subject.id)}
                   />
                 ))}
               </div>

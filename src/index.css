@@ -96,14 +96,17 @@
 
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Auth/Onboarding design tokens (Figma "E-Learning app") */
+  /* Auth/Onboarding/Home design tokens (Figma "E-Learning app") */
   --auth-primary: #3eaef0;
+  --auth-primary-alpha-10: #3eaef01a;
   --auth-primary-dark-1: #0c6498;
   --auth-primary-dark-2: #0f80c3;
   --auth-primary-dark-3: #139ced;
   --auth-primary-light: #cfebfb;
+  --auth-secondary-light-2: #233ae8;
   --auth-text: #0a0a0a;
   --auth-neutral-200: #e8e8e8;
+  --auth-neutral-300: #d2d2d2;
   --auth-neutral-400: #bbbbbb;
   --auth-neutral-500: #a4a4a4;
   --auth-neutral-600: #8e8e8e;
@@ -111,6 +114,12 @@
   --auth-neutral-800: #606060;
   --auth-neutral-900: #4a4a4a;
   --auth-neutral-1000: #333333;
+  --auth-neutral-alpha-04: #3333330a;
+  --auth-red-100: #fb3748;
+  --auth-yellow-100: #ffdb43;
+  --auth-yellow-300: #dfb400;
+  --auth-green-300: #0e8f4a;
+  --auth-green-alpha-10: #1fc16b1a;
 }
 
 @media (prefers-color-scheme: dark) {

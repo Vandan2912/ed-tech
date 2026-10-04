@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-import { teacherLogin, googleAuth } from "@/api/auth";
+import { emailLoginV2, googleLoginV2 } from "@/api/auth";
 import { useAuth } from "@/auth/useAuth";
 import { FormField, authInputClassName } from "@/components/auth/FormField";
 import { getApiErrorMessage } from "@/lib/utils";
@@ -52,9 +52,11 @@ export default function LoginForm({
       setLoading(true);
       setApiError(null);
 
-      const res = await teacherLogin(data.email, data.password);
+      const res = await emailLoginV2(data.email, data.password);
       login(res.token, res.user);
-      navigate("/");
+
+      const needsOnboarding = res.isNewUser || !res.user?.is_onboarded;
+      navigate(needsOnboarding ? "/onboarding" : "/");
     } catch (err) {
       setApiError(
         getApiErrorMessage(
@@ -73,7 +75,7 @@ export default function LoginForm({
       try {
         setLoading(true);
         setApiError(null);
-        const res = await googleAuth(tokenResponse.access_token, "student");
+        const res = await googleLoginV2(tokenResponse.access_token);
         login(res.token, res.user);
 
         const needsOnboarding = res.isNewUser || !res.user?.is_onboarded;

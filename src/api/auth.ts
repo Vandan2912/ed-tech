@@ -39,3 +39,17 @@ export const googleAuth = async (token: string, role: string) => {
 
   return res.data;
 };
+
+/* ---------------- v2 auth ---------------- */
+
+/** Logs in with a Google OAuth access token. */
+export const googleLoginV2 = async (credential: string) => {
+  const res = await api.post("/api/v2/auth/google", { credential });
+  return res.data;
+};
+
+/** Logs in with email + password. */
+export const emailLoginV2 = async (email: string, password: string) => {
+  const res = await api.post("/api/v2/auth/login", { email, password });
+  return res.data;
+};
