@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowUp,
   Camera,
+  FileText,
   Lightbulb,
   Mic,
   Paperclip,
   Sparkles,
   Upload,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { ChallengeDraft } from "@/pages/ChallengeOverview";
 
 type Tab = "challenge" | "doubts";
 
@@ -24,6 +28,28 @@ export function AiPanel() {
   const [topicName, setTopicName] = useState("");
   const [description, setDescription] = useState("");
   const [question, setQuestion] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  const canStart = topicName.trim() !== "" && description.trim() !== "";
+
+  const onFilePicked = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files?.[0];
+    if (picked) setFile(picked);
+    e.target.value = ""; // allow re-picking the same file
+  };
+
+  const startChallenge = () => {
+    if (!canStart) return;
+    const draft: ChallengeDraft = {
+      topicName: topicName.trim(),
+      description: description.trim(),
+      file: file ?? undefined,
+    };
+    navigate("/challenge/new", { state: draft });
+  };
 
   return (
     <div className="rounded-[20px] sm:rounded-2xl border border-[#f3f4f6] sm:border-[#f0f9ff] bg-white overflow-hidden shadow-[0px_16px_40px_-8px_rgba(88,92,95,0.11)] sm:shadow-none">
@@ -118,11 +144,25 @@ export function AiPanel() {
             </div>
 
             <div className="flex gap-3">
+              <input
+                ref={uploadInputRef}
+                type="file"
+                accept=".pdf,image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={onFilePicked}
+              />
+              <input
+                ref={cameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={onFilePicked}
+              />
               <button
                 type="button"
-                disabled
-                title="Coming soon"
-                className="flex-1 flex flex-col items-center gap-1 sm:gap-2.5 p-3 sm:px-4 sm:py-5 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#f3f4f6] sm:border-[#e5e7eb] bg-[#333]/[0.02] sm:bg-transparent cursor-not-allowed">
+                onClick={() => uploadInputRef.current?.click()}
+                className="flex-1 flex flex-col items-center gap-1 sm:gap-2.5 p-3 sm:px-4 sm:py-5 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#f3f4f6] sm:border-[#e5e7eb] bg-[#333]/[0.02] sm:bg-transparent transition-colors hover:border-[var(--auth-primary)]/40">
                 <span className="flex items-center justify-center size-5 sm:size-10 rounded-full sm:bg-[#f3f4f6]">
                   <Upload size={20} className="text-[#99a1af]" />
                 </span>
@@ -137,9 +177,8 @@ export function AiPanel() {
               </button>
               <button
                 type="button"
-                disabled
-                title="Coming soon"
-                className="flex-1 flex flex-col items-center gap-1 sm:gap-2.5 p-3 sm:px-4 sm:py-5 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#f3f4f6] sm:border-[#e5e7eb] bg-[#333]/[0.02] sm:bg-transparent cursor-not-allowed">
+                onClick={() => cameraInputRef.current?.click()}
+                className="flex-1 flex flex-col items-center gap-1 sm:gap-2.5 p-3 sm:px-4 sm:py-5 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#f3f4f6] sm:border-[#e5e7eb] bg-[#333]/[0.02] sm:bg-transparent transition-colors hover:border-[var(--auth-primary)]/40">
                 <span className="flex items-center justify-center size-5 sm:size-10 rounded-full sm:bg-[#f3f4f6]">
                   <Camera size={20} className="text-[#99a1af]" />
                 </span>
@@ -154,13 +193,33 @@ export function AiPanel() {
               </button>
             </div>
 
+            {file && (
+              <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-[#cfebfb] bg-[#f0f9ff]">
+                <FileText
+                  size={16}
+                  className="shrink-0 text-[var(--auth-primary)]"
+                />
+                <span className="flex-1 min-w-0 truncate text-[12px] font-semibold text-[#1e2939]">
+                  {file.name}
+                </span>
+                <button
+                  type="button"
+                  aria-label="Remove file"
+                  onClick={() => setFile(null)}
+                  className="flex items-center justify-center size-6 rounded-full text-[#6b7280] hover:bg-white">
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+
             <button
               type="button"
-              disabled
-              title="Coming soon"
-              className="flex items-center justify-center gap-2.5 h-12 rounded-xl sm:rounded-[10px] drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] sm:drop-shadow-none bg-[var(--auth-primary)] text-[16px] font-bold text-white disabled:opacity-70">
+              onClick={startChallenge}
+              disabled={!canStart}
+              title={canStart ? undefined : "Enter a topic and description"}
+              className="flex items-center justify-center gap-2.5 h-12 rounded-xl sm:rounded-[10px] drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] sm:drop-shadow-none bg-[var(--auth-primary)] text-[16px] font-bold text-white transition active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100">
               <Sparkles size={20} />
-              Generate Quiz
+              Start Challenge
             </button>
           </div>
         </div>
