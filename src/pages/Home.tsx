@@ -34,15 +34,16 @@ const Home = () => {
         <div className="pointer-events-none absolute top-[20%] right-[5%] size-[420px] rounded-full bg-[var(--auth-secondary-light-2)]/10 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 left-[30%] size-[380px] rounded-full bg-[var(--auth-primary)]/10 blur-3xl" />
 
-        <div className="relative max-w-3xl mx-auto px-4 pb-16">
+        {/* Mobile puts the quiz panel above level progress (Figma mobile view) */}
+        <div className="relative max-w-3xl mx-auto px-4 pb-4 sm:pb-16 flex flex-col">
           <Hero />
-          <div className="pt-8">
+          <div className="order-3 sm:order-2 pt-4 sm:pt-8">
             <LevelProgressCard />
           </div>
-          <div className="pt-6">
+          <div className="order-2 sm:order-3 pt-4 sm:pt-6">
             <AiPanel />
           </div>
-          <div className="pt-12">
+          <div className="order-4 pt-4 sm:pt-12">
             <MostSearchedTopics />
           </div>
         </div>

@@ -34,8 +34,10 @@ export default function ProtectedRoute({
   return (
     <>
       {header && <Header />}
-      <div className={header ? "pb-10 md:pb-0" : undefined}>{children}</div>
+      {children}
       {footer && <Footer />}
+      {/* Spacer so the fixed mobile bottom bar never covers the page end */}
+      {header && <div className="h-[72px] md:hidden" />}
       {header && <MobileBottomBar />}
     </>
   );

@@ -21,6 +21,7 @@ import {
 import { useEffect, useState } from "react";
 import { UpgradeModal } from "./UpgradeModal";
 import { getMyBest } from "@/api/ranks";
+import logoMark from "@/assets/home/logo-mark.svg";
 
 export function Header() {
   const navigate = useNavigate();
@@ -65,11 +66,21 @@ export function Header() {
 
   return (
     <header className="border-b border-[var(--auth-neutral-alpha-04,rgba(51,51,51,0.04))] bg-white sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-6">
+      <div className="max-w-7xl mx-auto flex items-center justify-between h-[53px] md:h-16 px-4 md:px-6">
         <div
-          className="flex items-center gap-2.5 cursor-pointer"
+          className="flex items-center gap-1.5 md:gap-2.5 cursor-pointer"
           onClick={() => navigate("/")}>
-          <img src="/logo.svg" alt="Mastishq.ai" className="h-5 w-auto" />
+          <img
+            src="/logo.svg"
+            alt="Mastishq.ai"
+            className="hidden md:block h-5 w-auto"
+          />
+          <span className="flex md:hidden items-center gap-1.5">
+            <img src={logoMark} alt="" width={28} height={26} />
+            <span className="text-[16px] font-extrabold text-[#060c5e]">
+              Mastishq
+            </span>
+          </span>
           {user?.role === "teacher" && (
             <span className="text-[#4f39f6] text-[10px] font-black uppercase tracking-[1.1172px]">
               Teacher Portal
@@ -155,7 +166,23 @@ export function Header() {
           </nav>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
+          {user?.role !== "teacher" && best && (
+            <div className="flex md:hidden items-center gap-2">
+              <span className="flex items-center gap-1 px-2 py-1 rounded-xl bg-[#f0f9ff] text-[11px] font-bold text-[var(--auth-primary)] whitespace-nowrap">
+                <Zap
+                  size={10}
+                  className="text-[var(--auth-primary)]"
+                  fill="var(--auth-primary)"
+                />
+                Lvl {best.level}
+              </span>
+              <span className="px-2 py-1 rounded-xl bg-[#eef2ff] text-[11px] font-bold text-[#233ae8] whitespace-nowrap">
+                {best.totalXp.toLocaleString()} pts
+              </span>
+            </div>
+          )}
+
           {user?.role !== "teacher" && best && (
             <div className="hidden md:flex items-center gap-2 bg-white border-[0.5px] border-[var(--auth-neutral-alpha-04,rgba(51,51,51,0.04))] shadow-[0px_16px_20px_rgba(88,92,95,0.11)] rounded-[14px] px-3 py-1.5">
               <Zap
@@ -187,7 +214,7 @@ export function Header() {
           <Popover>
             <PopoverTrigger asChild>
               <button className="flex items-center gap-2 rounded-full focus-visible:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                <span className="w-9 h-9 rounded-[18px] border border-[var(--auth-neutral-alpha-04,rgba(51,51,51,0.04))] overflow-hidden flex items-center justify-center bg-[#f3f4f6]">
+                <span className="size-7 md:size-9 rounded-[14px] md:rounded-[18px] border border-[var(--auth-neutral-alpha-04,rgba(51,51,51,0.04))] overflow-hidden flex items-center justify-center bg-[#f3f4f6]">
                   {user?.profile_picture ? (
                     <img
                       src={

@@ -26,18 +26,18 @@ export function AiPanel() {
   const [question, setQuestion] = useState("");
 
   return (
-    <div className="rounded-2xl border border-[#f0f9ff] bg-white overflow-hidden">
-      <div className="flex items-end gap-1 bg-[#f3f4f6]">
+    <div className="rounded-[20px] sm:rounded-2xl border border-[#f3f4f6] sm:border-[#f0f9ff] bg-white overflow-hidden shadow-[0px_16px_40px_-8px_rgba(88,92,95,0.11)] sm:shadow-none">
+      <div className="flex items-end sm:gap-1 bg-[#f3f4f6]">
         <button
           type="button"
           onClick={() => setTab("challenge")}
           className={cn(
-            "flex flex-col gap-1 px-4 pt-3 pb-2.5 rounded-t-md",
+            "flex flex-1 sm:flex-none flex-col items-center sm:items-stretch gap-1 px-4 py-3 sm:pt-3 sm:pb-2.5 sm:rounded-t-md",
             tab === "challenge" ? "bg-white" : "bg-[#f3f4f6]",
           )}>
           <span
             className={cn(
-              "text-[14px]",
+              "text-[13px] sm:text-[14px]",
               tab === "challenge"
                 ? "font-bold text-[#101828]"
                 : "font-medium text-[var(--auth-neutral-600)]",
@@ -45,34 +45,35 @@ export function AiPanel() {
             AI Challenge
           </span>
           {tab === "challenge" && (
-            <span className="h-[3px] w-full rounded-full bg-[var(--auth-primary)]" />
+            <span className="h-[3px] w-[60px] sm:w-full rounded-full bg-[var(--auth-primary)]" />
           )}
         </button>
         <button
           type="button"
           onClick={() => setTab("doubts")}
           className={cn(
-            "flex flex-col gap-1 px-4 pt-3 pb-2.5 rounded-t-md",
+            "flex flex-1 sm:flex-none flex-col items-center sm:items-stretch gap-1 px-4 py-3 sm:pt-3 sm:pb-2.5 sm:rounded-t-md",
             tab === "doubts" ? "bg-white" : "bg-[#f3f4f6]",
           )}>
           <span
             className={cn(
-              "text-[14px]",
+              "text-[13px] sm:text-[14px]",
               tab === "doubts"
                 ? "font-bold text-[#101828]"
                 : "font-medium text-[var(--auth-neutral-600)]",
             )}>
-            Ask Doubts with AI
+            <span className="sm:hidden">Ask AI Doubts</span>
+            <span className="hidden sm:inline">Ask Doubts with AI</span>
           </span>
           {tab === "doubts" && (
-            <span className="h-[3px] w-full rounded-full bg-[var(--auth-primary)]" />
+            <span className="h-[3px] w-[60px] sm:w-full rounded-full bg-[var(--auth-primary)]" />
           )}
         </button>
       </div>
 
       {tab === "challenge" ? (
         <div>
-          <div className="px-6 pt-5 pb-4 border-b border-[#efefef]">
+          <div className="hidden sm:block px-6 pt-5 pb-4 border-b border-[#efefef]">
             <h3 className="text-[15px] font-bold text-[#101828]">
               Generate Your Quiz
             </h3>
@@ -81,9 +82,9 @@ export function AiPanel() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 p-6">
+          <div className="flex flex-col gap-4 p-4 sm:p-6">
             <div>
-              <label className="block pb-2 text-[13px] font-bold text-[var(--auth-neutral-600)]">
+              <label className="block pb-1.5 sm:pb-2 text-[12px] sm:text-[13px] font-bold text-[#6b7280] sm:text-[var(--auth-neutral-600)]">
                 Topic name *
               </label>
               <input
@@ -91,12 +92,12 @@ export function AiPanel() {
                 value={topicName}
                 onChange={(e) => setTopicName(e.target.value)}
                 placeholder="e.g. Newton's Laws of Motion, DNA and Heredity..."
-                className="w-full h-[52px] px-4 rounded-2xl border-2 border-[#f3f4f6] bg-[#f9fafb] text-[12px] font-medium placeholder:text-[var(--auth-neutral-400)] focus:outline-none focus:border-[var(--auth-primary)]"
+                className="w-full h-11 sm:h-[52px] px-3 sm:px-4 rounded-xl sm:rounded-2xl border-2 border-[#f3f4f6] bg-[#f9fafb] text-[13px] sm:text-[12px] font-medium placeholder:text-[var(--auth-neutral-400)] focus:outline-none focus:border-[var(--auth-primary)]"
               />
             </div>
 
             <div>
-              <label className="block pb-2 text-[13px] font-bold text-[var(--auth-neutral-600)]">
+              <label className="block pb-1.5 sm:pb-2 text-[12px] sm:text-[13px] font-bold text-[#6b7280] sm:text-[var(--auth-neutral-600)]">
                 Description *
               </label>
               <textarea
@@ -104,13 +105,13 @@ export function AiPanel() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Add context about what to focus on — helps AI tailor the questions..."
                 rows={3}
-                className="w-full px-4 py-3 rounded-2xl border-2 border-[#f3f4f6] bg-[#f9fafb] text-[12px] font-medium placeholder:text-[var(--auth-neutral-400)] focus:outline-none focus:border-[var(--auth-primary)] resize-none"
+                className="w-full h-[60px] sm:h-auto px-3 sm:px-4 py-3 rounded-xl sm:rounded-2xl border-2 border-[#f3f4f6] bg-[#f9fafb] text-[13px] sm:text-[12px] font-medium placeholder:text-[var(--auth-neutral-400)] focus:outline-none focus:border-[var(--auth-primary)] resize-none"
               />
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <span className="flex-1 h-px bg-[#f3f4f6]" />
-              <span className="text-[13px] font-bold text-[var(--auth-neutral-700)] whitespace-nowrap">
+              <span className="text-[11px] sm:text-[13px] font-semibold sm:font-bold uppercase sm:normal-case text-[var(--auth-neutral-700)] whitespace-nowrap">
                 or scan a page
               </span>
               <span className="flex-1 h-px bg-[#f3f4f6]" />
@@ -121,15 +122,15 @@ export function AiPanel() {
                 type="button"
                 disabled
                 title="Coming soon"
-                className="flex-1 flex flex-col items-center gap-2.5 px-4 py-5 rounded-2xl border-2 border-dashed border-[#e5e7eb] cursor-not-allowed">
-                <span className="flex items-center justify-center size-10 rounded-full bg-[#f3f4f6]">
+                className="flex-1 flex flex-col items-center gap-1 sm:gap-2.5 p-3 sm:px-4 sm:py-5 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#f3f4f6] sm:border-[#e5e7eb] bg-[#333]/[0.02] sm:bg-transparent cursor-not-allowed">
+                <span className="flex items-center justify-center size-5 sm:size-10 rounded-full sm:bg-[#f3f4f6]">
                   <Upload size={20} className="text-[#99a1af]" />
                 </span>
                 <span className="text-center">
-                  <span className="block text-[15px] font-semibold text-[var(--auth-neutral-900)]">
+                  <span className="block text-[13px] sm:text-[15px] font-semibold text-[#1e2939] sm:text-[var(--auth-neutral-900)]">
                     Upload File
                   </span>
-                  <span className="block pt-0.5 text-[11px] font-medium text-[var(--auth-neutral-500)]">
+                  <span className="hidden sm:block pt-0.5 text-[11px] font-medium text-[var(--auth-neutral-500)]">
                     PDF · JPG · PNG · WEBP
                   </span>
                 </span>
@@ -138,15 +139,15 @@ export function AiPanel() {
                 type="button"
                 disabled
                 title="Coming soon"
-                className="flex-1 flex flex-col items-center gap-2.5 px-4 py-5 rounded-2xl border-2 border-dashed border-[#e5e7eb] cursor-not-allowed">
-                <span className="flex items-center justify-center size-10 rounded-full bg-[#f3f4f6]">
+                className="flex-1 flex flex-col items-center gap-1 sm:gap-2.5 p-3 sm:px-4 sm:py-5 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#f3f4f6] sm:border-[#e5e7eb] bg-[#333]/[0.02] sm:bg-transparent cursor-not-allowed">
+                <span className="flex items-center justify-center size-5 sm:size-10 rounded-full sm:bg-[#f3f4f6]">
                   <Camera size={20} className="text-[#99a1af]" />
                 </span>
                 <span className="text-center">
-                  <span className="block text-[15px] font-semibold text-[var(--auth-neutral-900)]">
+                  <span className="block text-[13px] sm:text-[15px] font-semibold text-[#1e2939] sm:text-[var(--auth-neutral-900)]">
                     Scan
                   </span>
-                  <span className="block pt-0.5 text-[11px] font-medium text-[var(--auth-neutral-500)]">
+                  <span className="hidden sm:block pt-0.5 text-[11px] font-medium text-[var(--auth-neutral-500)]">
                     Open camera to scan
                   </span>
                 </span>
@@ -157,7 +158,7 @@ export function AiPanel() {
               type="button"
               disabled
               title="Coming soon"
-              className="flex items-center justify-center gap-2.5 h-12 rounded-[10px] bg-[var(--auth-primary)] text-[16px] font-bold text-white disabled:opacity-70">
+              className="flex items-center justify-center gap-2.5 h-12 rounded-xl sm:rounded-[10px] drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] sm:drop-shadow-none bg-[var(--auth-primary)] text-[16px] font-bold text-white disabled:opacity-70">
               <Sparkles size={20} />
               Generate Quiz
             </button>
