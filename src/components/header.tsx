@@ -22,6 +22,18 @@ import { useEffect, useState } from "react";
 import { UpgradeModal } from "./UpgradeModal";
 import { getMyBest } from "@/api/ranks";
 import logoMark from "@/assets/home/logo-mark.svg";
+import navLogo from "@/assets/home/nav-logo.svg";
+import zapIcon from "@/assets/home/nav-zap.svg";
+import chevronDown from "@/assets/home/nav-chevron.svg";
+
+// Tabs without a path don't have a page yet and render disabled.
+const STUDENT_TABS: { label: string; path?: string }[] = [
+  { label: "Today", path: "/" },
+  { label: "Practice" },
+  { label: "Mistakes" },
+  { label: "Progress", path: "/progress" },
+  { label: "Ask AI" },
+];
 
 export function Header() {
   const navigate = useNavigate();
@@ -71,9 +83,15 @@ export function Header() {
           className="flex items-center gap-1.5 md:gap-2.5 cursor-pointer"
           onClick={() => navigate("/")}>
           <img
-            src="/logo.svg"
+            src={user?.role === "teacher" ? "/logo.svg" : navLogo}
             alt="Mastishq.ai"
-            className="hidden md:block h-5 w-auto"
+            width={125.4}
+            height={24.29}
+            className={
+              user?.role === "teacher"
+                ? "hidden md:block h-5 w-auto"
+                : "hidden md:block"
+            }
           />
           <span className="flex md:hidden items-center gap-1.5">
             <img src={logoMark} alt="" width={28} height={26} />
@@ -128,41 +146,32 @@ export function Header() {
             })}
           </nav>
         ) : (
-          <nav className="hidden md:flex items-center gap-1 bg-white rounded px-1.5">
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center px-4 py-2 text-[12px] font-bold ${
-                  isActive
-                    ? "text-[var(--auth-primary-dark-2)] border-b-2 border-[var(--auth-primary-dark-3)]"
-                    : "text-[var(--auth-neutral-900)] font-medium hover:text-[var(--auth-primary-dark-2)]"
-                }`
-              }>
-              Home
-            </NavLink>
-            <NavLink
-              to="/ranks"
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center px-4 py-2 text-[12px] font-bold rounded ${
-                  isActive
-                    ? "text-[var(--auth-primary-dark-2)] border-b-2 border-[var(--auth-primary-dark-3)]"
-                    : "text-[var(--auth-neutral-900)] font-medium hover:text-[var(--auth-primary-dark-2)]"
-                }`
-              }>
-              Leaderboard
-            </NavLink>
-            <NavLink
-              to="/stats"
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center px-4 py-2 text-[12px] font-bold rounded ${
-                  isActive
-                    ? "text-[var(--auth-primary-dark-2)] border-b-2 border-[var(--auth-primary-dark-3)]"
-                    : "text-[var(--auth-neutral-900)] font-medium hover:text-[var(--auth-primary-dark-2)]"
-                }`
-              }>
-              Insight
-            </NavLink>
+          <nav className="hidden md:flex items-center justify-center gap-1 bg-white rounded px-1.5">
+            {STUDENT_TABS.map((tab) =>
+              tab.path ? (
+                <NavLink
+                  key={tab.label}
+                  to={tab.path}
+                  end={tab.path === "/"}
+                  className={({ isActive }) =>
+                    `px-3.5 py-2 rounded-lg text-[13px] whitespace-nowrap transition-colors ${
+                      isActive
+                        ? "bg-[#e7f5fd] font-semibold text-[var(--auth-primary-dark-2)]"
+                        : "font-medium text-[#4a4a4a] hover:bg-[#f3f4f6]"
+                    }`
+                  }>
+                  {tab.label}
+                </NavLink>
+              ) : (
+                <span
+                  key={tab.label}
+                  aria-disabled="true"
+                  title="Coming soon"
+                  className="px-3.5 py-2 rounded-lg text-[13px] font-medium text-[#4a4a4a] opacity-50 cursor-not-allowed whitespace-nowrap">
+                  {tab.label}
+                </span>
+              ),
+            )}
           </nav>
         )}
 
@@ -185,16 +194,12 @@ export function Header() {
 
           {user?.role !== "teacher" && best && (
             <div className="hidden md:flex items-center gap-2 bg-white border-[0.5px] border-[var(--auth-neutral-alpha-04,rgba(51,51,51,0.04))] shadow-[0px_16px_20px_rgba(88,92,95,0.11)] rounded-[14px] px-3 py-1.5">
-              <Zap
-                size={14}
-                className="text-[var(--auth-primary-dark-3)]"
-                fill="var(--auth-primary-dark-3)"
-              />
-              <span className="text-[13px] font-bold text-[var(--auth-primary-dark-3)] whitespace-nowrap">
+              <img src={zapIcon} alt="" width={14} height={14} />
+              <span className="text-[13px] leading-[15px] font-bold text-[var(--auth-primary-dark-3)] whitespace-nowrap">
                 Lvl {best.level}
               </span>
-              <span className="w-px h-3 bg-[var(--auth-neutral-300)]" />
-              <span className="text-[13px] font-bold text-[var(--auth-secondary-light-2)] whitespace-nowrap">
+              <span className="w-[0.5px] h-3 bg-[var(--auth-neutral-300)]" />
+              <span className="text-[13px] leading-[15px] font-bold text-[var(--auth-secondary-light-2)] whitespace-nowrap">
                 {best.totalXp.toLocaleString()} pts
               </span>
             </div>
@@ -231,6 +236,15 @@ export function Header() {
                     <User size={16} className="text-[#606060]" />
                   )}
                 </span>
+                {user?.role !== "teacher" && (
+                  <img
+                    src={chevronDown}
+                    alt=""
+                    width={16}
+                    height={16}
+                    className="hidden md:block"
+                  />
+                )}
               </button>
             </PopoverTrigger>
             <PopoverContent
