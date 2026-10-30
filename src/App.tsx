@@ -1,5 +1,12 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Routes,
+  Route,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import { useEffect } from "react";
 
 function ScrollToTop() {
@@ -24,9 +31,20 @@ import Courses from "./pages/Courses";
 import Course from "./pages/Course";
 import Topic from "./pages/Topic";
 import Quiz from "./pages/Quiz";
-import ChallengeOverview from "./pages/ChallengeOverview";
-import ChallengePlay from "./pages/ChallengePlay";
-import ChallengeReview from "./pages/ChallengeReview";
+import PracticeSetup from "./pages/practice/PracticeSetup";
+import PracticePlay from "./pages/practice/PracticePlay";
+import PracticeReview from "./pages/practice/PracticeReview";
+
+/** Keeps old /challenge links working after the move to /practice. */
+function ChallengeRedirect() {
+  const { quizId, attemptId } = useParams();
+  const path = attemptId
+    ? `/practice/${quizId}/review/${attemptId}`
+    : quizId
+      ? `/practice/${quizId}`
+      : "/practice";
+  return <Navigate to={path} replace />;
+}
 import PinMessage from "./pages/PinMessage";
 import Engagement from "./pages/Engagement";
 import Content from "./pages/Content";
@@ -133,28 +151,34 @@ function App() {
                 }
               />
               <Route
-                path="/challenge/new"
+                path="/practice"
                 element={
                   <ProtectedRoute>
-                    <ChallengeOverview />
+                    <PracticeSetup />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="/challenge/:quizId"
+                path="/practice/:quizId"
                 element={
                   <ProtectedRoute>
-                    <ChallengePlay />
+                    <PracticePlay />
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/practice/:quizId/review/:attemptId"
+                element={
+                  <ProtectedRoute>
+                    <PracticeReview />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/challenge/new" element={<ChallengeRedirect />} />
+              <Route path="/challenge/:quizId" element={<ChallengeRedirect />} />
               <Route
                 path="/challenge/:quizId/review/:attemptId"
-                element={
-                  <ProtectedRoute>
-                    <ChallengeReview />
-                  </ProtectedRoute>
-                }
+                element={<ChallengeRedirect />}
               />
               <Route
                 path="/ranks"

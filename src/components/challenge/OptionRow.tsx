@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type OptionState =
@@ -21,6 +21,7 @@ export function OptionRow({
   percent,
   disabled,
   onSelect,
+  variant = "play",
 }: {
   index: number;
   text: string;
@@ -28,10 +29,43 @@ export function OptionRow({
   percent?: number;
   disabled?: boolean;
   onSelect?: () => void;
+  /** "review" renders answered options with "Your answer" / "Correct answer" pills (Figma 2094:10492). */
+  variant?: "play" | "review";
 }) {
   const letter = BADGE_LETTERS[index] ?? String(index + 1);
   const revealed =
     state === "correct" || state === "wrong" || state === "neutral";
+
+  if (variant === "review") {
+    return (
+      <div
+        className={cn(
+          "flex items-center gap-3 w-full p-4 rounded-xl",
+          state === "correct" && "bg-[rgba(31,193,107,0.08)]",
+          state === "wrong" && "bg-[rgba(239,68,68,0.08)]",
+          state !== "correct" &&
+            state !== "wrong" &&
+            "bg-white border border-[#e5e7eb]",
+        )}>
+        <span className="text-[13px] leading-[18px] font-semibold text-[#6b7280]">
+          {letter}
+        </span>
+        <span className="flex-1 min-w-0 text-[16px] leading-6 font-medium text-[#101828]">
+          {text}
+        </span>
+        {state === "wrong" && (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-[rgba(239,68,68,0.14)] text-[12px] leading-4 font-semibold text-[#dc2626] whitespace-nowrap">
+            <X size={12} strokeWidth={2.5} /> Your answer
+          </span>
+        )}
+        {state === "correct" && (
+          <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-[rgba(31,193,107,0.16)] text-[12px] leading-4 font-semibold text-[#15803d] whitespace-nowrap">
+            <Check size={12} strokeWidth={2.5} /> Correct answer
+          </span>
+        )}
+      </div>
+    );
+  }
 
   if (revealed) {
     const tone = {
@@ -105,19 +139,19 @@ export function OptionRow({
       )}>
       <span
         className={cn(
-          "flex items-center justify-center size-[22px] shrink-0 rounded-full border-[0.5px] text-[9px] font-bold",
+          "flex items-center justify-center size-[22px] shrink-0 rounded-full border-[0.5px] text-[10px] leading-3 font-bold",
           selected
-            ? "border-[var(--auth-primary)] text-[var(--auth-primary)]"
-            : "bg-white border-[#d2d2d2] text-[#8e8e8e]",
+            ? "border-[var(--auth-primary)] text-[var(--auth-primary-dark-1)]"
+            : "bg-white border-[#d2d5db] text-[#6b7280]",
         )}>
         {letter}
       </span>
       <span
         className={cn(
-          "flex-1 min-w-0 text-[15px]",
+          "flex-1 min-w-0 text-[16px] leading-6",
           selected
-            ? "font-semibold text-[var(--auth-primary-dark-2)]"
-            : "font-medium text-[#4a4a4a]",
+            ? "font-semibold text-[var(--auth-primary-dark-1)]"
+            : "font-medium text-[#4a5565]",
         )}>
         {text}
       </span>

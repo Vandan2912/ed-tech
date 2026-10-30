@@ -29,7 +29,7 @@ import chevronDown from "@/assets/home/nav-chevron.svg";
 // Tabs without a path don't have a page yet and render disabled.
 const STUDENT_TABS: { label: string; path?: string }[] = [
   { label: "Today", path: "/" },
-  { label: "Practice" },
+  { label: "Practice", path: "/practice" },
   { label: "Mistakes" },
   { label: "Progress", path: "/progress" },
   { label: "Ask AI" },

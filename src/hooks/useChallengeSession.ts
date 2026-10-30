@@ -5,18 +5,21 @@ import {
   completeQuiz,
   completeStage,
   generateStage,
+  getAttemptReview,
   retryStage as retryStageApi,
   getQuiz,
   getStageQuestions,
   startQuiz,
   waitForStageReady,
   type AnswerResult,
+  type AttemptReview,
   type Quiz,
   type QuizCompleteResult,
   type QuizQuestion,
   type QuizStage,
 } from "@/api/quizzes";
-import { getMyBest } from "@/api/ranks";
+import { getMyBest, type MyBestData } from "@/api/ranks";
+import { incrementTodayCount } from "@/lib/dailyGoal";
 import { getApiErrorMessage } from "@/lib/utils";
 import { PASS_RATIO, STAGE_POINTS } from "@/components/challenge/stages";
 import type { NavStatus } from "@/components/challenge/QuizSidebar";
@@ -38,7 +41,11 @@ export type AnswerRecord = {
   result: AnswerResult;
 };
 
-export type Completion = QuizCompleteResult & { level?: number };
+export type Completion = QuizCompleteResult & {
+  level?: number;
+  bestBefore?: MyBestData | null;
+  bestAfter?: MyBestData | null;
+};
 
 /**
  * Drives one AI Challenge attempt: start/resume → per-question answer with a
@@ -59,6 +66,10 @@ export function useChallengeSession(quizId: string) {
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [completion, setCompletion] = useState<Completion | null>(null);
   const [attemptId, setAttemptId] = useState<string | null>(null);
+  const [stageAttemptNumber, setStageAttemptNumber] = useState(1);
+  // Full attempt review, fetched after each stage / the quiz completes.
+  const [review, setReview] = useState<AttemptReview | null>(null);
+  const bestBeforeRef = useRef<MyBestData | null>(null);
 
   // Values async handlers need without waiting for a re-render.
   const attemptIdRef = useRef<string | null>(null);
@@ -98,14 +109,19 @@ export function useChallengeSession(quizId: string) {
     target: QuizStage,
     stageAttemptId: string,
     seconds: number,
+    attemptNumber = 1,
   ) => {
     setPhase("loading");
     let ready = target;
-    if (target.status === "pending") await generateStage(quizId, target.id);
+    // A stage whose generation failed is kicked off again.
+    if (target.status === "pending" || target.status === "failed")
+      await generateStage(quizId, target.id);
     if (target.status !== "ready") ready = await waitForStageReady(target.id);
     const qs = await getStageQuestions(ready.id);
 
     stageAttemptIdRef.current = stageAttemptId;
+    setStageAttemptNumber(attemptNumber);
+    setReview(null);
     stageBasePointsRef.current = pointsRef.current;
     answersRef.current = {};
     setAnswers({});
@@ -127,6 +143,7 @@ export function useChallengeSession(quizId: string) {
         start.stage,
         start.stageAttempt.id,
         start.quiz.time_per_question_seconds ?? seconds,
+        start.stageAttempt.attempt_number ?? 1,
       );
     } catch (err) {
       fail(err, "Couldn't load your quiz. Please try again.");
@@ -136,6 +153,9 @@ export function useChallengeSession(quizId: string) {
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
+    getMyBest()
+      .then((b) => (bestBeforeRef.current = b))
+      .catch(() => {});
     getQuiz(quizId)
       .then((q) => {
         setQuiz(q);
@@ -144,6 +164,13 @@ export function useChallengeSession(quizId: string) {
       .catch((err) => fail(err, "Couldn't load your quiz. Please try again."));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quizId]);
+
+  const loadReview = () => {
+    if (!attemptIdRef.current) return;
+    getAttemptReview(attemptIdRef.current)
+      .then(setReview)
+      .catch(() => {});
+  };
 
   const recordAnswer = (questionId: string, record: AnswerRecord) => {
     answersRef.current = { ...answersRef.current, [questionId]: record };
@@ -173,6 +200,7 @@ export function useChallengeSession(quizId: string) {
           ? correct / questions.length >= PASS_RATIO
           : true);
 
+      loadReview();
       if (!passed) {
         setPhase("stage-failed");
         return;
@@ -183,7 +211,12 @@ export function useChallengeSession(quizId: string) {
           quizAttemptId: attemptIdRef.current,
         });
         const best = await getMyBest().catch(() => null);
-        setCompletion({ ...done, level: best?.level });
+        setCompletion({
+          ...done,
+          level: best?.level,
+          bestBefore: bestBeforeRef.current,
+          bestAfter: best,
+        });
         setPhase("completed");
         return;
       }
@@ -253,6 +286,7 @@ export function useChallengeSession(quizId: string) {
         selectedOptionId: selectedOptionId ?? undefined,
         result,
       });
+      incrementTodayCount();
       setPoints(
         (p) =>
           p + (result.pointsAwarded ?? (isCorrect ? STAGE_POINTS[stage.difficulty] : 0)),
@@ -316,6 +350,7 @@ export function useChallengeSession(quizId: string) {
         { ...stage, ...res.stage },
         res.stageAttempt.id,
         timePerQuestion,
+        res.stageAttempt.attempt_number ?? stageAttemptNumber + 1,
       );
     } catch (err) {
       fail(err, "Couldn't restart this stage.");
@@ -357,5 +392,10 @@ export function useChallengeSession(quizId: string) {
     retry,
     retryStage,
     attemptId,
+    stageAttemptNumber,
+    /** Points earned in the current stage only. */
+    stagePoints: points - stageBasePointsRef.current,
+    answers,
+    review,
   };
 }

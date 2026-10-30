@@ -31,8 +31,11 @@ export function QuestionNavigator({
   statuses,
   activeIndex,
   onSelect,
+  compact,
 }: {
   statuses: NavStatus[];
+  /** Review layout: smaller 38px dots, "Viewing" ring + legend (Figma 2094:10492). */
+  compact?: boolean;
   /** Highlights a question with a ring (review mode). */
   activeIndex?: number;
   /** Makes the numbers clickable (review mode). */
@@ -43,7 +46,7 @@ export function QuestionNavigator({
       <p className="text-[12px] font-bold text-[#101010]">
         Question Navigator
       </p>
-      <ol className="grid grid-cols-5 gap-2 w-fit">
+      <ol className={cn("grid grid-cols-5 w-fit", compact ? "gap-3" : "gap-2")}>
         {statuses.map((status, i) => (
           <li
             key={i}
@@ -51,9 +54,12 @@ export function QuestionNavigator({
               status === "current" || activeIndex === i ? "step" : undefined
             }
             className={cn(
-              "relative flex items-center justify-center size-11 rounded-full text-[13px] font-bold",
+              "relative flex items-center justify-center rounded-full font-bold",
+              compact ? "size-[38px] text-[12px]" : "size-11 text-[13px]",
               activeIndex === i &&
-                "ring-2 ring-[var(--auth-primary)] ring-offset-2",
+                (compact
+                  ? "border-2 border-[#101828]"
+                  : "ring-2 ring-[var(--auth-primary)] ring-offset-2"),
               status === "correct" && "bg-[#1fc16b] text-white",
               status === "wrong" && "bg-[#fb3748] text-white",
               status === "current" && "bg-[var(--auth-primary)] text-white",
@@ -87,6 +93,12 @@ export function QuestionNavigator({
           <span className="size-3 rounded-[3px] bg-[#fb3748]" />
           Wrong Answer
         </span>
+        {compact && (
+          <span className="flex items-center gap-2">
+            <span className="size-3 rounded-full border-2 border-[#101828]" />
+            Viewing
+          </span>
+        )}
       </div>
     </div>
   );
@@ -111,7 +123,7 @@ export function SidebarButton({
       className={cn(
         "flex items-center justify-center w-full rounded-lg font-semibold transition disabled:opacity-50",
         variant === "exit" &&
-          "p-4 bg-[#fb3748]/10 text-[13px] text-[#fb3748] hover:bg-[#fb3748]/15",
+          "p-4 rounded-xl bg-[rgba(251,55,72,0.1)] text-[13px] leading-[18px] text-[#dc2626] hover:bg-[rgba(251,55,72,0.15)]",
         variant === "break" &&
           "h-10 bg-[#333]/[0.04] border border-[#cfebfb] text-[12px] text-[var(--auth-primary-dark-2)] hover:bg-[#cfebfb]/40",
       )}>

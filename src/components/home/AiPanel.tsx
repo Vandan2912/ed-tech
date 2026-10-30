@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ChallengeDraft } from "@/pages/ChallengeOverview";
+import type { PracticeDraft } from "@/pages/practice/PracticeSetup";
 
 type Tab = "challenge" | "doubts";
 
@@ -43,12 +43,12 @@ export function AiPanel() {
 
   const startChallenge = () => {
     if (!canStart) return;
-    const draft: ChallengeDraft = {
+    const draft: PracticeDraft = {
       topicName: topicName.trim(),
       description: description.trim(),
       file: file ?? undefined,
     };
-    navigate("/challenge/new", { state: draft });
+    navigate("/practice", { state: draft });
   };
 
   return (

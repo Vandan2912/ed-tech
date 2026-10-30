@@ -128,7 +128,15 @@ export type QuestionStatistics = {
   correctRate?: number;
 };
 
-export type AiAction = "show_steps" | (string & {});
+// ASSUMPTION: only "show_steps" is documented; the others mirror the Ask AI
+// drawer's quick actions and "follow_up" carries free text in `message`.
+export type AiAction =
+  | "why_wrong"
+  | "show_steps"
+  | "explain_simpler"
+  | "similar_question"
+  | "follow_up"
+  | (string & {});
 
 export type AiJob = {
   status: string;
@@ -296,9 +304,18 @@ export const startQuiz = async (quizId: string): Promise<StartQuizResult> => {
     `/api/v2/quizzes/${quizId}/start`,
   );
   const data = res.data.data;
+  logShape("start", data);
+  // A resumed attempt has no `stage`; its fields come flattened onto
+  // stageAttempt (stage_id, difficulty, display_order, stage_status…).
+  const sa = data.stageAttempt as RawRecord;
+  const stage = (data.stage as RawRecord | undefined) ?? {
+    ...sa,
+    id: sa.stage_id,
+    status: sa.stage_status,
+  };
   return {
     ...(data as unknown as StartQuizResult),
-    stage: normalizeStage(data.stage as RawRecord),
+    stage: normalizeStage(stage),
   };
 };
 
@@ -509,6 +526,7 @@ export const askAi = async (body: {
   quizAttemptId: string;
   conversationType: "ai_tutor";
   action: AiAction;
+  message?: string;
 }): Promise<{ jobId: string }> => {
   const res = await api.post<Envelope<RawRecord>>("/api/v2/quizzes/ask", body);
   const data = res.data.data ?? {};
@@ -562,4 +580,19 @@ export const waitForJob = async (
     }
     await new Promise((r) => setTimeout(r, intervalMs));
   }
+};
+
+/* ---------------- Reports ---------------- */
+
+export type ReportReason = "incorrect" | "unclear" | "inappropriate" | "other";
+
+/** No report endpoint exists yet; the UI keeps the entry point hidden until one does. */
+export const REPORT_ENABLED = false;
+
+export const reportQuestion = async (
+  questionId: string,
+  body: { reason: ReportReason; details?: string },
+): Promise<void> => {
+  logShape(`report ${questionId} (not sent)`, body);
+  throw new Error("Reporting questions isn't available yet.");
 };

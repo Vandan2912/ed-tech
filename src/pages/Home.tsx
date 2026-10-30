@@ -4,7 +4,7 @@ import { useAuth } from "@/auth/useAuth";
 import TeacherDashboard from "./TeacherDashboard";
 import { getMyBest, type MyBestData } from "@/api/ranks";
 import { getLocalGoalProfile } from "@/lib/localProfile";
-import type { ChallengeDraft } from "./ChallengeOverview";
+import type { PracticeDraft } from "./practice/PracticeSetup";
 import { LevelProgressBar } from "@/components/home/LevelProgressBar";
 import { WelcomeHero } from "@/components/home/WelcomeHero";
 import { FirstSteps } from "@/components/home/FirstSteps";
@@ -30,14 +30,14 @@ const Home = () => {
     return <TeacherDashboard />;
   }
 
-  // No diagnostic endpoint yet — the diagnostic runs as an AI challenge on the
-  // learner's goal until a dedicated post-onboarding quiz exists.
+  // No diagnostic endpoint yet — the diagnostic opens Practice pre-filled with
+  // the learner's goal until a dedicated post-onboarding quiz exists.
   const startDiagnostic = () => {
-    const draft: ChallengeDraft = {
+    const draft: PracticeDraft = {
       topicName: `${goal} diagnostic`,
       description: `10-minute diagnostic covering the ${goal} syllabus`,
     };
-    navigate("/challenge/new", { state: draft });
+    navigate("/practice", { state: draft });
   };
 
   const isNewLearner = best?.level === 0;
