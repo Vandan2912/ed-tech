@@ -5,6 +5,7 @@ import {
   completeQuiz,
   completeStage,
   generateStage,
+  retryStage as retryStageApi,
   getQuiz,
   getStageQuestions,
   startQuiz,
@@ -57,6 +58,7 @@ export function useChallengeSession(quizId: string) {
   const [points, setPoints] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [completion, setCompletion] = useState<Completion | null>(null);
+  const [attemptId, setAttemptId] = useState<string | null>(null);
 
   // Values async handlers need without waiting for a re-render.
   const attemptIdRef = useRef<string | null>(null);
@@ -68,6 +70,12 @@ export function useChallengeSession(quizId: string) {
   const questionStartedAtRef = useRef(new Date().toISOString());
   const deadlineRef = useRef(0);
   const startedRef = useRef(false);
+  const pointsRef = useRef(0);
+  // Points held before the current stage, restored when the stage is retried.
+  const stageBasePointsRef = useRef(0);
+  useEffect(() => {
+    pointsRef.current = points;
+  }, [points]);
 
   const timePerQuestion = quiz?.time_per_question_seconds ?? 20;
   const stageIndex =
@@ -98,6 +106,7 @@ export function useChallengeSession(quizId: string) {
     const qs = await getStageQuestions(ready.id);
 
     stageAttemptIdRef.current = stageAttemptId;
+    stageBasePointsRef.current = pointsRef.current;
     answersRef.current = {};
     setAnswers({});
     setStage({ ...target, ...ready });
@@ -113,6 +122,7 @@ export function useChallengeSession(quizId: string) {
     try {
       const start = await startQuiz(quizId);
       attemptIdRef.current = start.attempt.id;
+      setAttemptId(start.attempt.id);
       await enterStage(
         start.stage,
         start.stageAttempt.id,
@@ -291,6 +301,27 @@ export function useChallengeSession(quizId: string) {
     }
   };
 
+  /** Retries the failed stage with a fresh stage attempt. */
+  const retryStage = async () => {
+    if (!stage || !attemptIdRef.current) return startFromServer(timePerQuestion);
+    setPhase("loading");
+    try {
+      const res = await retryStageApi(stage.id, {
+        quizAttemptId: attemptIdRef.current,
+      });
+      if (!res.stageAttempt) return startFromServer(timePerQuestion);
+      pointsRef.current = stageBasePointsRef.current;
+      setPoints(stageBasePointsRef.current);
+      await enterStage(
+        { ...stage, ...res.stage },
+        res.stageAttempt.id,
+        timePerQuestion,
+      );
+    } catch (err) {
+      fail(err, "Couldn't restart this stage.");
+    }
+  };
+
   const retry = useCallback(
     () => startFromServer(timePerQuestion),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -324,5 +355,7 @@ export function useChallengeSession(quizId: string) {
     next: goNext,
     continueToNextStage,
     retry,
+    retryStage,
+    attemptId,
   };
 }

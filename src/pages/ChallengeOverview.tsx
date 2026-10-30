@@ -25,8 +25,6 @@ const STAGE_BADGE: Record<Difficulty, string> = {
   hard: "bg-[#fb3748]/10 text-[#d00416]",
 };
 
-const MIN_QUESTIONS = 1;
-const MAX_QUESTIONS = 40;
 const MIN_SECONDS = 10;
 const MAX_SECONDS = 60;
 const SECONDS_STEP = 5;
@@ -35,20 +33,12 @@ export default function ChallengeOverview() {
   const draft = useLocation().state as ChallengeDraft | null;
   const navigate = useNavigate();
 
-  const [counts, setCounts] = useState<Record<Difficulty, number>>({
-    easy: 5,
-    medium: 5,
-    hard: 5,
-  });
   const [seconds, setSeconds] = useState(20);
   const [progress, setProgress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Refreshing loses the route state (and any picked file) — start over.
   if (!draft?.topicName) return <Navigate to="/" replace />;
-
-  const totalQuestions = counts.easy + counts.medium + counts.hard;
-  const totalMinutes = Math.ceil((totalQuestions * seconds) / 60);
 
   const start = async () => {
     setError(null);
@@ -59,7 +49,6 @@ export default function ChallengeOverview() {
         description: draft.description,
         sourceType: draft.file ? "file" : "topic",
         timePerQuestionSeconds: seconds,
-        stages: counts,
       });
 
       if (draft.file) {
@@ -110,15 +99,8 @@ export default function ChallengeOverview() {
                   {STAGE_LABEL[d]}
                 </span>
                 <span className="text-[11px] font-medium text-[#8e8e8e]">
-                  Questions to answer
+                  Clear this stage to unlock the next
                 </span>
-                <CountStepper
-                  label={`${STAGE_LABEL[d]} questions`}
-                  value={counts[d]}
-                  min={MIN_QUESTIONS}
-                  max={MAX_QUESTIONS}
-                  onChange={(v) => setCounts((c) => ({ ...c, [d]: v }))}
-                />
               </div>
             ))}
           </div>
@@ -147,10 +129,9 @@ export default function ChallengeOverview() {
         <div className="flex w-full items-center gap-3 rounded-xl border border-[var(--auth-primary)]/10 bg-[#f0f9ff] px-4 py-3 text-[12px] font-medium text-[#777]">
           <Info size={16} className="shrink-0 text-[var(--auth-primary)]" />
           <span>
-            Total Questions:{" "}
-            <b className="font-bold text-[#101828]">{totalQuestions}</b>
-            {"  ·  "}Estimated Total Time:{" "}
-            <b className="font-bold text-[#101828]">{totalMinutes} min</b>
+            Questions are generated for each stage. You&apos;ll get{" "}
+            <b className="font-bold text-[#101828]">{seconds} sec</b> per
+            question.
           </span>
         </div>
 

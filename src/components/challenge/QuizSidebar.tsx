@@ -27,7 +27,17 @@ export function PerformanceCard({ points }: { points: number }) {
   );
 }
 
-export function QuestionNavigator({ statuses }: { statuses: NavStatus[] }) {
+export function QuestionNavigator({
+  statuses,
+  activeIndex,
+  onSelect,
+}: {
+  statuses: NavStatus[];
+  /** Highlights a question with a ring (review mode). */
+  activeIndex?: number;
+  /** Makes the numbers clickable (review mode). */
+  onSelect?: (index: number) => void;
+}) {
   return (
     <div className={cn(card, "flex flex-col gap-4")}>
       <p className="text-[12px] font-bold text-[#101010]">
@@ -37,9 +47,13 @@ export function QuestionNavigator({ statuses }: { statuses: NavStatus[] }) {
         {statuses.map((status, i) => (
           <li
             key={i}
-            aria-current={status === "current" ? "step" : undefined}
+            aria-current={
+              status === "current" || activeIndex === i ? "step" : undefined
+            }
             className={cn(
-              "flex items-center justify-center size-11 rounded-full text-[13px] font-bold",
+              "relative flex items-center justify-center size-11 rounded-full text-[13px] font-bold",
+              activeIndex === i &&
+                "ring-2 ring-[var(--auth-primary)] ring-offset-2",
               status === "correct" && "bg-[#1fc16b] text-white",
               status === "wrong" && "bg-[#fb3748] text-white",
               status === "current" && "bg-[var(--auth-primary)] text-white",
@@ -50,7 +64,17 @@ export function QuestionNavigator({ statuses }: { statuses: NavStatus[] }) {
               status === "upcoming" &&
                 "bg-white border border-[#d2d2d2] text-[#8e8e8e]",
             )}>
-            {i + 1}
+            {onSelect ? (
+              <button
+                type="button"
+                onClick={() => onSelect(i)}
+                aria-label={`Question ${i + 1}`}
+                className="absolute inset-0 rounded-full">
+                {i + 1}
+              </button>
+            ) : (
+              i + 1
+            )}
           </li>
         ))}
       </ol>

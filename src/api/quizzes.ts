@@ -100,6 +100,41 @@ export type QuizCompleteResult = {
   badge?: { name?: string; description?: string };
 };
 
+export type RetryStageResult = {
+  stage?: QuizStage;
+  stageAttempt?: StageAttempt;
+};
+
+export type ReviewQuestion = QuizQuestion & {
+  difficulty?: Difficulty;
+  status?: string;
+  selectedOptionId?: string;
+  correctOptionId?: string;
+  isCorrect?: boolean;
+  mistakeTag?: string | null;
+  explanation?: string;
+};
+
+export type AttemptReview = {
+  quiz?: { id?: string; topic_name?: string; description?: string };
+  attempt?: QuizAttempt;
+  questions: ReviewQuestion[];
+};
+
+export type QuestionStatistics = {
+  /** optionId → percentage of learners who picked it */
+  optionPercentages?: Record<string, number>;
+  totalAttempts?: number;
+  correctRate?: number;
+};
+
+export type AiAction = "show_steps" | (string & {});
+
+export type AiJob = {
+  status: string;
+  result?: string;
+};
+
 /* ---------------- Helpers ---------------- */
 
 type Envelope<T> = { success: boolean; message?: string; data: T };
@@ -139,7 +174,6 @@ export const createQuiz = async (body: {
   description: string;
   sourceType: "topic" | "file";
   timePerQuestionSeconds: number;
-  stages: Record<Difficulty, number>;
 }): Promise<Quiz> => {
   const res = await api.post<Envelope<RawRecord>>("/api/v2/quizzes", body);
   const quiz = res.data.data;
@@ -336,4 +370,196 @@ export const completeQuiz = async (
     totalPoints: pick(data, "totalPoints", "total_points", "points"),
     badge: pick(data, "badge"),
   };
+};
+
+/** Starts a fresh attempt at a stage the learner failed. */
+export const retryStage = async (
+  stageId: string,
+  body: { quizAttemptId: string },
+): Promise<RetryStageResult> => {
+  const res = await api.post<Envelope<RawRecord>>(
+    `/api/v2/quizzes/stages/${stageId}/retry`,
+    body,
+  );
+  const data = res.data.data ?? {};
+  logShape("stage retry", data);
+  const stage = pick<RawRecord>(data, "stage");
+  return {
+    stage: stage ? normalizeStage(stage) : undefined,
+    stageAttempt:
+      pick(data, "stageAttempt", "stage_attempt") ??
+      // Some endpoints return the stage attempt itself as `data`.
+      (pick(data, "quiz_attempt_id") ? (data as unknown as StageAttempt) : undefined),
+  };
+};
+
+/* ---------------- Review ---------------- */
+
+/** Accepts either an `optionId → %` map or a list of `{ optionId, percentage }`. */
+const normalizePercentages = (
+  raw: unknown,
+): Record<string, number> | undefined => {
+  if (!raw) return undefined;
+  if (!Array.isArray(raw)) return raw as Record<string, number>;
+  return Object.fromEntries(
+    (raw as RawRecord[]).map((o) => [
+      String(pick(o, "optionId", "option_id", "id")),
+      Number(pick(o, "percentage", "percent", "pct") ?? 0),
+    ]),
+  );
+};
+
+const normalizeReviewQuestion = (raw: RawRecord): ReviewQuestion => {
+  const answer = pick<RawRecord>(raw, "answer", "userAnswer", "user_answer");
+  const from = <T>(...keys: string[]) =>
+    pick<T>(raw, ...keys) ?? pick<T>(answer, ...keys);
+  const options = (pick<RawRecord[]>(raw, "options") ?? []).map((o) => ({
+    id: String(o.id),
+    optionKey: String(pick(o, "optionKey", "option_key") ?? ""),
+    optionText: String(pick(o, "optionText", "option_text") ?? ""),
+    displayOrder: Number(pick(o, "displayOrder", "display_order") ?? 0),
+    isCorrect: pick<boolean>(o, "isCorrect", "is_correct"),
+  }));
+  return {
+    id: String(pick(raw, "questionId", "question_id", "id")),
+    displayOrder: Number(pick(raw, "displayOrder", "display_order") ?? 0),
+    questionText: String(pick(raw, "questionText", "question_text") ?? ""),
+    questionType: String(pick(raw, "questionType", "question_type") ?? ""),
+    topicName: String(pick(raw, "topicName", "topic_name") ?? ""),
+    options: options
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .map(({ id, optionKey, optionText, displayOrder }) => ({
+        id,
+        optionKey,
+        optionText,
+        displayOrder,
+      })),
+    difficulty: from("difficulty"),
+    status: from("status"),
+    selectedOptionId: from("selectedOptionId", "selected_option_id"),
+    correctOptionId:
+      from("correctOptionId", "correct_option_id") ??
+      options.find((o) => o.isCorrect)?.id,
+    isCorrect: from("isCorrect", "is_correct"),
+    mistakeTag: from("mistakeTag", "mistake_tag"),
+    explanation: from("explanation"),
+  };
+};
+
+export const getAttemptReview = async (
+  quizAttemptId: string,
+): Promise<AttemptReview> => {
+  const res = await api.get<Envelope<RawRecord>>(
+    `/api/v2/quizzes/review/attempts/${quizAttemptId}`,
+  );
+  const data = res.data.data ?? {};
+  logShape("attempt review", data);
+  // Questions may be flat or grouped per stage.
+  const stages = pick<RawRecord[]>(data, "stages") ?? [];
+  const flat =
+    pick<RawRecord[]>(data, "questions") ??
+    stages.flatMap((s) =>
+      (pick<RawRecord[]>(s, "questions") ?? []).map((q) => ({
+        difficulty: s.difficulty,
+        ...q,
+      })),
+    );
+  return {
+    quiz: pick(data, "quiz"),
+    attempt: pick(data, "attempt", "quizAttempt", "quiz_attempt"),
+    questions: flat.map(normalizeReviewQuestion),
+  };
+};
+
+// ASSUMPTION: body shape for the mistake-tag PATCH hasn't been shared yet.
+export const tagMistake = async (
+  questionId: string,
+  body: { quizAttemptId: string; mistakeTag: string | null },
+) => {
+  const res = await api.patch<Envelope<RawRecord>>(
+    `/api/v2/quizzes/review/questions/${questionId}`,
+    body,
+  );
+  logShape("mistake tag", res.data.data);
+  return res.data.data;
+};
+
+export const getQuestionStatistics = async (
+  questionId: string,
+): Promise<QuestionStatistics> => {
+  const res = await api.get<Envelope<RawRecord>>(
+    `/api/v2/quizzes/review/questions/${questionId}/statistics`,
+  );
+  const data = res.data.data ?? {};
+  logShape("question statistics", data);
+  return {
+    optionPercentages: normalizePercentages(
+      pick(data, "optionPercentages", "option_percentages", "options"),
+    ),
+    totalAttempts: pick(data, "totalAttempts", "total_attempts"),
+    correctRate: pick(data, "correctRate", "correct_rate", "accuracy"),
+  };
+};
+
+/* ---------------- Ask AI ---------------- */
+
+/** Queues an AI tutor job; poll waitForJob for the answer. */
+export const askAi = async (body: {
+  questionId: string;
+  quizAttemptId: string;
+  conversationType: "ai_tutor";
+  action: AiAction;
+}): Promise<{ jobId: string }> => {
+  const res = await api.post<Envelope<RawRecord>>("/api/v2/quizzes/ask", body);
+  const data = res.data.data ?? {};
+  logShape("ask ai", data);
+  const job = pick<RawRecord>(data, "job");
+  return {
+    jobId: String(
+      pick(data, "jobId", "job_id") ?? pick(job, "id") ?? pick(data, "id"),
+    ),
+  };
+};
+
+export const getJob = async (
+  jobId: string,
+  body: { quizAttemptId: string; stageAttemptId?: string },
+): Promise<AiJob> => {
+  const res = await api.post<Envelope<RawRecord>>(
+    `/api/v2/quizzes/jobs/${jobId}`,
+    body,
+  );
+  const data = res.data.data ?? {};
+  const job = (pick<RawRecord>(data, "job") ?? data) as RawRecord;
+  const result = pick<unknown>(job, "result", "response", "answer", "output");
+  return {
+    status: String(pick(job, "status") ?? (result ? "completed" : "pending")),
+    result:
+      result === undefined || typeof result === "string"
+        ? (result as string | undefined)
+        : String(
+            pick(result as RawRecord, "text", "content", "message", "answer") ??
+              JSON.stringify(result),
+          ),
+  };
+};
+
+/** Polls an AI job until it has a result. */
+export const waitForJob = async (
+  jobId: string,
+  body: { quizAttemptId: string; stageAttemptId?: string },
+  { intervalMs = 2000, timeoutMs = 60_000 } = {},
+): Promise<string> => {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const job = await getJob(jobId, body);
+    if (job.result && job.status !== "failed") return job.result;
+    if (job.status === "failed") {
+      throw new Error("The AI tutor couldn't answer. Please try again.");
+    }
+    if (Date.now() > deadline) {
+      throw new Error("The AI tutor is taking too long. Try again.");
+    }
+    await new Promise((r) => setTimeout(r, intervalMs));
+  }
 };

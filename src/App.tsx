@@ -26,6 +26,7 @@ import Topic from "./pages/Topic";
 import Quiz from "./pages/Quiz";
 import ChallengeOverview from "./pages/ChallengeOverview";
 import ChallengePlay from "./pages/ChallengePlay";
+import ChallengeReview from "./pages/ChallengeReview";
 import PinMessage from "./pages/PinMessage";
 import Engagement from "./pages/Engagement";
 import Content from "./pages/Content";
@@ -144,6 +145,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ChallengePlay />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/challenge/:quizId/review/:attemptId"
+                element={
+                  <ProtectedRoute>
+                    <ChallengeReview />
                   </ProtectedRoute>
                 }
               />

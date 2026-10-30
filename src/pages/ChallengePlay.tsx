@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, Check, Loader2, RotateCcw } from "lucide-react";
+import { ArrowRight, Check, ListChecks, Loader2, RotateCcw } from "lucide-react";
 import { getMyBest } from "@/api/ranks";
 import { useChallengeSession } from "@/hooks/useChallengeSession";
 import { StageStepper } from "@/components/challenge/StageStepper";
@@ -34,6 +34,16 @@ export default function ChallengePlay() {
   }, []);
 
   const goHome = () => navigate("/");
+  const reviewLink = session.attemptId && (
+    <button
+      type="button"
+      onClick={() =>
+        navigate(`/challenge/${quizId}/review/${session.attemptId}`)
+      }
+      className="flex items-center gap-1.5 text-[14px] font-bold text-[var(--auth-primary)] hover:underline">
+      <ListChecks size={16} /> Review Answers
+    </button>
+  );
   const stageName = session.stage
     ? STAGE_LABEL[session.stage.difficulty]
     : "";
@@ -79,12 +89,13 @@ export default function ChallengePlay() {
                 <RotateCcw size={18} /> Try Again
               </>
             ),
-            onClick: session.retry,
+            onClick: session.retryStage,
           }}
           secondary={{ label: "Take a Break", onClick: goHome }}>
           <span className="rounded-[9px] bg-[#ef4444]/[0.06] px-4 py-1.5 text-[14px] font-bold text-[#ef4444]">
             Don&apos;t worry, you can try again!
           </span>
+          {reviewLink}
         </ResultCard>
       </div>
     );
@@ -131,6 +142,7 @@ export default function ChallengePlay() {
               </div>
             </div>
           )}
+          {reviewLink}
         </ResultCard>
       </div>
     );
