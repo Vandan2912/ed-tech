@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -7,11 +7,13 @@ import { AuthShell } from "@/components/auth/AuthCard";
 import { Logo } from "@/components/auth/Logo";
 import { FormField } from "@/components/auth/FormField";
 import { PasswordInput } from "@/components/auth/PasswordInput";
+import { PasswordRules } from "@/components/auth/PasswordRules";
+import { newPasswordSchema } from "@/lib/validation";
 import checkIcon from "@/assets/auth/check-icon.svg";
 
 const resetSchema = z
   .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    password: newPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -35,10 +37,13 @@ export default function ResetPassword() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ResetFormData>({
     resolver: zodResolver(resetSchema),
+    defaultValues: { password: "", confirmPassword: "" },
   });
+  const passwordValue = useWatch({ control, name: "password" });
 
   const onSubmit = async () => {
     // TODO(backend): no reset-password endpoint exists yet. Wire this up
@@ -93,6 +98,7 @@ export default function ResetPassword() {
                   placeholder="Enter New Password"
                   {...register("password")}
                 />
+                <PasswordRules value={passwordValue} />
               </FormField>
 
               <FormField

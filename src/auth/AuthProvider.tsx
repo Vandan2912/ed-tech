@@ -23,13 +23,42 @@ export type User = {
   is_premium?: boolean;
 };
 
+type RawUser = Partial<User> & {
+  firstName?: string;
+  lastName?: string;
+  profilePicture?: string;
+  mobileNumber?: string;
+};
+
+/**
+ * v2 auth returns camelCase user fields; the rest of the app reads snake_case.
+ * Fill the snake_case fields from camelCase so both shapes work.
+ */
+function normalizeUser(raw: RawUser): User {
+  const onboarded = raw.isOnboarded ?? raw.is_onboarded ?? false;
+  return {
+    ...raw,
+    first_name: raw.first_name ?? raw.firstName ?? "",
+    last_name: raw.last_name ?? raw.lastName ?? "",
+    profile_picture: raw.profile_picture ?? raw.profilePicture ?? "",
+    mobile_number: raw.mobile_number ?? raw.mobileNumber ?? "",
+    is_onboarded: onboarded,
+    isOnboarded: onboarded,
+  } as User;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem("token");
   });
   const [user, setUserState] = useState<User | null>(() => {
     const stored = localStorage.getItem("user");
-    return stored ? JSON.parse(stored) : null;
+    if (!stored) return null;
+    try {
+      return normalizeUser(JSON.parse(stored));
+    } catch {
+      return null;
+    }
   });
 
   const setUser = (user: User) => {
@@ -37,7 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("user", JSON.stringify(user));
   };
 
-  const login = (token: string, userData: User) => {
+  const login = (token: string, rawUser: RawUser) => {
+    const userData = normalizeUser(rawUser);
     setToken(token);
     localStorage.setItem("token", token);
     setUserState(userData);

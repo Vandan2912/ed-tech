@@ -10,6 +10,7 @@ import { emailLoginV2, googleLoginV2 } from "@/api/auth";
 import { useAuth } from "@/auth/useAuth";
 import { FormField, authInputClassName } from "@/components/auth/FormField";
 import { getApiErrorMessage } from "@/lib/utils";
+import { loginPasswordSchema } from "@/lib/validation";
 import googleIcon from "@/assets/auth/google-icon.svg";
 
 const loginSchema = z.object({
@@ -17,16 +18,23 @@ const loginSchema = z.object({
     .string()
     .min(1, "Email is required")
     .email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
+  password: loginPasswordSchema,
   agreeToTerms: z.boolean().refine((v) => v === true, {
     message: "You must agree to the Terms of Service and Privacy Policy",
   }),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
+
+/** v2 auth returns camelCase `isOnboarded` (top-level and on `user`); keep snake_case as a fallback. */
+function isOnboardedResponse(res: {
+  isOnboarded?: boolean;
+  user?: { isOnboarded?: boolean; is_onboarded?: boolean };
+}): boolean {
+  return Boolean(
+    res.isOnboarded ?? res.user?.isOnboarded ?? res.user?.is_onboarded,
+  );
+}
 
 export default function LoginForm({
   setLoading,
@@ -55,7 +63,7 @@ export default function LoginForm({
       const res = await emailLoginV2(data.email, data.password);
       login(res.token, res.user);
 
-      const needsOnboarding = res.isNewUser || !res.user?.is_onboarded;
+      const needsOnboarding = !isOnboardedResponse(res);
       navigate(needsOnboarding ? "/onboarding" : "/");
     } catch (err) {
       setApiError(
@@ -78,7 +86,7 @@ export default function LoginForm({
         const res = await googleLoginV2(tokenResponse.access_token);
         login(res.token, res.user);
 
-        const needsOnboarding = res.isNewUser || !res.user?.is_onboarded;
+        const needsOnboarding = !isOnboardedResponse(res);
         navigate(needsOnboarding ? "/onboarding" : "/");
       } catch (err) {
         setApiError(

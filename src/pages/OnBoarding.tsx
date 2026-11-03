@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/auth/useAuth";
 import {
   savePersonalDetails,
@@ -21,6 +21,8 @@ import { Loader2, ArrowRight } from "lucide-react";
 import { Logo } from "@/components/auth/Logo";
 import { FormField, authInputClassName } from "@/components/auth/FormField";
 import { PasswordInput } from "@/components/auth/PasswordInput";
+import { PasswordRules } from "@/components/auth/PasswordRules";
+import { newPasswordSchema } from "@/lib/validation";
 import {
   OnboardingProgressBar,
   StepBadge,
@@ -81,11 +83,8 @@ const step1Schema = z.object({
   lastName: z.string().min(1, "Last name required"),
   email: z.string().email("Invalid email"),
   countryCode: z.string().min(1),
-  phone: z
-    .string()
-    .min(10, "Phone must be 10 digits")
-    .max(10, "Phone must be 10 digits"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  phone: z.string().regex(/^\d{10}$/, "Enter a 10-digit mobile number"),
+  password: newPasswordSchema,
   confirmPassword: z.string(),
 });
 
@@ -129,6 +128,8 @@ export default function Onboarding() {
   // ai_subject_ids of the selected subjects
   const [subjects, setSubjects] = useState<string[]>([]);
   const [subjectSearch, setSubjectSearch] = useState("");
+  const [subjectsLoading, setSubjectsLoading] = useState(true);
+  const [subjectsError, setSubjectsError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -162,14 +163,18 @@ export default function Onboarding() {
   const countryCodeValue = watch("countryCode");
   const countryValue = watch("country");
   const pinCodeValue = watch("pinCode");
+  const passwordValue = watch("password");
   const [loadingPin, setLoadingPin] = useState(false);
 
   useEffect(() => {
     if (pinCodeValue?.length === 6 && countryValue === "India") {
+      // Drop responses for a PIN the user has since changed.
+      let ignore = false;
       setLoadingPin(true);
       fetch(`https://api.postalpincode.in/pincode/${pinCodeValue}`)
         .then((res) => res.json())
         .then((data) => {
+          if (ignore) return;
           if (data && data[0] && data[0].Status === "Success") {
             const state = data[0].PostOffice[0].State;
             const district = data[0].PostOffice[0].District;
@@ -178,18 +183,33 @@ export default function Onboarding() {
           }
         })
         .catch(console.error)
-        .finally(() => setLoadingPin(false));
+        .finally(() => {
+          if (!ignore) setLoadingPin(false);
+        });
+      return () => {
+        ignore = true;
+      };
     }
   }, [pinCodeValue, countryValue, setValue]);
+
+  const loadSubjects = useCallback(() => {
+    setSubjectsLoading(true);
+    setSubjectsError(false);
+    getOnboardingSubjects()
+      .then(setSubjectOptions)
+      .catch((err) => {
+        console.error("Failed to load subjects", err);
+        setSubjectsError(true);
+      })
+      .finally(() => setSubjectsLoading(false));
+  }, []);
 
   useEffect(() => {
     getOnboardingGoals()
       .then(setGoalOptions)
       .catch((err) => console.error("Failed to load goals", err));
-    getOnboardingSubjects()
-      .then(setSubjectOptions)
-      .catch((err) => console.error("Failed to load subjects", err));
-  }, []);
+    loadSubjects();
+  }, [loadSubjects]);
 
   useEffect(() => setApiError(null), [step]);
 
@@ -333,6 +353,11 @@ export default function Onboarding() {
 
   /* ---------------- PROCESSING / WELCOME PHASES ---------------- */
 
+  // Already onboarded (e.g. revisiting the URL) — nothing to do here.
+  if (phase === "form" && user?.isOnboarded) {
+    return <Navigate to="/" replace />;
+  }
+
   if (phase === "processing") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f9fafb] p-4 relative overflow-hidden">
@@ -471,6 +496,7 @@ export default function Onboarding() {
                   placeholder="Enter a new password"
                   {...register("password")}
                 />
+                <PasswordRules value={passwordValue} />
               </FormField>
 
               <FormField
@@ -504,12 +530,6 @@ export default function Onboarding() {
                   disabled={submitting}
                   className="w-full h-12 bg-[#3eaef0] rounded-2xl drop-shadow-[0px_16px_16px_rgba(88,92,95,0.1)] text-white text-base font-bold transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
                   {submitting ? "Saving..." : "Next"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate("/login")}
-                  className="w-full h-12 bg-white border border-[#e8e8e8] rounded-2xl text-[#8e8e8e] text-base font-bold transition hover:text-gray-700">
-                  Back
                 </button>
               </div>
             </div>
@@ -661,6 +681,35 @@ export default function Onboarding() {
                 className={authInputClassName}
                 placeholder="Search subjects..."
               />
+
+              {subjectsLoading && (
+                <div className="flex items-center gap-2 px-1 text-sm font-semibold text-[#8a8a8a]">
+                  <Loader2 size={16} className="animate-spin" />
+                  Loading subjects...
+                </div>
+              )}
+
+              {!subjectsLoading && subjectsError && (
+                <div className="flex items-center justify-between gap-3 px-4 py-3 bg-red-50 border border-red-100 rounded-2xl text-sm font-bold text-red-600">
+                  Couldn&apos;t load subjects.
+                  <button
+                    type="button"
+                    onClick={loadSubjects}
+                    className="text-[#0f80c3] underline-offset-2 hover:underline">
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {!subjectsLoading &&
+                !subjectsError &&
+                visibleSubjects.length === 0 && (
+                  <p className="px-1 text-sm font-semibold text-[#8a8a8a]">
+                    {subjectOptions.length === 0
+                      ? "No subjects available right now."
+                      : "No subjects match your search."}
+                  </p>
+                )}
 
               <div className="flex flex-wrap gap-2.5">
                 {visibleSubjects.map((subject) => (
